@@ -9,3 +9,9 @@ export type AuthPageInputData = {
     inputStyles?: string, 
     containerStyles?: string
 }
+
+export type CustomButtonPropsType = {
+    text: string,
+    id?: string,
+    class?: string
+}

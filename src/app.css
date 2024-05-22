@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	body{
+		@apply font-reddit-sans;
+	}
+
+	h1,h2,h3,h4,h5{
+		@apply font-roboto-condensed font-bold;
+	}
+}
+
+@layer utilities{
+	.AT_only{
+		@apply text-[.001rem] absolute top-[-100000px] left-[-100000px] w-0 h-0 invisible;
+	}
+
+	.page{
+		@apply min-h-screen pt-20;
+	}
+}
+
+@layer components {
+	.page{
+		@apply px-4 lg:px-8;
+	}
+}
