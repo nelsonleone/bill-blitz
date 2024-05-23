@@ -2,59 +2,59 @@
     
     import { DropdownMenu } from "bits-ui";
     import { page } from "$app/stores";
-    import Logo from "$lib/logo/index.svelte";
+    import Logo from "./logo/index.svelte";
     import Icon from "@iconify/svelte";
-    import IconButton from "$lib/buttons/IconButton.svelte";
-    import CustomButton from "$lib/buttons/CustomButton.svelte";
+    import IconButton from "$lib/components/buttons/IconButton.svelte";
+    import CustomButton from "$lib/components/buttons/CustomButton.svelte";
     import { browser } from '$app/environment';
     import { clickOutside } from "$lib/helperFns/clickOutside";
     import { onMount } from "svelte";
 
-
     $: activeUrl = $page.url.pathname;
 
     const beenAuthenticated = false;
-    let windowInnerWidth;
-    $: showNav = window.innerWidth <= 768 ? false : true;
+    let windowInnerWidth = 1024;
+    $: showNav = windowInnerWidth < 1024 ? false : true
 
-    if(browser){
-        showNav = window.innerWidth <= 768 ? false : true;
-    }
+    onMount(() => {
+        if (browser) {
+            windowInnerWidth = window.innerWidth;
+            const handleResize = () => {
+                windowInnerWidth = window.innerWidth;
+            }
+            window.addEventListener('resize', handleResize)
+    
+            return () => {
+                window.removeEventListener('resize', handleResize)
+            }
+        }
+    })
 
-    const toggleShowNav = (e:MouseEvent) => {
+
+
+    const toggleShowNav = (e: MouseEvent) => {
         e.stopPropagation()
         showNav = !showNav;
     }
 
-    onMount(() => {
-        const resize = () => {
-            windowInnerWidth = window.innerWidth;
-        } 
-        
-        window.addEventListener('resize',resize)
-
-        return () => {
-            window.removeEventListener('resize',resize)
-        }
-    })
 
 </script>
 
 
-<header class="relative">
-    <nav class="px-4 lg:px-8 fixed h-20 top-0 z-40 bg-base-color1 w-full drop-shadow-lg left-0 flex items-center justify-between">
+<header class="relative z-50">
+    <nav class="px-4 z-50 lg:px-8 fixed h-20 top-0 bg-base-color1 w-full drop-shadow-lg left-0 flex items-center justify-between">
         <a href="/">
             <Logo styles="w-20 lg:w-[5.5em]" />
         </a>
-
+ 
         <ul 
           use:clickOutside={() => {
             showNav = false;
           }}
-          class={`absolute flex justify-between shadow-lg shadow-gray-500 drop-shadow-2xl  bg-custom-dark-green bg-gradient-radial from-[#065234] to-[#0c6256] text-base-color1 px-4 pt-10 h-44 w-full left-0 -bottom-44 lg:bg-transparent lg:p-0 lg:h-auto lg: lg:w-5/12 lg:justify-end lg:gap-12 lg:bottom-0 lg:shadow-none lg:static lg:text-primary-dark-blue lg:drop-shadow-none ${showNav ? "flex" : "hidden"}`}>
+            class={`absolute flex justify-between shadow-lg shadow-gray-500 drop-shadow-2xl bg-custom-dark-green bg-gradient-radial from-[#065234] to-[#0c6256] text-base-color1 px-4 pt-10 h-44 w-full left-0 -bottom-44 md:px-36 lg:bg-transparent lg:p-0 lg:h-auto lg:lg:w-5/12 lg:justify-end lg:gap-12 lg:bottom-0 lg:shadow-none lg:static lg:text-primary-dark-blue lg:drop-shadow-none transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}>
             <li class="hidden lg:block">
                 <DropdownMenu.Root>
-                    <DropdownMenu.Trigger class={`font-medium hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl.match("/generate") ? "text-primary-accent-color2" : ""}`}>
+                    <DropdownMenu.Trigger class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl.match("/generate") ? "text-primary-accent-color2" : ""}`}>
                         Generate
                     </DropdownMenu.Trigger>
                    
@@ -78,17 +78,17 @@
             <li class="lg:hidden">
                 <span class="text-gray-400">Generate</span>
                 <ul class="ps-3 mt-2">
-                    <li class={`mb-4 font-medium hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice" ? "text-primary-accent-color2" : ""}`}>
+                    <li class={`mb-4 font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice" ? "text-primary-accent-color2" : ""}`}>
                         <a href="/generate/invoice" class="font-medium">Invoice</a>
                     </li>
-                    <li class={`font-medium hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/receipt" ? "text-primary-accent-color2" : ""}`}>
+                    <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/receipt" ? "text-primary-accent-color2" : ""}`}>
                         <a href="/generate/receipt" class="font-medium">Receipt</a>
                     </li>
                 </ul>
             </li>
 
-            <li class={`font-medium hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
-            <li class={`font-medium hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
+            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
+            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </ul>
 
         <div class="flex items-center gap-3">
@@ -98,14 +98,14 @@
                 {/if}
                 {#if !beenAuthenticated} 
                  <li>
-                    <CustomButton styles="block w-full bg-custom-dark-green py-[.55em]  rounded-sm hover:opacity-90 focus:border focus:border-custom-dark-green focus:text-primary-dark-blue focus:bg-transparent transition duration-200 ease-linear" href="/auth/sign_in">
+                    <CustomButton styles="block w-20 bg-custom-dark-green py-[.55em]  rounded-sm hover:opacity-90 focus:border focus:border-custom-dark-green focus:text-primary-dark-blue focus:bg-transparent transition duration-200 ease-linear" href="/auth/sign_in">
                         Sign In
                     </CustomButton>
                 </li>
                 {/if}
             </ul>
     
-            <IconButton on:click={toggleShowNav} styles="lg:hidden text-4xl bg-transparent flex w-10 justify-center items-center px-0 text-base-color2">
+            <IconButton on:click={toggleShowNav} styles="lg:hidden text-4xl bg-transparent flex w-9 justify-center items-center px-0 text-base-color2">
                 <Icon icon="mdi:hamburger-open" />
             </IconButton>
         </div>

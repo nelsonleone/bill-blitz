@@ -1,10 +1,46 @@
-<script lang="ts">
-    import CustomButton from "$lib/buttons/CustomButton.svelte";
-    import IconButton from "$lib/buttons/IconButton.svelte";
-    import AuthPageInput from "$lib/inputs/AuthPageInput.svelte";
-    import { signInInputData } from "$lib/inputs/authPageFormData";
+<script>
+    import { enhance } from "$app/forms";
+    import CustomButton from "$lib/components/buttons/CustomButton.svelte";
+    import IconButton from "$lib/components/buttons/IconButton.svelte";
+    import AuthPageInput from "$lib/components/inputs/AuthPageInput.svelte";
+    import { signInInputData } from "$lib/components/inputs/authPageFormData";
+    import { validateInputs } from "$lib/helperFns/formValidator";
     import Icon from "@iconify/svelte";
 
+    /** @type any */
+    $: errors = undefined;
+
+    /** @param {{ currentTarget: EventTarget & HTMLFormElement}} e */
+    const handleSubmit = async(e) => {
+        
+        const formData = new FormData(e.currentTarget)
+
+        errors = validateInputs([
+            {
+                name: "email",
+                value: formData.get("email"),
+                rules: {
+                    required: "Please enter your email address"
+                }
+            },
+            {
+                name: "password",
+                value: formData.get("password"),
+                rules: {
+                    required: "Please enter your password"
+                }
+            }
+        ])
+
+        if(Object.values(errors).length > 0){
+            return;
+        }else{
+            await fetch(e.currentTarget.action,{
+                body: formData,
+                method: "POST"
+            })
+        }
+    }
 </script>
 
 <svelte:head>
@@ -17,15 +53,17 @@
         <div class="bg-base-color1 relative z-10 drop-shadow-md shadow-md rounded-md px-4 w-[95%] mx-auto -translate-y-28 pt-24 pb-16 overflow-hidden after:content-[''] after:bg-[url('/icons/blob.svg')] after:left-0 after:w-28 after:bg-contain after:bg-no-repeat after:aspect-square after:block after:absolute before:content-[''] before:bg-[url('/icons/blob2.png')] before:right-0 before:top-0 before:w-28 before:bg-contain before:bg-no-repeat before:aspect-square before:-z-10 before:block before:absolute md:-translate-y-0 md:rounded-none md:shadow-none md:drop-shadow-none md:py-4 md:mx-0 md:w-[48%] md:after:-left-8 md:after:-bottom-20 md:overflow-visible md:before:-top-8">
             <h1 class="text-3xl text-center capitalize my-4">Welcome Back</h1>
             <p class="text-center text-sm">Sign in to save time and effort with our intuitive invoicing and receipt generation features.</p>
-            <form>
+            
+            <form action="?/login" on:submit|preventDefault={handleSubmit}>
                 {#each signInInputData as inputData (inputData.id) }
-                  <AuthPageInput inputProps={{...inputData, inputStyles: "text-[#374151]"}} />
+                  <AuthPageInput error={errors && errors[inputData.name] ? errors[inputData.name]?.message : undefined} inputProps={{...inputData, inputStyles: "text-[#374151]" }} />
                 {/each}
 
                 <CustomButton 
                     on:click
-                    styles="mt-8 rounded-md"
+                    styles="mt-8 rounded-md hover:opacity-80 focus:text-base-color2 focus:bg-transparent focus:opacity-100 focus:outline focus:outline-offset-0 focus:outline-base-color2"
                     text="Proceed"
+                    inputType="submit"
                 />
 
                 <div class="flex justify-between items-center my-6">
@@ -35,10 +73,10 @@
 
                 <div class="flex flex-col justify-center items-center w-56 mx-auto">
                     <p class="text-center decoration-dotted underline font-medium my-3">Other Sign-In Options</p>
-                    <IconButton text="Google" styles="text-sm py-2 w-[9em] rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
+                    <IconButton  buttonType="button" text="Google" styles="text-sm py-2 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
                         <Icon aria-hidden="true" class="text-2xl" icon="flat-color-icons:google" />
                     </IconButton>
-                    <IconButton text="Facebook" styles="text-sm py-2 w-[9em] rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
+                    <IconButton  buttonType="button" text="Facebook" styles="text-sm py-2 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
                         <Icon aria-hidden="true" class="text-2xl" icon="logos:facebook" />
                     </IconButton>
                 </div>

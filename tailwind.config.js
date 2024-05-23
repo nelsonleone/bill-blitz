@@ -11,7 +11,8 @@ export default {
         primary: {
           "accent-color1": "#00BF63",
           "accent-color2": "#0b854a",
-          "dark-blue": "#374151"
+          "dark-blue": "#374151",
+          "accent-color3": "#d40f0f"
         },
         custom: {
           "dark-green": "hsl(156, 86%, 17%)"
