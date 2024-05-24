@@ -8,7 +8,7 @@ export type AuthPageInputData = {
   name: string, 
   inputStyles?: string, 
   containerStyles?: string,
-  error: string
+  error?: string
 }
 
 export type CustomButtonPropsType = {

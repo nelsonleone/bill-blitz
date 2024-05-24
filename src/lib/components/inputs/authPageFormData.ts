@@ -1,11 +1,11 @@
-import type { AuthPageInputData } from "../../types/types";
+import type { AuthPageInputData } from "../../../types/types"
 
 const signInInputData:AuthPageInputData[] = [
     {
         name: "email",
         inputType: "email",
         placeholder: "Enter email",
-        id: "signin-email"  
+        id: "signin-email" 
     },
     {
         name: "password",

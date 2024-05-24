@@ -14,7 +14,7 @@
 
     const beenAuthenticated = false;
     let windowInnerWidth = 1024;
-    $: showNav = windowInnerWidth < 1024 ? false : true
+    $: showNav = windowInnerWidth < 1024 ? false : true;
 
     onMount(() => {
         if (browser) {
@@ -31,12 +31,10 @@
     })
 
 
-
     const toggleShowNav = (e: MouseEvent) => {
         e.stopPropagation()
         showNav = !showNav;
     }
-
 
 </script>
 
@@ -47,12 +45,8 @@
             <Logo styles="w-20 lg:w-[5.5em]" />
         </a>
  
-        <ul 
-          use:clickOutside={() => {
-            showNav = false;
-          }}
-            class={`absolute flex justify-between shadow-lg shadow-gray-500 drop-shadow-2xl bg-custom-dark-green bg-gradient-radial from-[#065234] to-[#0c6256] text-base-color1 px-4 pt-10 h-44 w-full left-0 -bottom-44 md:px-36 lg:bg-transparent lg:p-0 lg:h-auto lg:lg:w-5/12 lg:justify-end lg:gap-12 lg:bottom-0 lg:shadow-none lg:static lg:text-primary-dark-blue lg:drop-shadow-none transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}>
-            <li class="hidden lg:block">
+        <ul class="hidden lg:flex h-44 lg:h-auto w-5/12 justify-end gap-12 text-primary-dark-blue">
+            <li>
                 <DropdownMenu.Root>
                     <DropdownMenu.Trigger class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl.match("/generate") ? "text-primary-accent-color2" : ""}`}>
                         Generate
@@ -75,18 +69,6 @@
                 </DropdownMenu.Root>
             </li>
 
-            <li class="lg:hidden">
-                <span class="text-gray-400">Generate</span>
-                <ul class="ps-3 mt-2">
-                    <li class={`mb-4 font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice" ? "text-primary-accent-color2" : ""}`}>
-                        <a href="/generate/invoice" class="font-medium">Invoice</a>
-                    </li>
-                    <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/receipt" ? "text-primary-accent-color2" : ""}`}>
-                        <a href="/generate/receipt" class="font-medium">Receipt</a>
-                    </li>
-                </ul>
-            </li>
-
             <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
             <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </ul>
@@ -105,9 +87,34 @@
                 {/if}
             </ul>
     
-            <IconButton on:click={toggleShowNav} styles="lg:hidden text-4xl bg-transparent flex w-9 justify-center items-center px-0 text-base-color2">
+            <IconButton ariaControls="mobile-nav" ariaExpanded={showNav ? "true" : "false"} on:click={toggleShowNav} styles="lg:hidden text-4xl bg-transparent flex w-9 justify-center items-center px-0 text-base-color2">
                 <Icon icon="mdi:hamburger-open" />
             </IconButton>
         </div>
     </nav>     
 </header>
+
+
+<nav         
+    use:clickOutside={() => {
+    showNav = false;
+    }}
+    class={`fixed z-40 lg:hidden shadow-lg drop-shadow-2xl bg-custom-dark-green bg-gradient-radial from-[#065234] to-[#0c6256] text-base-color1 px-4 pt-10 h-44 w-full left-0 top-20 md:px-36  transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}
+    >
+    <ul class="flex justify-between">
+        <li class="lg:hidden">
+            <span class="text-gray-400">Generate</span>
+            <ul class="ps-3 mt-2">
+                <li class={`mb-4 font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice" ? "text-primary-accent-color2" : ""}`}>
+                    <a href="/generate/invoice" class="font-medium">Invoice</a>
+                </li>
+                <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/receipt" ? "text-primary-accent-color2" : ""}`}>
+                    <a href="/generate/receipt" class="font-medium">Receipt</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
+        <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
+    </ul>
+</nav>

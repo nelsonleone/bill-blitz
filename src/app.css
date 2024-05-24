@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+	*,
+	*::after,
+	*::before{
+		@apply p-0 m-0 box-border;
+	}
 	body{
 		@apply font-reddit-sans;
 	}

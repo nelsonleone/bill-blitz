@@ -21,6 +21,7 @@ export default {
       fontFamily: {
         'reddit-sans': ['Reddit Sans', 'sans-serif'],
         'roboto-condensed': ['Roboto Condensed', 'sans-serif'],
+        'rubik': ['Rubik', 'sans-serif']
       },
     },
   },

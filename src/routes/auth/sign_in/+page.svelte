@@ -1,44 +1,80 @@
 <script>
-    import { enhance } from "$app/forms";
-    import CustomButton from "$lib/components/buttons/CustomButton.svelte";
     import IconButton from "$lib/components/buttons/IconButton.svelte";
     import AuthPageInput from "$lib/components/inputs/AuthPageInput.svelte";
     import { signInInputData } from "$lib/components/inputs/authPageFormData";
     import { validateInputs } from "$lib/helperFns/formValidator";
     import Icon from "@iconify/svelte";
+    import { AlertSeverity } from "../../../enums";
+    import { alertStore } from "../../../store";
+    import LoadingBtn from "$lib/components/buttons/LoadingBtn.svelte";
 
     /** @type any */
     $: errors = undefined;
 
+    /** @type boolean */
+    let isSubmitting = false;
+
     /** @param {{ currentTarget: EventTarget & HTMLFormElement}} e */
     const handleSubmit = async(e) => {
-        
-        const formData = new FormData(e.currentTarget)
 
-        errors = validateInputs([
-            {
-                name: "email",
-                value: formData.get("email"),
-                rules: {
-                    required: "Please enter your email address"
+        try{
+            isSubmitting = true;
+            const formData = new FormData(e.currentTarget)
+
+            errors = validateInputs([
+                {
+                    name: "email",
+                    value: formData.get("email"),
+                    rules: {
+                        required: "Please enter your email address"
+                    }
+                },
+                {
+                    name: "password",
+                    value: formData.get("password"),
+                    rules: {
+                        required: "Please enter your password"
+                    }
                 }
-            },
-            {
-                name: "password",
-                value: formData.get("password"),
-                rules: {
-                    required: "Please enter your password"
-                }
+            ])
+
+            if(Object.values(errors).length > 0){ 
+                return;
             }
-        ])
 
-        if(Object.values(errors).length > 0){
-            return;
-        }else{
-            await fetch(e.currentTarget.action,{
+            const res = await fetch(e.currentTarget.action,{
                 body: formData,
                 method: "POST"
             })
+
+            if(!res.ok){
+               const { error: { message }} = await res.json()
+               throw new Error(message)
+            } 
+            
+            alertStore.set({
+                mssg: "Successfully signed in",
+                severity: AlertSeverity.SUCCESS
+            })
+        }
+        catch(err){
+            alertStore.set({
+                mssg: err.message || "Error occurred while signing in",
+                severity: AlertSeverity.ERROR
+            })
+        }
+        finally{ 
+            isSubmitting = false; 
+        }
+    }
+
+    /**
+     * 
+     * @param {{ currentTarget: EventTarget & HTMLInputElement}} e
+    */
+    const clearErrorOnInputChange = (e) => {
+        if(errors && errors[e.target?.name]?.message){
+            errors[e.target?.name] = ""
         }
     }
 </script>
@@ -56,14 +92,15 @@
             
             <form action="?/login" on:submit|preventDefault={handleSubmit}>
                 {#each signInInputData as inputData (inputData.id) }
-                  <AuthPageInput error={errors && errors[inputData.name] ? errors[inputData.name]?.message : undefined} inputProps={{...inputData, inputStyles: "text-[#374151]" }} />
+                  <AuthPageInput on:input={clearErrorOnInputChange} error={errors && errors[inputData.name] ? errors[inputData.name]?.message : undefined} inputProps={{...inputData, inputStyles: "text-[#374151]" }} />
                 {/each}
 
-                <CustomButton 
+                <LoadingBtn 
                     on:click
-                    styles="mt-8 rounded-md hover:opacity-80 focus:text-base-color2 focus:bg-transparent focus:opacity-100 focus:outline focus:outline-offset-0 focus:outline-base-color2"
+                    styles="mt-8 rounded-md hover:opacity-80"
                     text="Proceed"
                     inputType="submit"
+                    loading={isSubmitting}
                 />
 
                 <div class="flex justify-between items-center my-6">
@@ -73,10 +110,10 @@
 
                 <div class="flex flex-col justify-center items-center w-56 mx-auto">
                     <p class="text-center decoration-dotted underline font-medium my-3">Other Sign-In Options</p>
-                    <IconButton  buttonType="button" text="Google" styles="text-sm py-2 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
+                    <IconButton  buttonType="button" text="Google" styles="text-sm py-2 min-w-32 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
                         <Icon aria-hidden="true" class="text-2xl" icon="flat-color-icons:google" />
                     </IconButton>
-                    <IconButton  buttonType="button" text="Facebook" styles="text-sm py-2 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
+                    <IconButton  buttonType="button" text="Facebook" styles="text-sm py-2 min-w-32 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
                         <Icon aria-hidden="true" class="text-2xl" icon="logos:facebook" />
                     </IconButton>
                 </div>

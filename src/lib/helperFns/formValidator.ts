@@ -20,9 +20,9 @@ export function validateInputs(inputs: InputObjForValidation[]): ValidationError
         }
       }
   
-      if (rules.minLength && value.length < rules.minLength) {
+      if (value && rules.minLength && value.length < rules.minLength.value) {
         errors[name] = {
-          message: `The minimum length for this field is ${rules.minLength}`
+          message: rules.minLength.message || `The minimum length for this field is ${rules.minLength.value}`
         }
       }
     }
