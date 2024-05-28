@@ -2,7 +2,7 @@
     
     import { DropdownMenu } from "bits-ui";
     import { page } from "$app/stores";
-    import Logo from "./logo/index.svelte";
+    import Logo from "../logo/index.svelte";
     import Icon from "@iconify/svelte";
     import IconButton from "$lib/components/buttons/IconButton.svelte";
     import CustomButton from "$lib/components/buttons/CustomButton.svelte";
@@ -48,7 +48,7 @@
         <ul class="hidden lg:flex h-44 lg:h-auto w-5/12 justify-end gap-12 text-primary-dark-blue">
             <li>
                 <DropdownMenu.Root>
-                    <DropdownMenu.Trigger class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl.match("/generate") ? "text-primary-accent-color2" : ""}`}>
+                    <DropdownMenu.Trigger class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl.match("/generate") ? "text-primary-accent-color2" : ""}`}>
                         Generate
                     </DropdownMenu.Trigger>
                    
@@ -69,8 +69,8 @@
                 </DropdownMenu.Root>
             </li>
 
-            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
-            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
+            <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
+            <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </ul>
 
         <div class="flex items-center gap-3">
@@ -80,7 +80,7 @@
                 {/if}
                 {#if !beenAuthenticated} 
                  <li>
-                    <CustomButton styles="block w-20 bg-custom-dark-green py-[.55em]  rounded-sm hover:opacity-90 focus:border focus:border-custom-dark-green focus:text-primary-dark-blue focus:bg-transparent transition duration-200 ease-linear" href="/auth/sign_in">
+                    <CustomButton styles="block w-20 bg-custom-dark-green py-[.55em] rounded-sm hover:opacity-90 focus:outline focus:outline-2 focus:outline-custom-dark-green focus:text-primary-dark-blue focus:bg-transparent transition duration-200 ease-linear" href="/auth/sign_in">
                         Sign In
                     </CustomButton>
                 </li>

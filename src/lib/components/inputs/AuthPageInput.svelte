@@ -6,10 +6,8 @@
   export let inputProps:AuthPageInputData;
   const  { placeholder, id, inputType, label, labelStyles, name, inputStyles, containerStyles } = inputProps;
 
-  /**
-   * @param {string | undefined} error
-   */
-  export let error;
+
+  export let error : string | undefined = undefined;
 
   let localInputType = inputType;
   $: showPassword = localInputType === "text";

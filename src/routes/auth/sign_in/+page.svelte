@@ -3,10 +3,12 @@
     import AuthPageInput from "$lib/components/inputs/AuthPageInput.svelte";
     import { signInInputData } from "$lib/components/inputs/authPageFormData";
     import { validateInputs } from "$lib/helperFns/formValidator";
-    import Icon from "@iconify/svelte";
     import { AlertSeverity } from "../../../enums";
     import { alertStore } from "../../../store";
     import LoadingBtn from "$lib/components/buttons/LoadingBtn.svelte";
+    import OtherSignInOptions from "$lib/components/buttons/OtherSignInOptions.svelte";
+
+    export let form;
 
     /** @type any */
     $: errors = undefined;
@@ -104,19 +106,11 @@
                 />
 
                 <div class="flex justify-between items-center my-6">
-                    <a href="/" class="text-primary-accent-color2 underline font-medium">Forgot Password</a>
+                    <a href="/auth/reset_password" class="text-primary-accent-color2 underline font-medium">Forgot Password</a>
                     <a href="/auth/create_account" class="text-primary-accent-color2 underline font-medium">Create Account</a>
                 </div>
-
-                <div class="flex flex-col justify-center items-center w-56 mx-auto">
-                    <p class="text-center decoration-dotted underline font-medium my-3">Other Sign-In Options</p>
-                    <IconButton  buttonType="button" text="Google" styles="text-sm py-2 min-w-32 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
-                        <Icon aria-hidden="true" class="text-2xl" icon="flat-color-icons:google" />
-                    </IconButton>
-                    <IconButton  buttonType="button" text="Facebook" styles="text-sm py-2 min-w-32 w-32 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
-                        <Icon aria-hidden="true" class="text-2xl" icon="logos:facebook" />
-                    </IconButton>
-                </div>
+            
+                <OtherSignInOptions />
             </form>
         </div>
 

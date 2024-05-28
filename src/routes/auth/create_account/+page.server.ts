@@ -1,10 +1,8 @@
-import { supabase } from '$lib/supabaseClient.js';
 import type { RequestEvent } from './$types.js';
 import { error } from '@sveltejs/kit';
 
 export const actions = {
-    signup: async(e:RequestEvent) => {
-        const { request } = e;
+    signup: async({ request, locals: { supabase } }:RequestEvent) => {
         const data = await request.formData()
         const email = data.get('email')
         const password = data.get('password')
@@ -20,29 +18,20 @@ export const actions = {
                 password: password as string,
                 options: {
                     data: {
-                      pro_user: false,
-                      display_name: displayName
+                    pro_user: false,
+                    display_name: displayName
                     }
                 }
             }
         )
 
-        console.log(res)
-
-        if(res.error?.status && res.error?.status){
+        if(res.error?.status){
             const { message } = res.error;
 
             return error(res.error?.status,{
                 message
             })
         }
-
-        const { user } = res.data;
-
-        await supabase.auth.signInWithPassword({
-            email: user?.email as string,
-            password: password as string
-        })
 
         return { success: true }  
     }

@@ -7,12 +7,15 @@
     import { alertStore } from "../../../store";
     import { AlertSeverity } from "../../../enums";
     import { validateInputs } from "$lib/helperFns/formValidator";
+    import ConfirmEmailModal from "$lib/components/prompts/ConfirmEmailModal.svelte";
+    import OtherSignInOptions from "$lib/components/buttons/OtherSignInOptions.svelte";
 
     /** @type any */
     $: errors = undefined;
 
     /** @type boolean */
     let isSubmitting = false;
+    let showModal = false;
 
 
     /** @param {{ currentTarget: EventTarget & HTMLFormElement}} e */
@@ -62,11 +65,8 @@
                const { error: { message }} = await res.json()
                throw new Error(message)
             } 
-            
-            alertStore.set({
-                mssg: "Successfully signed in",
-                severity: AlertSeverity.SUCCESS
-            })
+
+            showModal = true;
         }
         catch(err){
             alertStore.set({
@@ -114,20 +114,11 @@
                     loading={isSubmitting}
                 />
 
-                <div class="flex justify-between items-center my-6">
-                    <a href="/" class="text-primary-accent-color2 underline font-medium">Forgot Password</a>
+                <div class="flex justify-end items-center my-6">
                     <a href="/auth/sign_in" class="text-primary-accent-color2 underline font-medium">Log In</a>
                 </div>
 
-                <div class="flex flex-col justify-center items-center w-56 mx-auto">
-                    <p class="text-center decoration-dotted underline font-medium my-3">Other Sign-In Options</p>
-                    <IconButton text="Google" styles="text-sm py-2 min-w-40 w-40 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
-                        <Icon aria-hidden="true" class="text-2xl" icon="flat-color-icons:google" />
-                    </IconButton>
-                    <IconButton text="Facebook" styles="text-sm py-2 min-w-40 w-40 rounded-lg bg-transparent border border-gray-600 text-primary-dark-blue my-2 font-medium hover:scale-105 hover:shadow-inner hover:drop-shadow-md">
-                        <Icon aria-hidden="true" class="text-2xl" icon="logos:facebook" />
-                    </IconButton>
-                </div>
+                <OtherSignInOptions />
             </form>
         </div>
 
@@ -140,3 +131,7 @@
         </div>
     </section>
 </main>
+
+{#if showModal}
+  <ConfirmEmailModal openModal={showModal} />
+{/if}
