@@ -1,14 +1,18 @@
 <script>
-    import Header from '$lib/components/layout/Header.svelte';
-    import Alert from '$lib/components/prompts/Alert.svelte';
-    import '../app.css';
-    import { page } from '$app/stores';
+  import Header from '$lib/components/layout/Header.svelte';
+  import Alert from '$lib/components/prompts/Alert.svelte';
+  import '../app.css';
+  import { page } from '$app/stores';
+  import { alertStore } from '../store';
+  import { AlertSeverity } from '../enums';
+    import Footer from '$lib/components/layout/Footer.svelte';
 
-    export let data;
-    $: ({ session, supabase, user } = data)
-  
-    const pageTitle = 'Bill-Blitz';
-    const pageDescription = 'Create fast and easy bills (invoices and receipts)';
+  export let data;
+  $: ({ beenAuthenticated } = data)
+
+
+  const pageTitle = 'Bill-Blitz';
+  const pageDescription = 'Create fast and easy bills (invoices and receipts)';
 </script>
 
 <svelte:head>
@@ -25,6 +29,9 @@
   <meta name="twitter:image" content="/icons/logo.png" />
 </svelte:head>
 
-<Header />
+<Header beenAuthenticated={beenAuthenticated}  />
 <Alert />
 <slot />
+{#if !$page.url.pathname.match("/auth/create_account")}
+  <Footer />
+{/if}

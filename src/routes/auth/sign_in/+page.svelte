@@ -1,5 +1,4 @@
 <script>
-    import IconButton from "$lib/components/buttons/IconButton.svelte";
     import AuthPageInput from "$lib/components/inputs/AuthPageInput.svelte";
     import { signInInputData } from "$lib/components/inputs/authPageFormData";
     import { validateInputs } from "$lib/helperFns/formValidator";
@@ -110,8 +109,8 @@
                     <a href="/auth/create_account" class="text-primary-accent-color2 underline font-medium">Create Account</a>
                 </div>
             
-                <OtherSignInOptions />
             </form>
+            <OtherSignInOptions formActionBase="?/login" form={form} />
         </div>
 
         <div class="md:w-[48%] md:h-[32em]">

@@ -19,16 +19,23 @@ export type CustomButtonPropsType = {
 
 
 interface InputObjForValidation {
-    name: string;
-    value: any;
-    rules: {
-      required?: boolean | string;
-      [key: string]: any;
-    }
+  name: string;
+  value: any;
+  rules: {
+    required?: boolean | string;
+    [key: string]: any;
   }
-  
-  interface ValidationErrors {
-    [key: string]: {
-      message: string;
-    }
+}
+
+interface ValidationErrors {
+  [key: string]: {
+    message: string;
   }
+}
+
+interface ITitleTextContent {
+  title: string,
+  text: string,
+  icon?: string
+  id?: string
+}

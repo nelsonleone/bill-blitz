@@ -47,7 +47,7 @@ const supabase: Handle = async ({ event, resolve }) => {
   return resolve(event, {
     filterSerializedResponseHeaders(name) {
       return name === 'content-range' || name === 'x-supabase-api-version'
-    },
+    }
   })
 }
 
@@ -57,14 +57,15 @@ const authGuard: Handle = async ({ event, resolve }) => {
   event.locals.session = session;
   event.locals.user = user;
 
-  console.log(session)
 
   if (!event.locals.session && event.url.pathname.startsWith('/generate')) {
     return redirect(303, '/auth/sign_in')
   }
 
-  if (event.locals.session && event.url.pathname.match("/auth")) {
-    return redirect(303, '/')
+  if (event.locals.session) {
+    if(event.url.pathname.match("/auth/sign_in") || event.url.pathname.match("/auth/create_account") || event.url.pathname.match("/auth/reset_password")){
+      return redirect(303, '/')
+    }
   }
 
   return resolve(event)

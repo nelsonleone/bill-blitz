@@ -10,6 +10,8 @@
     import ConfirmEmailModal from "$lib/components/prompts/ConfirmEmailModal.svelte";
     import OtherSignInOptions from "$lib/components/buttons/OtherSignInOptions.svelte";
 
+    export let form;
+
     /** @type any */
     $: errors = undefined;
 
@@ -118,13 +120,13 @@
                     <a href="/auth/sign_in" class="text-primary-accent-color2 underline font-medium">Log In</a>
                 </div>
 
-                <OtherSignInOptions />
             </form>
+            <OtherSignInOptions formActionBase="?/signup" form={form} />
         </div>
 
         <div class="w-full relative h-[30em] md:w-1/2 md:h-screen md:fixed left-0 md:top-0">
             <div class="absolute px-4 bottom-32 text-base-color1 z-10 md:bottom-0 md:h-1/3 md:w-10/12 md:top-0 md:my-auto md:px-8">
-                <h2 class="mb-4 text-3xl drop-shadow-md shadow-md md:text-4xl">Create an account today to unlock streamlined <span class="text-primary-accent-color1">invoicing and receipt generation</span>.</h2>
+                <h2 class="mb-4 text-3xl drop-shadow-md shadow-sm py-4 md:text-4xl">Create an account today to unlock streamlined <span class="text-primary-accent-color1">invoicing and receipt generation</span>.</h2>
                 <p class="drop-shadow-md lg:text-xl">Our intuitive platform makes it easy to create quick bills (Invoice and receipts), get paid fast.</p>
             </div>
             <img src="/images/pexels-jopwell-2422278.jpg" alt="a man in office" class="object-cover w-full h-full block brightness-[.4]" />

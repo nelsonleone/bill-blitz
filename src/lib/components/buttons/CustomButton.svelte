@@ -13,7 +13,7 @@
 </script>
 
 {#if !href}
-<button type={buttonType} {disabled} {id} aria-label={ariaLabel} aria-controls={ariaControls} aria-expanded={ariaExpanded} class={`bg-black rounded p-4 block text-base-color1 w-full text-center cursor-pointer font-meduim ${styles}`} on:click>
+<button type={buttonType} {disabled} {id} aria-label={ariaLabel} aria-controls={ariaControls} aria-expanded={ariaExpanded} class={`rounded p-4 block text-base-color1 text-center cursor-pointer font-meduim ${styles}`} on:click>
     {#if text}
         {text}
         {:else}
@@ -22,7 +22,7 @@
     </button>
 
   {:else}
-    <a href={href} {id} class={`bg-black rounded p-4 block text-base-color1 w-full text-center cursor-pointer font-meduim disabled:cursor-not-allowed disabled:opacity-85 ${styles}`} on:click>
+    <a href={href} {id} class={`rounded p-4 block text-base-color1 text-center cursor-pointer font-meduim disabled:cursor-not-allowed disabled:opacity-85 ${styles}`} on:click>
         {#if text}
             {text}
             {:else}

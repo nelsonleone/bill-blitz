@@ -44,7 +44,7 @@
             >
             Reset <span class="text-primary-accent-color2"> Password</span>
             </Dialog.Title>
-            <Dialog.Description class="text-sm text-foreground-alt mt-3 font-reddit-sans text-center lg:text-base">
+            <Dialog.Description class="text-sm text-foreground-alt mt-3 font-overpass text-center lg:text-base">
                 Please enter the email linked to your account
             </Dialog.Description>
             <form action="/auth?/reset_password" on:submit|preventDefault={handleReset} method="post" class="flex flex-col justify-center items-center mt-4 gap-1">

@@ -10,14 +10,32 @@
     import { clickOutside } from "$lib/helperFns/clickOutside";
     import { onMount } from "svelte";
 
+    export let beenAuthenticated;
     $: activeUrl = $page.url.pathname;
 
-    const beenAuthenticated = false;
     let windowInnerWidth = 1024;
     $: showNav = windowInnerWidth < 1024 ? false : true;
 
+    let scrolledIn:boolean;
+
+    const handleScroll = () => {
+        if(!browser)return;
+
+        showNav = windowInnerWidth < 1024 && false;
+
+        if (window.scrollY > window.innerHeight * 2.5) {
+            scrolledIn = true;
+        } else {
+            scrolledIn = false;
+        }
+    }
+
+
     onMount(() => {
         if (browser) {
+            
+            window.addEventListener('scroll',handleScroll)
+
             windowInnerWidth = window.innerWidth;
             const handleResize = () => {
                 windowInnerWidth = window.innerWidth;
@@ -26,6 +44,7 @@
     
             return () => {
                 window.removeEventListener('resize', handleResize)
+                window.removeEventListener('scroll',handleScroll)
             }
         }
     })
@@ -39,8 +58,8 @@
 </script>
 
 
-<header class="relative z-50">
-    <nav class="px-4 z-50 lg:px-8 fixed h-20 top-0 bg-base-color1 w-full drop-shadow-lg left-0 flex items-center justify-between">
+<header class={`fixed z-50 top-0 w-full transition-all drop-shadow-lg left-0 duration-300 ease-in-out ${scrolledIn ? '-translate-y-full' : 'translate-y-0'}`}>
+    <nav class="px-4 lg:px-8 h-20 bg-base-color1 w-full flex items-center justify-between">
         <a href="/">
             <Logo styles="w-20 lg:w-[5.5em]" />
         </a>
@@ -52,7 +71,7 @@
                         Generate
                     </DropdownMenu.Trigger>
                    
-                    <DropdownMenu.Content class="relative left-0 top-0 w-36 gap-3 px-1 py-4 flex text-primary-dark-blue flex-col items-center z-50 rounded-md bg-base-color1 shadow-2xl">
+                    <DropdownMenu.Content class="relative left-0 top-0 w-36 gap-3 px-1 py-4 flex text-primary-very-dark-blue flex-col items-center z-50 rounded-md bg-base-color1 shadow-2xl">
                       <DropdownMenu.Item class="bg-gray-100 p-2 hover:bg-green-300">
                             <a href="/generate/invoice" class="font-medium flex gap-4 items-center">
                                 <Icon class="text-2xl" icon="mdi:invoice-schedule-outline" />
@@ -76,14 +95,14 @@
         <div class="flex items-center gap-3">
             <ul>
                 {#if beenAuthenticated}
-                  <li><a href="/account/upgrade">Upgrade</a></li>
-                {/if}
-                {#if !beenAuthenticated} 
-                 <li>
-                    <CustomButton styles="block w-20 bg-custom-dark-green py-[.55em] rounded-sm hover:opacity-90 focus:outline focus:outline-2 focus:outline-custom-dark-green focus:text-primary-dark-blue focus:bg-transparent transition duration-200 ease-linear" href="/auth/sign_in">
-                        Sign In
-                    </CustomButton>
-                </li>
+                  <li><a href="/account/upgrade" class="block w-[5.5em] py-[.55em] rounded-3xl text-base-color1 bg-custom-dark-green text-center hover:shadow-lg hover:bg-transparent hover:text-custom-dark-green focus:text-custom-dark-green hover:border hover:border-custom-dark-green focus:drop-shadow-md focus:shadow-lg focus:bg-transparent focus:outline transition ease-linear duration-300 focus:outline-custom-dark-green hover:drop-shadow-md">Upgrade</a></li>
+
+                  {:else}
+                  <li>
+                        <CustomButton styles="block bg-custom-dark-green py-[.55em] rounded-sm hover:opacity-90 focus:outline focus:outline-2 focus:outline-custom-dark-green focus:text-primary-dark-blue focus:bg-transparent transition duration-200 ease-linear" href="/auth/sign_in">
+                            Sign In
+                        </CustomButton>
+                  </li>
                 {/if}
             </ul>
     
@@ -99,7 +118,7 @@
     use:clickOutside={() => {
     showNav = false;
     }}
-    class={`fixed z-40 lg:hidden shadow-lg drop-shadow-2xl bg-custom-dark-green bg-gradient-radial from-[#065234] to-[#0c6256] text-base-color1 px-4 pt-10 h-44 w-full left-0 top-20 md:px-36  transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}
+    class={`fixed z-40 lg:hidden shadow-lg shadow-gray-400 drop-shadow-3xl bg-slate-600 text-base-color1 px-4 pt-10 h-44 w-full left-0 top-20 md:px-36  transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}
     >
     <ul class="flex justify-between">
         <li class="lg:hidden">

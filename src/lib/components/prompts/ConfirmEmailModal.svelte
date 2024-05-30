@@ -25,7 +25,7 @@
           >
           Confirm Your <span class="text-primary-accent-color2"> Email</span>
         </Dialog.Title>
-        <Dialog.Description class="text-sm text-foreground-alt mt-3 font-reddit-sans text-center lg:text-base">
+        <Dialog.Description class="text-sm text-foreground-alt mt-3 font-overpass text-center lg:text-base">
             Please check your email and follow the instructions to confirm your account.
         </Dialog.Description>
         <div class="flex flex-col justify-center items-center gap-1 pb-11 pt-7">

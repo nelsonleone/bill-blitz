@@ -30,14 +30,16 @@
                 redirectTo: `${PUBLIC_BILL_BLITZ_BASE_URL}/auth/reset_password/set_new`
             })
 
-            alertStore.set({
+            if(!error){
+                alertStore.set({
                 mssg: `Reset mail sent to${email}`,
                 severity: AlertSeverity.SUCCESS
             })
 
-            goto("/auth/sign_in")
+                goto("/auth/sign_in")
+            }
 
-            if(error){
+            else{
                 throw new Error(error.message)
             }
         }
@@ -76,7 +78,7 @@
             >
             Reset <span class="text-primary-accent-color2"> Password</span>
             </Dialog.Title>
-            <Dialog.Description class="text-sm text-foreground-alt mt-3 font-reddit-sans text-center lg:text-base">
+            <Dialog.Description class="text-sm text-foreground-alt mt-3 font-overpass text-center lg:text-base">
                 Please enter the email linked to your account
             </Dialog.Description>
             <form on:submit|preventDefault={handleReset} class="flex flex-col justify-center items-center mt-4 gap-1">
