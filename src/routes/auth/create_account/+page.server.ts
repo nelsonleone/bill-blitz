@@ -35,8 +35,8 @@ export const actions = {
                 password: password as string,
                 options: {
                     data: {
-                    pro_user: false,
-                    display_name: displayName
+                        pro_user: false,
+                        display_name: displayName
                     }
                 }
             }

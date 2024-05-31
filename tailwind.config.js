@@ -12,7 +12,7 @@ export default {
           "accent-color1": "#00BF63",
           "accent-color2": "#0b854a",
           "dark-blue": "#374151",
-          "very-dark-blue": "hsl(208, 49%, 24%)",
+          "very-dark-blue": "hsl(208, 55%, 15%)",
           "accent-color3": "#d40f0f"
         },
         custom: {

@@ -15,6 +15,10 @@
 	h1,h2,h3,h4,h5{
 		@apply font-barlow font-bold;
 	}
+
+	img{
+		@apply object-cover max-w-full;
+	}
 }
 
 @layer utilities{
@@ -26,7 +30,7 @@
 		@apply min-h-screen py-20 lg:py-40;
 	}
 	.footer-li{
-		@apply relative w-fit text-base-color1 mb-2 md:mb-4 after:content-[''] after:w-0 after:left-0 after:bottom-0 after:h-1  after:absolute after:bg-primary-accent-color2  hover:after:w-full after:transition-all after:duration-200 after:ease-linear;
+		@apply relative w-fit text-base-color1 mb-2 md:mb-4 after:content-[''] after:w-0 after:left-0 after:bottom-0 after:h-1  after:absolute after:bg-base-color1  hover:after:w-full after:transition-all after:duration-200 after:ease-linear;
 	}
 	
 	@keyframes ping-pong-hover {

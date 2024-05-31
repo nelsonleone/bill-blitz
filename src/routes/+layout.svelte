@@ -5,11 +5,14 @@
   import { page } from '$app/stores';
   import { alertStore } from '../store';
   import { AlertSeverity } from '../enums';
-    import Footer from '$lib/components/layout/Footer.svelte';
+  import Footer from '$lib/components/layout/Footer.svelte';
 
   export let data;
-  $: ({ beenAuthenticated } = data)
+  $: ({ beenAuthenticated, user } = data)
 
+  $:{
+    console.log(user.user_metadata)
+  }
 
   const pageTitle = 'Bill-Blitz';
   const pageDescription = 'Create fast and easy bills (invoices and receipts)';
@@ -29,7 +32,7 @@
   <meta name="twitter:image" content="/icons/logo.png" />
 </svelte:head>
 
-<Header beenAuthenticated={beenAuthenticated}  />
+<Header beenAuthenticated={beenAuthenticated} user={user}  />
 <Alert />
 <slot />
 {#if !$page.url.pathname.match("/auth/create_account")}

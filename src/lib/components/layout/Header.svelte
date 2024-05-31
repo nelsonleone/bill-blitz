@@ -1,6 +1,6 @@
 <script lang="ts">
     
-    import { DropdownMenu } from "bits-ui";
+    import { Avatar, DropdownMenu } from "bits-ui";
     import { page } from "$app/stores";
     import Logo from "../logo/index.svelte";
     import Icon from "@iconify/svelte";
@@ -9,8 +9,11 @@
     import { browser } from '$app/environment';
     import { clickOutside } from "$lib/helperFns/clickOutside";
     import { onMount } from "svelte";
+    import type { User } from "@supabase/supabase-js";
+    import UserAvatar from "./UserAvatar.svelte";
 
     export let beenAuthenticated;
+    export let user : User | null;
     $: activeUrl = $page.url.pathname;
 
     let windowInnerWidth = 1024;
@@ -23,7 +26,7 @@
 
         showNav = windowInnerWidth < 1024 && false;
 
-        if (window.scrollY > window.innerHeight * 2.5) {
+        if (window.scrollY > window.innerHeight * 1.1) {
             scrolledIn = true;
         } else {
             scrolledIn = false;
@@ -88,6 +91,7 @@
                 </DropdownMenu.Root>
             </li>
 
+            <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/templates">Templates</a></li>
             <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
             <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </ul>
@@ -95,8 +99,26 @@
         <div class="flex items-center gap-3">
             <ul>
                 {#if beenAuthenticated}
-                  <li><a href="/account/upgrade" class="block w-[5.5em] py-[.55em] rounded-3xl text-base-color1 bg-custom-dark-green text-center hover:shadow-lg hover:bg-transparent hover:text-custom-dark-green focus:text-custom-dark-green hover:border hover:border-custom-dark-green focus:drop-shadow-md focus:shadow-lg focus:bg-transparent focus:outline transition ease-linear duration-300 focus:outline-custom-dark-green hover:drop-shadow-md">Upgrade</a></li>
+                    <div class="flex justify-between gap-4 md:gap-8 items-center">
+                        {#if !user?.user_metadata.pro_user}
+                            <li><a href="/account/upgrade" class="hidden md:block w-[5.5em] py-[.55em] rounded-3xl text-base-color1 bg-custom-dark-green text-center hover:shadow-lg hover:bg-transparent hover:text-custom-dark-green focus:text-custom-dark-green hover:border hover:border-custom-dark-green focus:drop-shadow-md focus:shadow-lg focus:bg-transparent focus:outline focus:outline-1 transition ease-linear duration-300 focus:outline-custom-dark-green hover:drop-shadow-md">Upgrade</a></li>
+                        {/if}
 
+                        <DropdownMenu.Root>
+                            <DropdownMenu.Trigger>
+                                <UserAvatar user={user} />
+                            </DropdownMenu.Trigger>
+                           
+                            <DropdownMenu.Content class="absolute z-50 bg-gray-100 rounded-md text-primary-very-dark-blue shadow-2xl px-3 pt-8 pb-4">
+                              <DropdownMenu.Item class="text-primary-accent-color2">
+                                  <span>{user?.email}</span>
+                              </DropdownMenu.Item>
+                              <DropdownMenu.Item>
+                                  <CustomButton styles="bg-primary-accent-color3 my-4 text-base-color1 w-full">Delete Account</CustomButton>
+                              </DropdownMenu.Item>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                    </div>
                   {:else}
                   <li>
                         <CustomButton styles="block bg-custom-dark-green py-[.55em] rounded-sm hover:opacity-90 focus:outline focus:outline-2 focus:outline-custom-dark-green focus:text-primary-dark-blue focus:bg-transparent transition duration-200 ease-linear" href="/auth/sign_in">
@@ -118,7 +140,7 @@
     use:clickOutside={() => {
     showNav = false;
     }}
-    class={`fixed z-40 lg:hidden shadow-lg shadow-gray-400 drop-shadow-3xl bg-slate-600 text-base-color1 px-4 pt-10 h-44 w-full left-0 top-20 md:px-36  transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}
+    class={`fixed z-40 lg:hidden shadow-lg shadow-gray-400 backdrop-blur-xl drop-shadow-3xl bg-custom-dark-green  text-base-color1 px-4 pt-10 h-44 w-full left-0 top-20 md:px-36  transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}
     >
     <ul class="flex justify-between">
         <li class="lg:hidden">
@@ -133,7 +155,14 @@
             </ul>
         </li>
 
-        <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
-        <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
+        <div class="flex flex-col gap-4 items-center">
+            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color1" : ""}`}><a href="/about">About Us</a></li>
+            <li><a href="/account/upgrade" class="block w-[5.5em] py-[.55em] rounded-3xl text-base-color1 text-center hover:shadow-lg hover:bg-transparent hover:text-base-color1 focus:text-base-color1 border border-base-color1 focus:drop-shadow-md focus:shadow-lg transition ease-linear duration-300 hover:drop-shadow-md">Upgrade</a></li>
+        </div>
+        
+        <div class="flex flex-col gap-4 items-center">
+            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color1" : ""}`}><a href="/templates">Templates</a></li>
+            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color1" : ""}`}><a href="/how-it-works">How It Works</a></li>
+        </div>
     </ul>
 </nav>
