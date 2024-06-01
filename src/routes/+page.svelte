@@ -3,6 +3,7 @@
     import Callout from "$lib/components/layout/Callout.svelte";
     import { featuresDataArray, featuresDataArray2 } from "$lib/componentsData/featuresDataArray";
     import Icon from "@iconify/svelte";
+    import { Video } from "flowbite-svelte";
 
 </script>
 <main class="page px-0 lg:px-0 w-full pt-0 lg:pt-0">
@@ -68,6 +69,13 @@
             </div>
         {/each}
     </section>
+
+    <div class="w-11/12 md:w-[55em] h-[35em]  my-24 md:my-32 mx-auto">
+        <p class="text-center mb-6 text-2xl text-primary-very-dark-blue font-medium">Access the Bill Blitz Web App from Anywhere</p>
+        <div class="flex justify-center items-center">
+            <Video src="/images/video.mp4" class="rounded-lg w-full max-w-full h-full" controls />
+        </div>
+    </div>
 
     <Callout />
 </main>

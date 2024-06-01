@@ -7,13 +7,13 @@
 </script>
 <div class="relative h-12 w-12">
     <Avatar.Root
-        class="w-full h-full rounded-full cursor-pointer border bg-muted text-[17px] font-medium uppercase text-muted-foreground"
+        class="w-full h-full rounded-full cursor-pointer border bg-orange-600 bg-muted text-[17px] font-medium uppercase text-muted-foreground"
         >
         <div
             class="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-2 border-transparent"
         >
-            <Avatar.Image src={user?.user_metadata.avatar_url} alt="user avatar" />
-            <Avatar.Fallback class="border border-muted">{user?.user_metadata.email?.slice(0,2)?.toUpperCase()}</Avatar.Fallback>
+            <Avatar.Image src={user?.user_metadata.avatar_url || undefined} alt="user avatar" />
+            <Avatar.Fallback class="rounded-full text-base-color1">{user?.email?.slice(0,2)?.toUpperCase()}</Avatar.Fallback>
         </div>
     </Avatar.Root>
     {#if user?.user_metadata.pro_user}

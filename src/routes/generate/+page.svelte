@@ -17,31 +17,51 @@
         </div>
     </div>
 
-    <Tabs.Root value={activeTab || "invoice"} class="mx-auto w-full mt-16 md:w-80 bg-slate-900 rounded-2xl text-base-color1 p-4 pb-10">
-        <Tabs.List class="grid grid-cols-2 gap-2 rounded-md">
-          <Tabs.Trigger on:click={() => activeTab = "invoice"} value="invoice" class={`hover:bg-base-color1 hover:text-primary-very-dark-blue p-3 rounded-md transition ease-linear duration-200 ${activeTab === "invoice" ? "bg-base-color1 text-primary-very-dark-blue" : "bg-slate-700"}`}>
-                Invoice
-          </Tabs.Trigger>
-          <Tabs.Trigger on:click={() => activeTab = "receipt"} value="receipt" class={`hover:bg-base-color1 hover:text-primary-very-dark-blue p-3 rounded-md transition ease-linear duration-200 ${activeTab === "receipt" ? "bg-base-color1 text-primary-very-dark-blue" : "bg-slate-700"}`}>
-                Receipt
-          </Tabs.Trigger>
+    <div class="px-4 md:px-6">
+        <Tabs.Root value={activeTab || "invoice"} class="mx-auto w-full mt-16 md:w-80 bg-slate-900 rounded-2xl text-base-color1 p-4 pb-10">
+            <Tabs.List class="grid grid-cols-2 gap-2 rounded-md">
+              <Tabs.Trigger on:click={() => activeTab = "invoice"} value="invoice" class={`hover:bg-base-color1 hover:text-primary-very-dark-blue p-3 rounded-md transition ease-linear duration-200 ${activeTab === "invoice" ? "bg-base-color1 text-primary-very-dark-blue" : "bg-slate-700"}`}>
+                    Invoice
+              </Tabs.Trigger>
+              <Tabs.Trigger on:click={() => activeTab = "receipt"} value="receipt" class={`hover:bg-base-color1 hover:text-primary-very-dark-blue p-3 rounded-md transition ease-linear duration-200 ${activeTab === "receipt" ? "bg-base-color1 text-primary-very-dark-blue" : "bg-slate-700"}`}>
+                    Receipt
+              </Tabs.Trigger>
+    
+              <Tabs.Content value="invoice" class="mt-4 place-self-center col-span-2 w-36">
+                  <img src="/icons/invoice.png" loading="eager" alt="invoice" />
+                  <CustomButton styles="group flex items-center justify-center bg-primary-accent-color2 py-3 mt-3 hover:opacity-90" href="/generate/invoice">
+                    <span>Invoice</span>
+                    <Icon aria-hidden="true" class="text-2xl group-hover:" icon="iconamoon:arrow-top-right-1-thin" />
+                  </CustomButton>
+              </Tabs.Content>
+              <Tabs.Content value="receipt" class="mt-4 place-self-center col-span-2 w-36">
+                  <img src="/icons/receipt.png" loading="eager" alt="receipt" />
+                  <CustomButton styles="group flex items-center justify-center bg-primary-accent-color2 py-3 mt-3 hover:opacity-90" href="/generate/receipt">
+                    <span>Receipt</span>
+                    <Icon aria-hidden="true" class="text-2xl" icon="iconamoon:arrow-top-right-1-thin" />
+                  </CustomButton>
+              </Tabs.Content>
+            </Tabs.List>
+        </Tabs.Root>
+    
+        <div class="mt-20 lg:mt-40 flex flex-col md:w-[70em] md:mx-auto md:h-80 md:justify-between md:py-0 md:items-center md:flex-row bg-green-300 rounded-tr-md rounded-tl-[5em]">
+            <div class="px-4 py-16 mx-auto md:w-2/5">
+                <h3 class="my-4 font-semibold text-2xl">Effortless Invoicing In <span class="text-primary-accent-color2"> All Devices</span></h3>
+                <p>The Bill Blitz web app is available and accessible in mobile phones, tablet and desktop devices.</p>
+            </div>
+            <div class="w-2/5 h-full">
+                <img src="/images/all-devices.jpg" class="h-full w-full" alt="phone,tablet,laptop" />
+            </div>
+        </div>
 
-          <Tabs.Content value="invoice" class="mt-4 place-self-center col-span-2 w-36">
-              <img src="/icons/invoice.png" loading="eager" alt="invoice" />
-              <CustomButton styles="group flex items-center justify-center bg-primary-accent-color2 py-3 mt-3" href="/generate/invoice">
-                <span>Invoice</span>
-                <Icon class="text-2xl group-hover:" icon="iconamoon:arrow-top-right-1-thin" />
-              </CustomButton>
-          </Tabs.Content>
-          <Tabs.Content value="receipt" class="mt-4 place-self-center col-span-2 w-36">
-              <img src="/icons/receipt.png" loading="eager" alt="receipt" />
-              <CustomButton styles="" href="/generate/receipt">
-                <span>Receipt</span>
-                <Icon class="text-2xl" icon="iconamoon:arrow-top-right-1-thin" />
-              </CustomButton>
-          </Tabs.Content>
-        </Tabs.List>
-
-
-    </Tabs.Root>
+        <div class="mt-40 flex flex-col md:flex-row md:justify-center md:h-80 shadow-2xl  bg-green-300 px-4 pb-8 rounded-lg md:mt-64 md:pb-16 md:pt-0">
+            <div class="">
+                <img src="/images/illustration-phone.png" class="relative -top-28" alt="phones" />
+            </div>
+            <div class="mb-8 md:w-1/2 -mt-28 md:-mt-0 md:self-center lg:w-2/5">
+                <h3 class="my-4 font-semibold text-2xl"><span class="text-primary-accent-color2">Deliver quick</span> receipts are receiving payment</h3>
+                <p>Bill Blitz web app saves you time to deliver receipts to client, bulding your intergrity.</p>
+            </div>
+        </div>
+    </div>
 </main>

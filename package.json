@@ -26,9 +26,12 @@
 		"@iconify/svelte": "^4.0.2",
 		"@supabase/ssr": "^0.3.0",
 		"@supabase/supabase-js": "^2.43.4",
+		"@vime/core": "^5.4.1",
+		"@vime/svelte": "^5.4.1",
 		"autoprefixer": "^10.4.19",
 		"bcrypt": "^5.1.1",
 		"bits-ui": "^0.21.9",
+		"flowbite-svelte": "^0.46.1",
 		"postcss": "^8.4.38",
 		"svelte-motion": "^0.12.2",
 		"tailwindcss": "^3.4.3"
