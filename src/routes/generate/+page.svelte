@@ -44,12 +44,12 @@
             </Tabs.List>
         </Tabs.Root>
     
-        <div class="mt-20 lg:mt-40 flex flex-col md:w-[70em] md:mx-auto md:h-80 md:justify-between md:py-0 md:items-center md:flex-row bg-green-300 rounded-tr-md rounded-tl-[5em]">
+        <div class="mt-20 lg:mt-40 flex flex-col lg:w-[70em] md:mx-auto md:h-80 md:justify-between md:py-0 md:items-center md:flex-row bg-green-300 rounded-tr-md rounded-tl-[5em]">
             <div class="px-4 py-16 mx-auto md:w-2/5">
                 <h3 class="my-4 font-semibold text-2xl">Effortless Invoicing In <span class="text-primary-accent-color2"> All Devices</span></h3>
                 <p>The Bill Blitz web app is available and accessible in mobile phones, tablet and desktop devices.</p>
             </div>
-            <div class="w-2/5 h-full">
+            <div class="md:w-2/5 h-full">
                 <img src="/images/all-devices.jpg" class="h-full w-full" alt="phone,tablet,laptop" />
             </div>
         </div>

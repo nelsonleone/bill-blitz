@@ -21,7 +21,7 @@ import Icon from "@iconify/svelte";
             <div class="flex items-baseline gap-1 mt-16">
                 <strong class="flex items-baseline text-3xl">
                     <Icon icon="oi:dollar" aria-label="dollar" />
-                    <span>15</span>
+                    <span>10</span>
                 </strong>
                 <span>/month</span>
             </div>

@@ -43,7 +43,7 @@
 
         <ul>
             <li class="font-medium text-gray-400 text-xl mb-3">Get Started</li>
-            <CustomButton styles="text-base-color1 bg-primary-accent-color2 w-[fit-content] py-3 transition ease-in-out duration-200 hover:bg-transparent hover:text-primary-accent-color2 hover:outline hover:outline-2  focus:outline-offset-0 hover:outline-offset-0 hover:outline-primary-accent-color2 focus:bg-transparent focus:text-primary-accent-color2 focus:outline focus:outline-2 focus:outline-primary-accent-color2" href="/generate">Generate Bill</CustomButton>
+            <CustomButton styles="text-base-color1 bg-primary-accent-color2 w-[fit-content] py-3 transition ease-in-out duration-200 hover:bg-transparent hover:text-primary-accent-color2 hover:outline hover:outline-2  focus:outline-offset-0 hover:outline-offset-0 hover:outline-primary-accent-color2 focus:bg-transparent focus:outline focus:outline-2 focus:outline-primary-accent-color2" href="/generate">Generate Bill</CustomButton>
         </ul>
     </nav>
 

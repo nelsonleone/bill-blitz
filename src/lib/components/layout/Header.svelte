@@ -11,6 +11,7 @@
     import { onMount } from "svelte";
     import type { User } from "@supabase/supabase-js";
     import UserAvatar from "./UserAvatar.svelte";
+    import { fade } from "svelte/transition";
 
     export let beenAuthenticated;
     export let user : User | null;
@@ -129,7 +130,17 @@
             </ul>
     
             <IconButton ariaControls="mobile-nav" ariaExpanded={showNav ? "true" : "false"} on:click={toggleShowNav} styles="lg:hidden text-4xl bg-transparent flex w-9 justify-center items-center px-0 text-base-color2">
-                <Icon icon="mdi:hamburger-open" />
+               
+                {#if !showNav}
+                  <span in:fade="{{delay: 100, duration: 500}}">
+                    <Icon icon=mdi:hamburger-open />
+                  </span>
+                  {:else}
+                  <span in:fade="{{delay: 100, duration: 500}}">
+                    <Icon icon="ic:outline-close" />
+                  </span>
+                {/if}
+                
             </IconButton>
         </div>
     </nav>     

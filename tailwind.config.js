@@ -16,7 +16,7 @@ export default {
           "accent-color3": "#d40f0f"
         },
         custom: {
-          "dark-green": "hsl(156, 86%, 17%)"
+          "dark-green": "#1A4942"
         }
       },
       fontFamily: {
