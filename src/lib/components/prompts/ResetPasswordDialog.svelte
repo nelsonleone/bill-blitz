@@ -7,7 +7,6 @@
     import { alertStore } from "../../../store";
     import { AlertSeverity } from "../../../enums";
   
-    export let resetFormData;
     export let resetFormError;
 
     if(resetFormError){
@@ -61,7 +60,7 @@
                 />
                 <div class="flex w-full justify-center">
                     <CustomButton
-                        inputType="submit"
+                        buttonType="submit"
                         styles="md:w-36 py-3 bg-primary-accent-color3 my-4 font-medium hover:opacity-90 focus:outline hover:drop-shadow-xl hover:shadow-md transition duration-200 ease-in-out focus:outline-1 focus:outline-primary-accent-color3 focus:text-base-color2 focus:bg-transparent text-primary-base-color1"
                     >
                         Reset

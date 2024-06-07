@@ -30,7 +30,7 @@ export default {
     "intro-secton": "linear-gradient(to right bottom, #059669, #064e3b), url('/images/bg-pattern-intro-mobile.svg')",
     "callout": "linear-gradient(225deg, #1a8253 27.55%, #1d935e 100%)",
     "callout-circle-before": "linear-gradient(to bottom, #68e1be 0%, rgba(104, 225, 190, 0.1) 50%, rgba(104, 225, 190, 0) 100%)",
-    "callout-circle-after": "linear-gradient(to bottom, #68e1be 0%, rgba(104, 225, 190, 0.2) 100%)"
+    "callout-circle-after": "linear-gradient(to bottom, #68e1be 0%, rgba(104, 225, 190, 0.2) 100%)",
     }
   },
   plugins: [],

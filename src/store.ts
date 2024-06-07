@@ -6,9 +6,18 @@ interface IStoreValue {
     mssg: string
 }
 
+interface IimagePreviewModalStore {
+    src: string | null
+}
+
 const storeValue : IStoreValue = {
     severity: undefined,
     mssg: ""
 }
 
+const imagePreviewModalVal : IimagePreviewModalStore = {
+    src: null
+}
+
 export const alertStore = writable(storeValue)
+export const imagePreviewModalStore = writable(imagePreviewModalVal)

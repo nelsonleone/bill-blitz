@@ -6,12 +6,13 @@
   import { alertStore } from '../store';
   import { AlertSeverity } from '../enums';
   import Footer from '$lib/components/layout/Footer.svelte';
+    import CustomImagePreviewModal from '$lib/components/modals/CustomImagePreviewModal.svelte';
 
   export let data;
   $: ({ beenAuthenticated, user } = data)
 
   $:{
-    console.log(user.user_metadata)
+    console.log(user?.user_metadata)
   }
 
   const pageTitle = 'Bill-Blitz';
@@ -34,6 +35,7 @@
 
 <Header beenAuthenticated={beenAuthenticated} user={user}  />
 <Alert />
+<CustomImagePreviewModal />
 <slot />
 {#if !$page.url.pathname.match("/auth/create_account")}
   <Footer />

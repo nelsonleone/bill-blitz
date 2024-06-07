@@ -1,7 +1,6 @@
 <script>
     import CustomButton from "$lib/components/buttons/CustomButton.svelte";
     import Icon from "@iconify/svelte";
-    import { Video } from "flowbite-svelte";
 
 </script>
 <main class="page px-0 md:px-0 lg:px-0 mt-0 md:mt-16">
