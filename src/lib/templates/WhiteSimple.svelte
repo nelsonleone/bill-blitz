@@ -8,7 +8,7 @@
 </script>
 
 {#if noDetails}
-    <img src={WhiteSimpleImg} alt="Blue Minimalist Template" width={500} height={500} loading="eager" />
+    <img src={WhiteSimpleImg} alt="Blue Minimalist Template" loading="eager" />
 {:else}
     <div class="shadow-sm py-8 px-4 bg-gray-200 rounded-sm">
         <div>
@@ -19,7 +19,7 @@
             <h2 class="text-xl font-semibold font-rubik my-4">White Simple Invoice</h2>
             <p>Created By An Awesome Designer From <strong class="underline inline">Canva</strong></p>
 
-            <CustomButton styles="mx-auto min-w-fit w-40 py-3 mt-6 bg-primary-very-dark-blue" on:click={() => goto("new?template=blue-minimalist")}>Use Template</CustomButton>
+            <CustomButton styles="mx-auto min-w-fit w-40 py-3 mt-6 bg-primary-very-dark-blue hover:opacity-85 transition ease-in-out duration-200" on:click={() => goto("/generate/invoice/new?template=WhiteSimple")}>Use Template</CustomButton>
         </div>
     </div>
 {/if}

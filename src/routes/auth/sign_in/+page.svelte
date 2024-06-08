@@ -84,7 +84,7 @@
     <title>Sign In | BillBlitz</title>
 </svelte:head>
 
-<main class="bg-gray-100 px-0 page flex justify-center items-center text-primary-dark-blue">
+<main class="bg-gray-100 px-0 page flex justify-center items-center text-primary-dark-blue lg:py-36">
     <section class="flex flex-col-reverse md:items-center md:flex-row md:w-4/5 lg:w-4/6 md:bg-base-color1 md:p-8 md:rounded-2xl md:relative md:gap-8 md:justify-between md:overflow-hidden">
   
         <div class="bg-base-color1 relative z-10 drop-shadow-md shadow-md rounded-md px-4 w-[95%] mx-auto -translate-y-28 pt-24 pb-16 overflow-hidden after:content-[''] after:bg-[url('/icons/blob.svg')] after:left-0 after:w-28 after:bg-contain after:bg-no-repeat after:aspect-square after:block after:absolute before:content-[''] before:bg-[url('/icons/blob2.png')] before:right-0 before:top-0 before:w-28 before:bg-contain before:bg-no-repeat before:aspect-square before:-z-10 before:block before:absolute md:-translate-y-0 md:rounded-none md:shadow-none md:drop-shadow-none md:py-4 md:mx-0 md:w-[48%] md:after:-left-8 md:after:-bottom-20 md:overflow-visible md:before:-top-8">

@@ -3,10 +3,11 @@
   import Alert from '$lib/components/prompts/Alert.svelte';
   import '../app.css';
   import { page } from '$app/stores';
-  import { alertStore } from '../store';
-  import { AlertSeverity } from '../enums';
   import Footer from '$lib/components/layout/Footer.svelte';
-    import CustomImagePreviewModal from '$lib/components/modals/CustomImagePreviewModal.svelte';
+  import CustomImagePreviewModal from '$lib/components/modals/CustomImagePreviewModal.svelte';
+    import { hasUnsavedChanges } from '../store';
+    import DiscardChangesModal from '$lib/components/modals/DiscardChangesModal.svelte';
+    import { beforeNavigate, goto } from '$app/navigation';
 
   export let data;
   $: ({ beenAuthenticated, user } = data)
@@ -17,6 +18,35 @@
 
   const pageTitle = 'Bill-Blitz';
   const pageDescription = 'Create fast and easy bills (invoices and receipts)';
+  let redirectUrl = '';
+  let showDiscardModal = false;
+
+  // Function to handle the navigation process
+  function handleNavigation(to, cancel) {
+    if ($hasUnsavedChanges) {
+      redirectUrl = to.url?.pathname;
+      showDiscardModal = true;
+      cancel()
+    } else {
+      showDiscardModal = false;
+    }
+  }
+
+  function discardChanges() {
+    hasUnsavedChanges.set(false)
+    showDiscardModal = false;
+    goto(redirectUrl)
+  }
+
+  // Function to handle the "Cancel" button click
+  function cancelNavigation() {
+    showDiscardModal = false;
+  }
+
+  beforeNavigate((navigation) => {
+    handleNavigation(navigation.to, navigation.cancel)
+  })
+
 </script>
 
 <svelte:head>
@@ -34,9 +64,16 @@
 </svelte:head>
 
 <Header beenAuthenticated={beenAuthenticated} user={user}  />
+
 <Alert />
 <CustomImagePreviewModal />
 <slot />
 {#if !$page.url.pathname.match("/auth/create_account")}
   <Footer />
 {/if}
+
+<DiscardChangesModal
+  showDiscardModal={showDiscardModal}
+  onConfirm={discardChanges}
+  onCancel={cancelNavigation}
+/>

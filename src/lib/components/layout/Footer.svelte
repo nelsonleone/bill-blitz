@@ -5,7 +5,7 @@
 </script>
 
 
-<footer class=" border-t border-t-gray-300 pt-16 pb-8 bg-custom-dark-green backdrop-opacity-30 text-base-color1 px-6 lg:px-24">
+<footer class="relative z-10 border-t border-t-gray-300 pt-16 pb-8 bg-custom-dark-green backdrop-opacity-30 text-base-color1 px-6 lg:px-24">
     <div>
         <a href="/">
             <Logo logoFor="footer" styles="w-24" /></a>

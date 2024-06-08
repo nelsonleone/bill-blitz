@@ -15,10 +15,6 @@
 	h1,h2,h3,h4,h5{
 		@apply font-barlow font-bold;
 	}
-
-	img{
-		@apply object-cover max-w-full;
-	}
 }
 
 @layer utilities{

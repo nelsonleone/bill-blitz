@@ -21,3 +21,4 @@ const imagePreviewModalVal : IimagePreviewModalStore = {
 
 export const alertStore = writable(storeValue)
 export const imagePreviewModalStore = writable(imagePreviewModalVal)
+export const hasUnsavedChanges = writable(false)

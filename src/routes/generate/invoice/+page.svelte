@@ -3,6 +3,7 @@
     import { Tabs } from "bits-ui";
     import { Pagination } from "bits-ui";
     import  Icon from "@iconify/svelte";
+    import { goto } from "$app/navigation";
 
     export let invoicesData;
 
@@ -13,10 +14,10 @@
     let activeTab : "allInvoices" | "Downloaded" | "Draft"  = "allInvoices";
 </script>
 
-<main class="page text-primary-very-dark-blue bg-gray-100">
+<main class="page text-primary-very-dark-blue bg-gray-100 lg:py-20 lg:px-24">
     <h1 class="mt-16 relative pb-2 font-semibold text-4xl after:w-16 after:bottom-0 after:rounded-lg after:bg-primary-accent-color2 after:h-1 after:absolute after:left-0">Invoices</h1>
 
-    <div class="mt-10 rounded-md p-4 bg-stone-300 flex flex-wrap gap-[5%] shadow-md">
+    <div class="mt-10 rounded-md p-4 bg-stone-300 flex flex-wrap gap-[5%] shadow-md md:max-w-[22em]">
         <label for="searchInput" class="text-sm basis-full text-primary-very-dark-blue mb-2">Search By Client's name or Invoice Number</label>
         <input
           type="text"
@@ -29,7 +30,7 @@
     </div>
 
     <div>
-        <Tabs.Root value={activeTab || "invoice"} class="mx-auto w-full mt-8 md:w-80 bg-stone-400 rounded-md text-primary-very-dark-blue">
+        <Tabs.Root value={activeTab || "invoice"} class="mx-auto w-full mt-8 md:w-96 bg-stone-400 rounded-md text-primary-very-dark-blue">
             <Tabs.List class="grid grid-cols-3 justify-items-center gap-0">
               <Tabs.Trigger on:click={() => activeTab = "allInvoices"} class={`${activeTab === "allInvoices" ? "bg-base-color1" : "bg-transparent"} w-full rounded-tl-md rounded-bl-md border border-stone-400 p-3 text-center`} value="allInvoices">
                     All Invoices
@@ -59,7 +60,7 @@
                     <p></p>
                 {/each}
             {:else}
-                <p class="font-rubik text-sm my-8 text-center">You do not have an invoice <button class="inline text-primary-accent-color2">Add your first Invoice</button></p>
+                <p class="font-rubik text-sm my-8 text-center">You do not have an invoice <button on:click={() => goto("/generate/invoice/new")} class="inline text-primary-accent-color2">Add your first Invoice</button></p>
             {/if}
         </div>
     </div>
