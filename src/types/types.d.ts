@@ -39,3 +39,46 @@ interface ITitleTextContent {
   icon?: string
   id?: string
 }
+
+
+interface IinvoiceContactInfo {
+  phoneNumber?: string,
+  emailAddress?: string
+}
+
+type InvoiceItems = {
+  description: string,
+  quantity?: number,
+  price: string,
+  amount: string
+}
+
+interface IBasicInvoiceData {
+  logo: string,
+  logoText: string,
+  issuer: {
+    name: string,
+    contactInfo?: IinvoiceContactInfo
+  },
+
+  billTo: {
+    name: string,
+    contactInfo?: IinvoiceContactInfo
+  }
+
+  invoiceData:{
+    invoiceNumber: number,
+    date: Date,
+    items: InvoiceItems[]
+  },
+
+  accountDetails: {
+    included: boolean,
+    account: string
+  },
+
+  signatureInfo:{
+    included: boolean,
+    signatureI: string
+  }
+}

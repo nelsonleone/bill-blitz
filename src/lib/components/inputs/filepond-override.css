@@ -37,7 +37,7 @@
 }
 
 .filepond--drop-label span{
-    color: black;
+    color: whte;
 }
 
 .filepond--label-action:hover{
@@ -45,7 +45,7 @@
 }
 
 .filepond--panel-root {
-background-color: hsla(214, 18%, 92%, 0.874) ;
+background-color: rgb(245, 245, 244);
 border: 2px dotted hsl(0, 0%, 6%);
 border-radius: 12px;
 }

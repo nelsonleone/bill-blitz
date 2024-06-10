@@ -9,12 +9,12 @@
     import DiscardChangesModal from '$lib/components/modals/DiscardChangesModal.svelte';
     import { beforeNavigate, goto } from '$app/navigation';
 
-  export let data;
-  $: ({ beenAuthenticated, user } = data)
+    export let data;
+    $: ({ beenAuthenticated, user } = data)
 
-  $:{
-    console.log(user?.user_metadata)
-  }
+    $:{
+      console.log(user?.user_metadata)
+    }
 
   const pageTitle = 'Bill-Blitz';
   const pageDescription = 'Create fast and easy bills (invoices and receipts)';
@@ -23,7 +23,7 @@
 
   // Function to handle the navigation process
   function handleNavigation(to, cancel) {
-    if ($hasUnsavedChanges) {
+    if ($hasUnsavedChanges && to.url) {
       redirectUrl = to.url?.pathname;
       showDiscardModal = true;
       cancel()
