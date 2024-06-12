@@ -1,29 +1,18 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
-    import CurrenciesSelect from "$lib/components/invoice/CurrenciesSelect.svelte";
     import { getTemplate } from "$lib/helperFns/getTemplate";
     import BlueMinimalist from "$lib/templates/BlueMinimalist.svelte";
     import WhiteSimple from "$lib/templates/WhiteSimple.svelte";
     import WhiteSampleForm from "$lib/templates/builder/WhiteSampleForm.svelte";
-    import { CurrencyEnum, TemplateNames } from "../../../../enums";
-    import { hasUnsavedChanges } from "../../../../store";
+    import { TemplateNames } from "../../../../enums";
 
     let searchParam = $page.url.searchParams.get("template")
     let Template : typeof BlueMinimalist | typeof WhiteSimple | null;
     let proceedUserTo ;
-    let currency : {
-        value: CurrencyEnum,
-        label: string,
-        icon: string
-    }
 
     if(searchParam){
         Template = getTemplate(searchParam as TemplateNames)
-    }
-
-    $:{
-        console.log(currency)
     }
     $: isUsingBlank = Template ? false : true;
 
@@ -55,9 +44,6 @@
 
     {#if searchParam === TemplateNames.WhiteSimple}
       <div class="mt-16">
-         <div class="mb-4">
-            <CurrenciesSelect currency={currency} />
-         </div>
          <WhiteSampleForm />
       </div>
     {/if}

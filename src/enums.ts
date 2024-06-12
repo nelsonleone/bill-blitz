@@ -15,3 +15,7 @@ export enum CurrencyEnum {
     UnitedKingdom = "GBP",
     Nigeria = "NGN"
 }
+
+export enum Breapoints {
+    Desktop = 1024
+}

@@ -1,6 +1,4 @@
 <script lang="ts">
-    
-    import { Avatar, DropdownMenu } from "bits-ui";
     import { page } from "$app/stores";
     import Logo from "../logo/index.svelte";
     import Icon from "@iconify/svelte";
@@ -12,20 +10,30 @@
     import type { User } from "@supabase/supabase-js";
     import UserAvatar from "./UserAvatar.svelte";
     import { fade } from "svelte/transition";
+    import { DropdownMenu } from "bits-ui";
+    import { showNav } from "../../../store";
+    import { handleHideNavOnNavigation } from "$lib/helperFns/handleHideNavOnNavigation";
+    import { Breapoints } from "../../../enums";
 
     export let beenAuthenticated;
     export let user : User | null;
+
+    let windowInnerWidth = Breapoints.Desktop;
+    let scrolledIn:boolean;
+
     $: activeUrl = $page.url.pathname;
 
-    let windowInnerWidth = 1024;
-    $: showNav = windowInnerWidth < 1024 ? false : true;
+    $: {
+        if(browser){
+            handleHideNavOnNavigation($page.url.pathname)
+        }
+    }
 
-    let scrolledIn:boolean;
 
     const handleScroll = () => {
         if(!browser)return;
 
-        showNav = windowInnerWidth < 1024 && false;
+        showNav.set(windowInnerWidth < Breapoints.Desktop && false)
 
         if (window.scrollY > window.innerHeight * 1.1) {
             scrolledIn = true;
@@ -56,7 +64,7 @@
 
     const toggleShowNav = (e: MouseEvent) => {
         e.stopPropagation()
-        showNav = !showNav;
+        showNav.set($showNav ? false : true)
     }
 
 </script>
@@ -129,9 +137,9 @@
                 {/if}
             </ul>
     
-            <IconButton ariaControls="mobile-nav" ariaExpanded={showNav ? "true" : "false"} on:click={toggleShowNav} styles="lg:hidden text-4xl bg-transparent flex w-9 justify-center items-center px-0 text-base-color2">
+            <IconButton ariaControls="mobile-nav" ariaExpanded={$showNav ? "true" : "false"} on:click={toggleShowNav} styles="lg:hidden text-4xl bg-transparent flex w-9 justify-center items-center px-0 text-base-color2">
                
-                {#if !showNav}
+                {#if !$showNav}
                   <span in:fade="{{delay: 100, duration: 500}}">
                     <Icon icon=mdi:hamburger-open />
                   </span>
@@ -149,9 +157,9 @@
 
 <nav         
     use:clickOutside={() => {
-    showNav = false;
+    showNav.set(false);
     }}
-    class={`fixed z-40 lg:hidden shadow-lg shadow-gray-400 backdrop-blur-xl drop-shadow-3xl bg-custom-dark-green  text-base-color1 px-4 pt-10 h-44 w-full left-0 top-20 md:px-36  transition-all duration-500 ease-in-out transform ${showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}
+    class={`fixed z-40 lg:hidden shadow-lg shadow-gray-400 backdrop-blur-xl drop-shadow-3xl bg-custom-dark-green  text-base-color1 px-4 pt-10 h-44 w-full left-0 top-20 md:px-36  transition-all duration-500 ease-in-out transform ${$showNav ? 'translate-y-0 opacity-100' : 'opacity-80 -translate-y-[50em]'}`}
     >
     <ul class="flex justify-between">
         <li class="lg:hidden">

@@ -4,35 +4,91 @@
     import DatePicker from "$lib/components/inputs/DatePicker.svelte";
     import InvoiceFormInput from "$lib/components/inputs/InvoiceFormInput.svelte";
     import { Separator } from "bits-ui";
-    import type { InvoiceItems } from "../../../types/types"
+    import type { ICurrency, InvoiceItems, ValidationErrors } from "../../../types/types"
     import Icon from "@iconify/svelte";
     import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
     import InvoiceFormItem from "$lib/components/invoice/InvoiceFormItem.svelte";
+    import CurrenciesSelect from "$lib/components/invoice/CurrenciesSelect.svelte";
+    import { validateInputs } from "$lib/helperFns/formValidator";
+    import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
 
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
+    let currency : ICurrency;
 
-    const handleSetItem = (e: { currentTarget: EventTarget & HTMLInputElement},index:number) => {
-        const { name } = e.currentTarget;
+    /** @type ValidationErrors */
+    $: errors = {}
+    /** @type any */
+    let itemsErrors : ValidationErrors
 
-        if(!name || !index)return;
+    const handleAddItem = () => {
+        // Check if there are any items in the array
+        if (invoiceItemsArr.length > 0) {
+            const lastItem = invoiceItemsArr[invoiceItemsArr.length - 1];
 
-        if(name === "description" || name === "quantity" || name === "price" || name === "amount"){
-            invoiceItemsArr = invoiceItemsArr.map((item, i) => {
-                if (i === index) {
-                    return {
-                    ...item,
-                    [name]: e.currentTarget.value
-                    }
+            // Validate the last item's properties
+            itemsErrors = validateInputs([
+            {
+                name: "description",
+                value: lastItem.description,
+                rules: {
+                required: "Please enter item description"
                 }
-                return item;
-            })
+            },
+            {
+                name: "price",
+                value: lastItem.price,
+                rules: {
+                required: "Enter item price"
+                }
+            },
+            {
+                name: "amount",
+                value: lastItem.amount,
+                rules: {
+                required: "Enter item amount"
+                }
+            }
+            ])  
         }
+
+        const errorMessagesArr = itemsErrors
+        ? Object.values(itemsErrors).map(val => val?.message && val.message)
+        : [] 
+
+
+        // Check if there are any errors
+        if (errorMessagesArr.length > 0) {
+            return;
+        }
+
+        // Add a new item slot to the array
+        invoiceItemsArr = [...invoiceItemsArr, { amount: "", description: "", price: "", quantity: 1 }];
     }
 
+
+    //Used Any Type Because [name and value] as exist on type Event
+    const clearErrorOnInputChange = (e:any) => {
+        if(itemsErrors && itemsErrors[e.currentTarget?.name]?.message){
+            console.log(itemsErrors[e.currentTarget?.name].message)
+            itemsErrors[e.currentTarget?.name].message = "";
+        }
+    }
+    //
+    const setItemsInputValues = (e:any,index:number) => {
+
+        const { name, value } = e.currentTarget;
+
+        invoiceItemsArr = invoiceItemsArr.map((item,i) => {
+            return index === i ? {...item, [name]: value} : item
+        })
+    }
 </script>
 
 <form class="bg-base-color1 w-full shadow-md py-12 px-4">
+    <div class="mb-4">
+        <CurrenciesSelect currency={currency} />
+    </div>
     <div class="flex flex-col justify-end">
         <CompanyLogoUpload {uploadedLogo} />
         <div class="self-end text-right  text-stone-700 mt-4">
@@ -157,23 +213,39 @@
 
     <Separator.Root
         class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
-    />
+    /> 
 
     <div>
         <h2 class="text-xl underline font-medium mb-4">Items</h2>
        {#if invoiceItemsArr?.length}
          {#each invoiceItemsArr as item, i (i)}
             {#if item}
-                <InvoiceFormItem  {...item} index={i} setItem={handleSetItem} />
+                <InvoiceFormItem {currency} errors={itemsErrors} setItemsInputValues={setItemsInputValues}  {...item} index={i} clearErrors={clearErrorOnInputChange} />
             {/if}
          {/each}
        {:else}
-         <p>You Haven't Added Any Item Yet</p>
+         <p class="text-sm text-primary-accent-color2">You Haven't Added Any Item Yet</p>
        {/if}
 
-       <CustomButton styles="bg-stone-500 shadow-sm flex gap-2 items-center py-3">
+       <CustomButton on:click={handleAddItem} styles="bg-stone-600 shadow-sm flex gap-2 items-center py-3">
          <span>Add</span>
          <Icon icon="fluent:copy-add-24-filled" class="text-2xl" aria-label="add" />
        </CustomButton>
+    </div>
+
+
+    <div class="flex items-center bg-stone-400">
+        <h3 id="total" class="">Total:</h3>
+        <strong aria-describedby="total">
+        </strong>
+        <InvoiceFormInput 
+            name="total" 
+            id={`invoiceItems-total`}
+            inputType="text"
+            placeholder="e.g Bag Of Rice" 
+            label="Invoice items total" 
+            containerStyles="col-span-3"
+            inputStyles="text-stone-700 bg-stone-100 border border-gray-500 w-full rounded-md p-3 h-12"
+        />
     </div>
 </form>

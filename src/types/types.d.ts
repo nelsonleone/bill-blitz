@@ -1,3 +1,5 @@
+import type { CurrencyEnum } from "../enums";
+
 export type AuthPageInputData = {
   name: string,
   id: string,
@@ -81,4 +83,12 @@ interface IBasicInvoiceData {
     included: boolean,
     signatureI: string
   }
+}
+
+
+
+interface ICurrency  {
+  value: CurrencyEnum,
+  label: string,
+  icon: string
 }

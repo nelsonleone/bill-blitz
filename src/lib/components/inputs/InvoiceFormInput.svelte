@@ -1,6 +1,5 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
-
     export let error: string | undefined = undefined
     export let label: string;
     export let name: string;
@@ -14,38 +13,57 @@
     export let id: string;
 </script>
 
+
 <div class={`mb-8  ${containerStyles}`}>
     {#if label && label.length}
         <label for={id} class={labelStyles}>{label}</label>
     {/if}
 
-    {#if inputType !== "textArea"}
+    {#if inputType ===  "text"}
         <input 
-            type={inputType || "text"} 
+            type="text"
             placeholder={placeholder || label} 
             aria-invalid={error ? "true" : "false"} 
             readOnly={readOnly}
+            bind:value={value}
             {name}
-            {value}
+            on:change
+            on:input
             {id}
-            on:input={(e) => {
-                inputType === "number" ? e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '') : undefined
-            }}
-            class={`${inputStyles} outline-offset-0 focus:outline-offset-0 ${error ? "border-primary2 focus:outline-primary2 md:focus:outline-primary2" : ""}`}
+            class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
         />
-        {:else}
+
+        {:else if inputType ===  "number"}
+        <input 
+            type="number"
+            placeholder={placeholder || label} 
+            aria-invalid={error ? "true" : "false"} 
+            readOnly={readOnly}
+            bind:value={value}
+            {name}
+            {id}
+            on:change
+            on:input={(e) => {
+                e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '')
+            }}
+            class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
+        />
+
+        {:else if inputType ===  "textArea"}
         <textarea
             placeholder={placeholder || label} 
             aria-invalid={error ? "true" : "false"} 
             readOnly={readOnly}
+            on:change
+            on:input
             {name}
-            {value}
+            bind:value={value}
             {id}
-            class={`${inputStyles} outline-offset-0 focus:outline-offset-0 ${error ? "border-primary2 focus:outline-primary2 md:focus:outline-primary2" : ""}`}
+            class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
         />
     {/if}
 
     {#if error}
-        <p role="alert" class="text-primary2 text-sm mt-3 flex gap-2 items-center"><Icon icon="ic:baseline-error" />{error}</p>
+        <p role="alert" class="text-primary-accent-color3 text-sm mt-3 flex gap-2 items-center"><Icon icon="ic:baseline-error" />{error}</p>
     {/if}
 </div>
