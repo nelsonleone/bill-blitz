@@ -46,8 +46,8 @@
    
 <Select.Root items={currencies} preventScroll={false} bind:selected={currency}>
     <Select.Trigger
-      class="inline-flex h-14 w-56 justify-between shadow-sm text-stone-600 items-center rounded-lg border-2 border-stone-500 bg-base-color1 px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50"
-      aria-label="Select a theme"
+      class="inline-flex h-14 w-56 justify-between shadow-sm text-base-color1 items-center rounded-lg border-2 border-stone-500 bg-primary-dark-blue  px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50"
+      aria-label="Select a currency"
     >
       <Icon class="text-3xl" icon="fluent-mdl2:all-currency" />
       <Select.Value class="text-base" placeholder="Select a theme" />

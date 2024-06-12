@@ -3,7 +3,7 @@
     import CompanyLogoUpload from "$lib/components/inputs/CompanyLogoUpload.svelte";
     import DatePicker from "$lib/components/inputs/DatePicker.svelte";
     import InvoiceFormInput from "$lib/components/inputs/InvoiceFormInput.svelte";
-    import { Separator } from "bits-ui";
+    import { Checkbox, Label, Separator } from "bits-ui";
     import type { ICurrency, InvoiceItems, ValidationErrors } from "../../../types/types"
     import Icon from "@iconify/svelte";
     import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
@@ -11,20 +11,23 @@
     import CurrenciesSelect from "$lib/components/invoice/CurrenciesSelect.svelte";
     import { validateInputs } from "$lib/helperFns/formValidator";
     import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
+    import { calculateInvoiceTotal } from "$lib/helperFns/calculateInvoiceTotal";
 
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
     let currency : ICurrency;
+    let total : number | undefined;
+    let includeBankDetails = false;
 
     /** @type ValidationErrors */
     $: errors = {}
     /** @type any */
-    let itemsErrors : ValidationErrors
+    let itemsErrors : ValidationErrors;
 
     const handleAddItem = () => {
         // Check if there are any items in the array
         if (invoiceItemsArr.length > 0) {
-            const lastItem = invoiceItemsArr[invoiceItemsArr.length - 1];
+            const lastItem = invoiceItemsArr[invoiceItemsArr.length - 1]
 
             // Validate the last item's properties
             itemsErrors = validateInputs([
@@ -87,7 +90,7 @@
 
 <form class="bg-base-color1 w-full shadow-md py-12 px-4">
     <div class="mb-4">
-        <CurrenciesSelect currency={currency} />
+        <CurrenciesSelect bind:currency={currency} />
     </div>
     <div class="flex flex-col justify-end">
         <CompanyLogoUpload {uploadedLogo} />
@@ -103,7 +106,7 @@
                 inputStyles="bg-stone-100 border border-gray-500 text-right rounded-md p-3 h-12"
             />
             <div>
-                <h3>Contact Info</h3>
+                <h3 class="my-4 font-semibold text-primary-accent-color2 underline">Contact Info</h3>
                 <InvoiceFormInput 
                     name="enterpriseAddress" 
                     id="enterprise-address" 
@@ -162,8 +165,12 @@
             </div>
         </div>
 
-        <div class="mt-14">
-            <p class="font-medium underline mb-3 text-lg">Bill To</p>
+        <Separator.Root
+            class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        /> 
+
+        <div class="mt-16">
+            <p class="font-medium mb-3 text-xl">Bill To</p>
             <InvoiceFormInput 
                 name="billToEnterpriseName" 
                 id="billTo-EnterpriseName" 
@@ -174,6 +181,7 @@
                 containerStyles="my-4"
                 inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
             />
+            <h3 class="my-4 font-semibold text-primary-accent-color2 underline">Contact Info</h3>
             <InvoiceFormInput 
                 name="billToEnterpriseAddress" 
                 id="billTo-EnterpriseAddress" 
@@ -216,7 +224,7 @@
     /> 
 
     <div>
-        <h2 class="text-xl underline font-medium mb-4">Items</h2>
+        <h2 class="font-medium text-xl mb-4">Items</h2>
        {#if invoiceItemsArr?.length}
          {#each invoiceItemsArr as item, i (i)}
             {#if item}
@@ -234,18 +242,72 @@
     </div>
 
 
-    <div class="flex items-center bg-stone-400">
-        <h3 id="total" class="">Total:</h3>
-        <strong aria-describedby="total">
-        </strong>
+    <div>
+        <div class="flex items-center bg-primary-very-dark-blue text-base-color1 rounded-md py-4 px-2 mt-16">
+            <h3 id="total" class="text-xl font-semibold font-barlow uppercase ms-2">Total:</h3>
+            <strong aria-describedby="total">
+                <CurrencyIcon styles="text-2xl me-1" currency={currency?.value} />
+            </strong>
+            <InvoiceFormInput 
+                name="total" 
+                id={`invoiceItems-total`}
+                inputType="number"
+                placeholder="Enter invoice total" 
+                label="Invoice items total"
+                bind:value={total}
+                labelStyles="AT_only" 
+                containerStyles="col-span-3 mb-[0]"
+                inputStyles="text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10"
+            />
+
+        </div>
+        <CustomButton on:click={() => total = calculateInvoiceTotal(invoiceItemsArr)} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center">Use Total Calculator</CustomButton>
+    </div>
+
+
+    <Separator.Root
+        class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+    /> 
+
+    <div>
+        <div class="text-stone-700 mt-10 flex items-center gap-3">
+            <Checkbox.Root
+              id="terms"
+              aria-labelledby="terms-label"
+              class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
+              checked={includeBankDetails}
+            >
+              <Checkbox.Indicator
+                let:isChecked
+                let:isIndeterminate
+                class="inline-flex items-center justify-center text-background"
+              >
+                {#if isChecked}
+                    <Icon icon="mingcute:check-2-fill" />
+                {:else if isIndeterminate}
+                    <Icon icon="fluent-emoji-flat:minus" />
+                {/if}
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+            <Label.Root
+              id="terms-label"
+              for="terms"
+              class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Include Bank Details
+            </Label.Root>
+        </div>
+        
         <InvoiceFormInput 
-            name="total" 
-            id={`invoiceItems-total`}
-            inputType="text"
-            placeholder="e.g Bag Of Rice" 
-            label="Invoice items total" 
-            containerStyles="col-span-3"
-            inputStyles="text-stone-700 bg-stone-100 border border-gray-500 w-full rounded-md p-3 h-12"
+            name="bankDetails" 
+            id="bank-details"
+            inputType="textArea"
+            placeholder="Example bank \n 123456790 \n Example name" 
+            label="Bank Account Details:"
+            bind:value={total}
+            labelStyles="AT_only" 
+            containerStyles="col-span-3 mb-[0]"
+            inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3"
         />
     </div>
 </form>
