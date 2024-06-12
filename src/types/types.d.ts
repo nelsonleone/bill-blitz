@@ -92,3 +92,14 @@ interface ICurrency  {
   label: string,
   icon: string
 }
+
+
+type InvoiceDateValue  = {
+  calendar: {
+    identifier: "gregory",
+  },
+  day: number,
+  era: "AD",
+  month: number,
+  year: number,
+}

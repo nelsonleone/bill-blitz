@@ -2,9 +2,16 @@
     import { DatePicker } from "bits-ui";
     import { fly } from "svelte/transition";
     import Icon from "@iconify/svelte";
+    import { getInvoiceDateString } from "$lib/helperFns/getInvoiceDateValue";
+
+    export let invoiceDate : any;
+
+    $: {
+      console.log(invoiceDate)
+    }
 </script>
    
-<DatePicker.Root weekdayFormat="short" closeFocus fixedWeeks={true} preventScroll>
+<DatePicker.Root weekdayFormat="short"  onValueChange={(val) => invoiceDate = getInvoiceDateString(val)} fixedWeeks={true}>
     <div class="flex flex-col gap-1.5 justify-end w-60">
       <DatePicker.Label class="block select-none font-overpass"
         >Date</DatePicker.Label
@@ -42,7 +49,7 @@
         class="z-50"
       >
         <DatePicker.Calendar
-          class="rounded-[15px] border border-dark-10 bg-stone-500 text-base-color1 p-[22px] shadow-popover"
+          class="rounded-[15px] border border-dark-10 bg-stone-800 text-base-color1 p-[22px] shadow-popover"
           let:months
           let:weekdays
         >
@@ -88,7 +95,7 @@
                           <DatePicker.Day
                             {date}
                             month={month.value}
-                            class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:font-medium data-[disabled]:text-foreground/30 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"
+                            class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[disabled]:text-stone-400 data-[disabled]:opacity-90 data-[outside-month]:pointer-events-none data-[selected]:bg-stone-500 data-[selected]:font-medium data-[disabled]:text-foreground/30  data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"
                           >
                             <div
                               class="absolute top-[5px] hidden size-1 rounded-full bg-foreground transition-all group-data-[today]:block group-data-[selected]:bg-background"

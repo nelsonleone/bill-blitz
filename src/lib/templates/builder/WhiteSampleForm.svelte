@@ -12,12 +12,23 @@
     import { validateInputs } from "$lib/helperFns/formValidator";
     import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
     import { calculateInvoiceTotal } from "$lib/helperFns/calculateInvoiceTotal";
+    import IconButton from "$lib/components/buttons/IconButton.svelte";
+    import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
+    import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
 
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
     let currency : ICurrency;
     let total : number | undefined;
     let includeBankDetails = false;
+    let editFooterText = false;
+    let issuerEmail : string = "";
+    let footerText = setFooterText(issuerEmail)
+    let invoiceDate : any;
+
+    $:{
+        console.log(invoiceDate)
+    }
 
     /** @type ValidationErrors */
     $: errors = {}
@@ -126,6 +137,7 @@
                         placeholder="Enter Enterprise email" 
                         label="Enterprise Email:" 
                         labelStyles=""
+                        bind:value={issuerEmail}
                         inputStyles="bg-stone-100 border border-gray-500 text-right rounded-md p-3 h-12"
                         containerStyles="m-0"
                     />
@@ -161,7 +173,7 @@
                 <CustomButton styles="bg-stone-700 py-3">Generate</CustomButton>
             </div>
             <div class="flex items-end justify-end mt-8">
-                <DatePicker />
+                <DatePicker {invoiceDate} />
             </div>
         </div>
 
@@ -269,13 +281,13 @@
         class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
     /> 
 
-    <div>
-        <div class="text-stone-700 mt-10 flex items-center gap-3">
+    <div class="text-stone-700 ">
+        <div class="mt-10 flex items-center gap-3">
             <Checkbox.Root
               id="terms"
               aria-labelledby="terms-label"
               class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
-              checked={includeBankDetails}
+              bind:checked={includeBankDetails}
             >
               <Checkbox.Indicator
                 let:isChecked
@@ -297,17 +309,50 @@
               Include Bank Details
             </Label.Root>
         </div>
-        
-        <InvoiceFormInput 
-            name="bankDetails" 
-            id="bank-details"
-            inputType="textArea"
-            placeholder="Example bank \n 123456790 \n Example name" 
-            label="Bank Account Details:"
-            bind:value={total}
-            labelStyles="AT_only" 
-            containerStyles="col-span-3 mb-[0]"
-            inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3"
-        />
+
+        {#if includeBankDetails}
+            <InvoiceFormInput 
+                name="bankDetails" 
+                id="bank-details"
+                inputType="textArea"
+                placeholder="Example bank\n 123456790\n Example name" 
+                label="Bank Account Details:"
+                labelStyles="" 
+                containerStyles="col-span-3 mb-[0] my-4"
+                inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3"
+            />
+            <p class="font-rubik text-sm text-primary-accent-color1">Break into new lines after each detail</p>
+        {/if}
+    </div>
+
+    <div>
+        <div class="mt-10 flex justify-center relative">
+            <InvoiceFormInput 
+                name="footerText" 
+                id="footer-text"
+                inputType="textArea"
+                placeholder="" 
+                label="Help Information"
+                bind:value={footerText}
+                labelStyles="AT_only"
+                readOnly={!editFooterText} 
+                containerStyles="col-span-3 mt-4 mb-[0]"
+                inputStyles="bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4"
+            />
+            
+            <CustomTooltip tooltipMssg="Edit" styles="absolute -top-3 -right-1 bg-transparent text-stone-700">
+                <IconButton styles="bg-transparent text-stone-700" on:click={() => editFooterText = true}>
+                    <Icon icon="flowbite:edit-solid" class="text-3xl" />
+                </IconButton>
+            </CustomTooltip>
+            </div>
+            <CustomButton 
+                on:click={() => {
+                    footerText = setFooterText(issuerEmail)
+                    editFooterText = false;
+                }} 
+                styles="bg-stone-600 shadow-sm self-end flex gap-2 items-center mt-4 py-2 mx-auto text-center">
+                Reset
+            </CustomButton>
     </div>
 </form>
