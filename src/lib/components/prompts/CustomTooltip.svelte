@@ -21,7 +21,7 @@
         <Tooltip.Arrow class="rounded-[2px] border-l border-t border-dark-10" />
       </div>
       <div
-        class="flex items-center justify-center rounded-input border border-dark-10 bg-background p-3 text-sm font-medium shadow-popover outline-none"
+        class="flex items-center justify-center rounded-input border border-dark-10 bg-base-color1 shadow-sm p-3 text-sm font-medium shadow-popover outline-none"
       >
         {tooltipMssg}
       </div>

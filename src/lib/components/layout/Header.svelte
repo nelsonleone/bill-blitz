@@ -71,7 +71,7 @@
 
 
 <header class={`fixed z-50 top-0 w-full transition-all drop-shadow-lg left-0 duration-300 ease-in-out ${scrolledIn ? '-translate-y-full' : 'translate-y-0'}`}>
-    <nav class="px-4 lg:px-8 h-20 bg-base-color1 w-full flex items-center justify-between">
+    <nav class="px-4 lg:px-16 h-20 bg-base-color1 w-full flex items-center justify-between">
         <a href="/">
             <Logo styles="w-20 lg:w-[5.5em]" />
         </a>

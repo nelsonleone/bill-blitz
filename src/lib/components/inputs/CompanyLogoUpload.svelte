@@ -25,7 +25,7 @@
     }
 </script>
 
-<div class="relative">
+<div class="relative md:w-80">
     <FilePond
         onupdatefiles={handleFileLoad}
         allowMultiple={false}

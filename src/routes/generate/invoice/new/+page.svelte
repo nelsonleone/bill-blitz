@@ -18,8 +18,8 @@
 
 </script>
 
-<main class="page pt-32 flex flex-col lg:flex-row lg:ps-80 relative bg-gray-100">
-    <aside class="max-w-60 w-56 bg-stone-800 rounded-lg overflow-hidden lg:fixed lg:top-36 lg:left-6">
+<main class="page pt-32 flex flex-col lg:ps-[28em] relative bg-gray-100">
+    <aside class="max-w-60 w-56 bg-stone-800 rounded-lg overflow-hidden lg:fixed lg:top-36 lg:left-16">
         <ul class="grid grid-rows-[1fr, 3em] justify-between grid-cols-1">
             <li class="p-1 mx-auto max-w-56 overflow-hidden w-full">
                 {#if Template}

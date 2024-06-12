@@ -52,7 +52,8 @@ type InvoiceItems = {
   description: string,
   quantity?: number,
   price: string,
-  amount: string
+  amount: string,
+  saved: boolean
 }
 
 interface IBasicInvoiceData {

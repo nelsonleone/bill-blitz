@@ -5,20 +5,16 @@
     import { getInvoiceDateString } from "$lib/helperFns/getInvoiceDateValue";
 
     export let invoiceDate : any;
-
-    $: {
-      console.log(invoiceDate)
-    }
 </script>
    
 <DatePicker.Root weekdayFormat="short"  onValueChange={(val) => invoiceDate = getInvoiceDateString(val)} fixedWeeks={true}>
-    <div class="flex flex-col gap-1.5 justify-end w-60">
+    <div class="flex flex-col gap-1.5 justify-end w-56">
       <DatePicker.Label class="block select-none font-overpass"
         >Date</DatePicker.Label
       >
       <DatePicker.Input
         let:segments
-        class="flex w-full select-none font-overpass px-2 items-center bg-stone-100 border border-gray-500 text-right rounded-md p-3 h-12 tracking-[0.01em] text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover"
+        class="flex w-full select-none font-overpass px-2 items-center bg-stone-100 border border-gray-500 text-right rounded-md p-3 h-12 tracking-[0.01em] text-stone-700 focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-2 hover:border-emerald-700"
       >
         {#each segments as { part, value }}
           <div class="inline-block select-none uppercase">
@@ -29,7 +25,7 @@
             {:else}
               <DatePicker.Segment
                 {part}
-                class="rounded-5px px-1 text-stone-700 rounded-sm aria-[valuetext=Empty]:text-muted-foreground focus:bg-stone-300 focus:outline focus:outline-stone-500"
+                class="rounded-5px px-1 text-stone-600 rounded-sm aria-[valuetext=Empty]:text-muted-foreground focus:bg-stone-300 focus:outline focus:outline-stone-500"
               >
                 {value}
               </DatePicker.Segment>

@@ -3,6 +3,7 @@
     import { scale } from "svelte/transition";
     import Icon from "@iconify/svelte";
     import { CurrencyEnum } from "../../../enums";
+    import CurrencyIcon from "./CurrencyIcon.svelte";
 
     export let currency :  {
             value: CurrencyEnum,
@@ -50,7 +51,10 @@
       aria-label="Select a currency"
     >
       <Icon class="text-3xl" icon="fluent-mdl2:all-currency" />
-      <Select.Value class="text-base" placeholder="Select a theme" />
+      <div class="flex items-center gap-1">
+        <CurrencyIcon currency={currency?.value} styles="text-xl text-gray-300" />
+        <Select.Value class="text-base" placeholder="Select a currency" />
+      </div>
       <Icon class="text-2xl" icon="teenyicons:caret-vertical-small-outline" />
     </Select.Trigger>
     <Select.Content

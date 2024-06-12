@@ -12,9 +12,11 @@
     import { validateInputs } from "$lib/helperFns/formValidator";
     import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
     import { calculateInvoiceTotal } from "$lib/helperFns/calculateInvoiceTotal";
+    import { generateInvoiceNumber } from "$lib/helperFns/generateInvoiceNumber";
     import IconButton from "$lib/components/buttons/IconButton.svelte";
     import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
     import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
+    import InvoiceItemsTable from "$lib/components/invoice/InvoiceItemsTable.svelte";
 
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
@@ -25,20 +27,18 @@
     let issuerEmail : string = "";
     let footerText = setFooterText(issuerEmail)
     let invoiceDate : any;
-
-    $:{
-        console.log(invoiceDate)
-    }
+    let invoiceNumber : string;
 
     /** @type ValidationErrors */
     $: errors = {}
     /** @type any */
     let itemsErrors : ValidationErrors;
 
+
     const handleAddItem = () => {
         // Check if there are any items in the array
+        const lastItem = invoiceItemsArr[invoiceItemsArr.length - 1]
         if (invoiceItemsArr.length > 0) {
-            const lastItem = invoiceItemsArr[invoiceItemsArr.length - 1]
 
             // Validate the last item's properties
             itemsErrors = validateInputs([
@@ -76,15 +76,23 @@
             return;
         }
 
-        // Add a new item slot to the array
-        invoiceItemsArr = [...invoiceItemsArr, { amount: "", description: "", price: "", quantity: 1 }];
+        if(lastItem && !lastItem.saved){
+            // Save Current Item
+            const newInvoiceItemsArr = invoiceItemsArr.map(val => {
+                return {...val, saved: true }
+            })
+            invoiceItemsArr = newInvoiceItemsArr
+        }
+        else if(invoiceItemsArr.length === 0 || (lastItem && lastItem.saved)){
+            // Add a new item slot to the array
+            invoiceItemsArr = [...invoiceItemsArr, { amount: "", description: "", price: "", quantity: 1, saved: false }];
+        }
     }
 
 
     //Used Any Type Because [name and value] as exist on type Event
     const clearErrorOnInputChange = (e:any) => {
         if(itemsErrors && itemsErrors[e.currentTarget?.name]?.message){
-            console.log(itemsErrors[e.currentTarget?.name].message)
             itemsErrors[e.currentTarget?.name].message = "";
         }
     }
@@ -97,13 +105,20 @@
             return index === i ? {...item, [name]: value} : item
         })
     }
+
+
+
+    const handleRemoveItem = (index:number) => {
+        invoiceItemsArr = invoiceItemsArr.filter((item,i) => i !== index)
+    }
 </script>
 
-<form class="bg-base-color1 w-full shadow-md py-12 px-4">
-    <div class="mb-4">
+<form class="bg-base-color1 w-full shadow-md py-12 px-5 md:px-12">
+    <div class="mb-4 gap-2">
         <CurrenciesSelect bind:currency={currency} />
     </div>
-    <div class="flex flex-col justify-end">
+    <div class="relative flex flex-col justify-end md:items-end">
+        <h2 class="-rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-rubik w-fit h-fit">INVOICE</h2>
         <CompanyLogoUpload {uploadedLogo} />
         <div class="self-end text-right  text-stone-700 mt-4">
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
@@ -113,32 +128,32 @@
                 inputType="text" 
                 placeholder="Enter Enterprise name" 
                 label="Enterprise Name:" 
-                labelStyles=""
-                inputStyles="bg-stone-100 border border-gray-500 text-right rounded-md p-3 h-12"
+                labelStyles="block"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <div>
-                <h3 class="my-4 font-semibold text-primary-accent-color2 underline">Contact Info</h3>
+                <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
                 <InvoiceFormInput 
                     name="enterpriseAddress" 
                     id="enterprise-address" 
                     inputType="textArea" 
                     placeholder="Enter Enterprise address" 
                     label="Enterprise Address:" 
-                    labelStyles=""
-                    inputStyles="bg-stone-100 font-barlow max-w-64 p-4 text-right border border-gray-500 rounded-md"
+                    labelStyles="block"
+                    inputStyles="md:w-80 bg-stone-100 font-barlow max-w-64 p-4 border border-gray-500 rounded-md focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                 />
                 <div class="relative">
-                    <p class="mb-2 text-primary-accent-color1 underline">Optional Fields</p>
-                    <div class="absolute left-4 h-1/2 w-1 bg-stone-300 bottom-8"></div>
+                    <p class="mb-2 text-primary-accent-color1 text-sm underline">Optional Fields</p>
+                    <div class="absolute right-72 h-1/2 w-1 bg-stone-300 bottom-8 md:right-[21em]"></div>
                     <InvoiceFormInput 
                         name="enterpriseEmail" 
                         id="enterprise-email" 
                         inputType="text" 
                         placeholder="Enter Enterprise email" 
                         label="Enterprise Email:" 
-                        labelStyles=""
+                        labelStyles="block"
                         bind:value={issuerEmail}
-                        inputStyles="bg-stone-100 border border-gray-500 text-right rounded-md p-3 h-12"
+                        inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
                         containerStyles="m-0"
                     />
                     <InvoiceFormInput 
@@ -147,8 +162,8 @@
                         inputType="text" 
                         placeholder="Enter Enterprise phone" 
                         label="Enterprise Phone:" 
-                        labelStyles=""
-                        inputStyles="bg-stone-100 border border-gray-500 text-right rounded-md p-3 h-12"
+                        labelStyles="block"
+                        inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                     />
                 </div>
             </div>
@@ -165,12 +180,13 @@
                     id="invoice-number" 
                     inputType="text" 
                     placeholder="e.g 0001" 
-                    label="Invoice Number:" 
-                    labelStyles=""
+                    label="Invoice Number:"
+                    bind:value={invoiceNumber}
+                    labelStyles="block"
                     containerStyles="mb-[.7em]"
-                    inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
+                    inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                 />
-                <CustomButton styles="bg-stone-700 py-3">Generate</CustomButton>
+                <CustomButton styles="bg-stone-700 py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out" on:click={() => invoiceNumber = generateInvoiceNumber()}>Generate</CustomButton>
             </div>
             <div class="flex items-end justify-end mt-8">
                 <DatePicker {invoiceDate} />
@@ -189,34 +205,34 @@
                 inputType="text" 
                 placeholder="e.g Example enterprise" 
                 label="Enterprise Name:" 
-                labelStyles=""
+                labelStyles="block"
                 containerStyles="my-4"
-                inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
             />
-            <h3 class="my-4 font-semibold text-primary-accent-color2 underline">Contact Info</h3>
+            <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
             <InvoiceFormInput 
                 name="billToEnterpriseAddress" 
                 id="billTo-EnterpriseAddress" 
                 inputType="textArea" 
                 placeholder="e.g no.5 enterprise address street" 
                 label="Enterprise Address:" 
-                labelStyles="my-4"
+                labelStyles="block my-4"
                 containerStyles=""
-                inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
         </div>
     
         <div class="relative">
-            <p class="mb-2 text-primary-accent-color1 underline">Optional Fields</p>
-            <div class="absolute right-4 h-1/2 w-1 bg-stone-300 bottom-8"></div>
+            <p class="mb-2 text-primary-accent-color1 text-sm underline">Optional Fields</p>
+            <div class="absolute left-72 h-1/2 w-1 bg-stone-300 bottom-8 md:left-[21em]"></div>
             <InvoiceFormInput 
                 name="billToEnterpriseEmail" 
                 id="billToEnterprise-email" 
                 inputType="text" 
                 placeholder="Enter Enterprise email" 
                 label="Enterprise Email:" 
-                labelStyles=""
-                inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
+                labelStyles="block"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                 containerStyles="m-0"
             />
             <InvoiceFormInput 
@@ -225,8 +241,8 @@
                 inputType="text" 
                 placeholder="Enter Enterprise phone" 
                 label="Enterprise Phone:" 
-                labelStyles=""
-                inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
+                labelStyles="block"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
         </div>
     </div>
@@ -237,17 +253,18 @@
 
     <div>
         <h2 class="font-medium text-xl mb-4">Items</h2>
+        <InvoiceItemsTable currency={currency.value} {invoiceItemsArr} />
        {#if invoiceItemsArr?.length}
          {#each invoiceItemsArr as item, i (i)}
             {#if item}
-                <InvoiceFormItem {currency} errors={itemsErrors} setItemsInputValues={setItemsInputValues}  {...item} index={i} clearErrors={clearErrorOnInputChange} />
+                <InvoiceFormItem handleRemoveItem={handleRemoveItem} errors={itemsErrors} setItemsInputValues={setItemsInputValues}  {...item} index={i} clearErrors={clearErrorOnInputChange} />
             {/if}
          {/each}
        {:else}
          <p class="text-sm text-primary-accent-color2">You Haven't Added Any Item Yet</p>
        {/if}
 
-       <CustomButton on:click={handleAddItem} styles="bg-stone-600 shadow-sm flex gap-2 items-center py-3">
+       <CustomButton on:click={handleAddItem} styles="bg-stone-600 shadow-sm flex gap-2 items-center py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
          <span>Add</span>
          <Icon icon="fluent:copy-add-24-filled" class="text-2xl" aria-label="add" />
        </CustomButton>
@@ -255,7 +272,7 @@
 
 
     <div>
-        <div class="flex items-center bg-primary-very-dark-blue text-base-color1 rounded-md py-4 px-2 mt-16">
+        <div class="flex items-center justify-center bg-primary-very-dark-blue text-base-color1 rounded-md py-4 px-2 mt-16 w-11/12 md:w-2/5 mx-auto">
             <h3 id="total" class="text-xl font-semibold font-barlow uppercase ms-2">Total:</h3>
             <strong aria-describedby="total">
                 <CurrencyIcon styles="text-2xl me-1" currency={currency?.value} />
@@ -269,11 +286,11 @@
                 bind:value={total}
                 labelStyles="AT_only" 
                 containerStyles="col-span-3 mb-[0]"
-                inputStyles="text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10"
+                inputStyles="text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
 
         </div>
-        <CustomButton on:click={() => total = calculateInvoiceTotal(invoiceItemsArr)} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center">Use Total Calculator</CustomButton>
+        <CustomButton disabled={!invoiceItemsArr.length} on:click={() => total = calculateInvoiceTotal(invoiceItemsArr)} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center disabled:cursor-not-allowed disabled:opacity-40 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">Use Total Calculator</CustomButton>
     </div>
 
 
@@ -315,18 +332,18 @@
                 name="bankDetails" 
                 id="bank-details"
                 inputType="textArea"
-                placeholder="Example bank\n 123456790\n Example name" 
+                placeholder="Example bank&#10; 12345679&#10; Example name" 
                 label="Bank Account Details:"
-                labelStyles="" 
+                labelStyles="block" 
                 containerStyles="col-span-3 mb-[0] my-4"
-                inputStyles="bg-stone-100 border border-gray-500 rounded-md p-3"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <p class="font-rubik text-sm text-primary-accent-color1">Break into new lines after each detail</p>
         {/if}
     </div>
 
     <div>
-        <div class="mt-10 flex justify-center relative">
+        <div class="mt-10 flex justify-center relative w-80 mx-auto">
             <InvoiceFormInput 
                 name="footerText" 
                 id="footer-text"
@@ -337,10 +354,10 @@
                 labelStyles="AT_only"
                 readOnly={!editFooterText} 
                 containerStyles="col-span-3 mt-4 mb-[0]"
-                inputStyles="bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4"
             />
             
-            <CustomTooltip tooltipMssg="Edit" styles="absolute -top-3 -right-1 bg-transparent text-stone-700">
+            <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 right-0 bg-transparent text-stone-700">
                 <IconButton styles="bg-transparent text-stone-700" on:click={() => editFooterText = true}>
                     <Icon icon="flowbite:edit-solid" class="text-3xl" />
                 </IconButton>
@@ -351,7 +368,7 @@
                     footerText = setFooterText(issuerEmail)
                     editFooterText = false;
                 }} 
-                styles="bg-stone-600 shadow-sm self-end flex gap-2 items-center mt-4 py-2 mx-auto text-center">
+                styles="bg-stone-600 shadow-sm self-end flex gap-2 items-center mt-4 py-2 mx-auto text-center focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
                 Reset
             </CustomButton>
     </div>
