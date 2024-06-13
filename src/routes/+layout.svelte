@@ -63,12 +63,18 @@
   <meta name="twitter:image" content="/icons/logo.png" />
 </svelte:head>
 
-<Header beenAuthenticated={beenAuthenticated} user={user}  />
-
+<!-- HEADER -->
+{#if !$page.url.pathname.match("/generate/invoice/builder")}
+  <Header beenAuthenticated={beenAuthenticated} user={user}  />
+{/if}
+<!-- POPUPS -->
 <Alert />
 <CustomImagePreviewModal />
+
+<!-- PAGES -->
 <slot />
-{#if !$page.url.pathname.match("/auth/create_account")}
+<!-- FOOTER -->
+{#if !$page.url.pathname.match("/auth/create_account") && !$page.url.pathname.match("/generate/invoice/builder")}
   <Footer />
 {/if}
 

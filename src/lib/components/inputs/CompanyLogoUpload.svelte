@@ -20,8 +20,16 @@
 
     let name = 'uploadedLogo';
 
-    function handleFileLoad(err, fileItem) {
-        
+    const handleFileLoad = (fileItems) => {
+        const uploadedFile = fileItems[0].file;
+    
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const base64String = reader.result;
+          uploadedLogo = base64String;
+        }
+    
+        reader.readAsDataURL(uploadedFile)
     }
 </script>
 
@@ -37,7 +45,7 @@
         stylePanelAspectRatio="1:0.60"
         allowFileSizeValidation
         maxFileSize="200kb"
-        imagePreviewMinHeight={230}
+        imagePreviewMinHeight={280}
         required
         allowReplace
         {name}

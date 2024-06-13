@@ -6,7 +6,6 @@
     import { Checkbox, Label, Separator } from "bits-ui";
     import type { ICurrency, InvoiceItems, ValidationErrors } from "../../../types/types"
     import Icon from "@iconify/svelte";
-    import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
     import InvoiceFormItem from "$lib/components/invoice/InvoiceFormItem.svelte";
     import CurrenciesSelect from "$lib/components/invoice/CurrenciesSelect.svelte";
     import { validateInputs } from "$lib/helperFns/formValidator";
@@ -17,6 +16,7 @@
     import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
     import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
     import InvoiceItemsTable from "$lib/components/invoice/InvoiceItemsTable.svelte";
+    import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
 
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
@@ -109,12 +109,12 @@
 
 
     const handleRemoveItem = (index:number) => {
-        invoiceItemsArr = invoiceItemsArr.filter((item,i) => i !== index)
+        invoiceItemsArr = invoiceItemsArr.filter((_,i) => i !== index)
     }
 </script>
 
-<form class="bg-base-color1 w-full shadow-md py-12 px-5 md:px-12">
-    <div class="mb-4 gap-2">
+<form class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12">
+    <div class="mb-4">
         <CurrenciesSelect bind:currency={currency} />
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
@@ -157,8 +157,8 @@
                         containerStyles="m-0"
                     />
                     <InvoiceFormInput 
-                        name="billToEnterprisePhone" 
-                        id="billToEnterprise-phone" 
+                        name="billToCustomerPhone" 
+                        id="billToCustomer-phone" 
                         inputType="text" 
                         placeholder="Enter Enterprise phone" 
                         label="Enterprise Phone:" 
@@ -200,49 +200,14 @@
         <div class="mt-16">
             <p class="font-medium mb-3 text-xl">Bill To</p>
             <InvoiceFormInput 
-                name="billToEnterpriseName" 
-                id="billTo-EnterpriseName" 
+                name="billToCustomerName" 
+                id="billTo-CustomerName" 
                 inputType="text" 
-                placeholder="e.g Example enterprise" 
-                label="Enterprise Name:" 
+                placeholder="e.g Example customer" 
+                label="Customer Name:" 
                 labelStyles="block"
                 containerStyles="my-4"
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
-            />
-            <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
-            <InvoiceFormInput 
-                name="billToEnterpriseAddress" 
-                id="billTo-EnterpriseAddress" 
-                inputType="textArea" 
-                placeholder="e.g no.5 enterprise address street" 
-                label="Enterprise Address:" 
-                labelStyles="block my-4"
-                containerStyles=""
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-            />
-        </div>
-    
-        <div class="relative">
-            <p class="mb-2 text-primary-accent-color1 text-sm underline">Optional Fields</p>
-            <div class="absolute left-72 h-1/2 w-1 bg-stone-300 bottom-8 md:left-[21em]"></div>
-            <InvoiceFormInput 
-                name="billToEnterpriseEmail" 
-                id="billToEnterprise-email" 
-                inputType="text" 
-                placeholder="Enter Enterprise email" 
-                label="Enterprise Email:" 
-                labelStyles="block"
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-                containerStyles="m-0"
-            />
-            <InvoiceFormInput 
-                name="enterprisePhone" 
-                id="enterprise-phone" 
-                inputType="text" 
-                placeholder="Enter Enterprise phone" 
-                label="Enterprise Phone:" 
-                labelStyles="block"
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
         </div>
     </div>
@@ -273,105 +238,48 @@
     </div>
 
 
-    <div>
-        <div class="flex items-center justify-center bg-emerald-800 text-base-color1 rounded-md py-4 px-2 mt-16 w-11/12 md:w-2/5 mx-auto">
-            <h3 id="total" class="text-xl font-semibold font-barlow uppercase ms-2">Total:</h3>
-            <strong aria-describedby="total">
-                <CurrencyIcon styles="text-2xl me-1" currency={currency?.value} />
-            </strong>
-            <InvoiceFormInput 
-                name="total" 
-                id={`invoiceItems-total`}
-                inputType="number"
-                placeholder="Enter invoice total" 
-                label="Invoice items total"
-                bind:value={total}
-                labelStyles="AT_only" 
-                containerStyles="col-span-3 mb-[0]"
-                inputStyles="text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-            />
-
+    <div class="my-10">
+        <div class="mx-auto flex flex-col bg-emerald-800 text-base-color1 py-4 px-2 rounded-sm">
+            <div class="flex my-2">
+                <h3 id="sub-total" class="text-xl text-nowrap flex items-center font-semibold font-barlow uppercase ms-2">
+                    Sub Total:
+                    <strong>
+                        <CurrencyIcon styles="text-xl me-1 opacity-70" currency={currency?.value} />
+                    </strong>
+                </h3>
+                <InvoiceFormInput 
+                    name="subTotal" 
+                    id={`invoiceItems-sub-total`}
+                    inputType="number"
+                    placeholder="Enter invoice sub-total" 
+                    label="Invoice items sub-total"
+                    labelStyles="AT_only" 
+                    containerStyles="col-span-3 mb-[0]"
+                    inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                />
+            </div>
+            <div class="flex my-2">
+                <h3 id="total" class="text-xl flex items-center font-semibold font-barlow uppercase ms-2">
+                    Total:
+                    <strong>
+                        <CurrencyIcon styles="text-xl me-1 opacity-70" currency={currency?.value} />
+                    </strong>
+                </h3>
+                <InvoiceFormInput 
+                    name="total" 
+                    id={`invoiceItems-total`}
+                    inputType="number"
+                    placeholder="Enter invoice total" 
+                    label="Invoice items total"
+                    bind:value={total}
+                    labelStyles="AT_only" 
+                    containerStyles="col-span-3 mb-[0]"
+                    inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                />
+            </div>
         </div>
         <CustomButton disabled={!invoiceItemsArr.length} on:click={() => total = calculateInvoiceTotal(invoiceItemsArr)} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center disabled:cursor-not-allowed disabled:opacity-40 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">Use Total Calculator</CustomButton>
     </div>
 
-
-    <Separator.Root
-        class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
-    /> 
-
-    <div class="text-stone-700 ">
-        <div class="mt-10 flex items-center gap-3">
-            <Checkbox.Root
-              id="terms"
-              aria-labelledby="terms-label"
-              class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
-              bind:checked={includeBankDetails}
-            >
-              <Checkbox.Indicator
-                let:isChecked
-                let:isIndeterminate
-                class="inline-flex items-center justify-center text-background"
-              >
-                {#if isChecked}
-                    <Icon icon="mingcute:check-2-fill" />
-                {:else if isIndeterminate}
-                    <Icon icon="fluent-emoji-flat:minus" />
-                {/if}
-              </Checkbox.Indicator>
-            </Checkbox.Root>
-            <Label.Root
-              id="terms-label"
-              for="terms"
-              class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Include Bank Details
-            </Label.Root>
-        </div>
-
-        {#if includeBankDetails}
-            <InvoiceFormInput 
-                name="bankDetails" 
-                id="bank-details"
-                inputType="textArea"
-                placeholder="Example bank&#10; 12345679&#10; Example name" 
-                label="Bank Account Details:"
-                labelStyles="block" 
-                containerStyles="col-span-3 mb-[0] my-4"
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-            />
-            <p class="font-rubik text-sm text-primary-accent-color1">Break into new lines after each detail</p>
-        {/if}
-    </div>
-
-    <div>
-        <div class="mt-10 relative flex justify-center">
-            <InvoiceFormInput 
-                name="footerText" 
-                id="footer-text"
-                inputType="textArea"
-                placeholder="" 
-                label="Help Information"
-                bind:value={footerText}
-                labelStyles="AT_only"
-                readOnly={!editFooterText} 
-                containerStyles="mt-4 mb-[0]"
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-            />
-            
-            <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 right-0 bg-[white] text-stone-700">
-                <IconButton styles="bg-transparent text-stone-700" on:click={() => editFooterText = true}>
-                    <Icon icon="flowbite:edit-solid" class="text-3xl" />
-                </IconButton>
-            </CustomTooltip>
-            </div>
-            <CustomButton 
-                on:click={() => {
-                    footerText = setFooterText(issuerEmail)
-                    editFooterText = false;
-                }} 
-                styles="bg-stone-600 shadow-sm self-end flex gap-2 items-center mt-4 py-2 mx-auto text-center focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
-                Reset
-            </CustomButton>
-    </div>
+    <SignaturePad />
 </form>

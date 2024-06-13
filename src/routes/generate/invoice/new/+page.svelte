@@ -4,7 +4,8 @@
     import { getTemplate } from "$lib/helperFns/getTemplate";
     import BlueMinimalist from "$lib/templates/BlueMinimalist.svelte";
     import WhiteSimple from "$lib/templates/WhiteSimple.svelte";
-    import WhiteSampleForm from "$lib/templates/builder/WhiteSampleForm.svelte";
+    import BlueMinimalistForm from "$lib/templates/invoiceForm/BlueMinimalistForm.svelte";
+    import WhiteSampleForm from "$lib/templates/invoiceForm/WhiteSampleForm.svelte";
     import { TemplateNames } from "../../../../enums";
 
     let searchParam = $page.url.searchParams.get("template")
@@ -43,8 +44,16 @@
     </aside>
 
     {#if searchParam === TemplateNames.WhiteSimple}
-      <div class="mt-16">
-         <WhiteSampleForm />
-      </div>
+        <div class="mt-16">
+            <WhiteSampleForm />
+        </div>
+      {:else if searchParam === TemplateNames.BlueMinimalist}
+        <div class="mt-16">
+            <BlueMinimalistForm />
+        </div>
+      {:else if searchParam === TemplateNames.PlainTemplate}
+        <div class="mt-16">
+            <BlueMinimalistForm />
+        </div>
     {/if}
 </main>

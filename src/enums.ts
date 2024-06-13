@@ -5,7 +5,8 @@ export enum AlertSeverity {
 
 export enum TemplateNames {
     BlueMinimalist = "BlueMinimalist",
-    WhiteSimple = "WhiteSimple"
+    WhiteSimple = "WhiteSimple",
+    PlainTemplate = "PlainTemplate"
 }
 
 export enum CurrencyEnum {

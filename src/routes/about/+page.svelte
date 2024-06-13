@@ -1,11 +1,11 @@
 <script>
     import CustomButton from "$lib/components/buttons/CustomButton.svelte";
     import Icon from "@iconify/svelte";
-
 </script>
-<main class="page px-0 md:px-0 lg:px-0 mt-0 md:mt-16">
+
+<main class="page px-0 md:px-8 xl:px-16 mt-0 md:mt-16 lg:pt-24">
     <section class="flex flex-col-reverse md:flex-row md:w-[95%] md:justify-center md:mx-auto rounded-2xl">
-        <div class="bg-callout text-base-color1 px-4 py-8 text-center md:rounded-tl-2xl rounded-bl-2xl md:text-left md:px-20 md:w-1/2">
+        <div class="bg-callout text-base-color1 py-8 text-center md:rounded-tl-2xl rounded-bl-2xl md:text-left md:px-20 md:w-1/2">
             <h1 class="text-3xl my-6 uppercase">About Us</h1>
             <p class="leading-7">BillBlitz is an all-in-one invoicing solution designed to simplify your billing process. With our user-friendly platform and customizable templates, you can create professional invoices, and receipts in minutes.
                 Whether you're a freelancer or run a small business, BillBlitz helps you get paid faster and maintain a polished brand image. Our platform seamlessly integrates with your workflow, saving you time and allowing you to focus on growth.
@@ -13,7 +13,7 @@
             </p>
         </div>
         <div class="md:w-1/2">
-            <img src="/images/pexels-fauxels-3184418.jpg" alt="hands together" class="h-80 w-full object-cover md:h-full rounded-tr-2xl rounded-br-2xl" />
+            <img src="/images/pexels-fauxels-3184418.jpg" alt="hands together" class="h-80 w-full object-cover md:h-full md:rounded-tr-2xl md:rounded-br-2xl" />
         </div>
     </section>
 

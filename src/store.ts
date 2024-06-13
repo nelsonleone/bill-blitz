@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { AlertSeverity } from "./enums";
+import type { AlertSeverity, TemplateNames } from "./enums";
 
 interface IStoreValue {
     severity: AlertSeverity | undefined,
@@ -19,8 +19,11 @@ const imagePreviewModalVal : IimagePreviewModalStore = {
     src: null
 }
 
+const builtTemplate : TemplateNames | null = null;
+
 
 export const alertStore = writable(storeValue)
 export const imagePreviewModalStore = writable(imagePreviewModalVal)
 export const hasUnsavedChanges = writable(false)
 export const showNav = writable(false)
+export const builtTemplateStore = writable(builtTemplate)
