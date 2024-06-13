@@ -118,7 +118,7 @@
         <CurrenciesSelect bind:currency={currency} />
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
-        <h2 class="-rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-rubik w-fit h-fit">INVOICE</h2>
+        <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-rubik w-fit h-fit">INVOICE</h2>
         <CompanyLogoUpload {uploadedLogo} />
         <div class="self-end text-right  text-stone-700 mt-4">
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
@@ -248,12 +248,12 @@
     </div>
 
     <Separator.Root
-        class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        class="my-8 lg:my-16 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
     /> 
 
     <div>
         <h2 class="font-medium text-xl mb-4">Items</h2>
-        {#if invoiceItemsArr?.length > 0 && (invoiceItemsArr.length > 1 && invoiceItemsArr[invoiceItemsArr.length - 1].saved)}
+        {#if invoiceItemsArr?.length > 0 && invoiceItemsArr[0].saved}
             <InvoiceItemsTable currency={currency.value} {invoiceItemsArr} />
         {/if}
        {#if invoiceItemsArr?.length}
@@ -274,7 +274,7 @@
 
 
     <div>
-        <div class="flex items-center justify-center bg-primary-very-dark-blue text-base-color1 rounded-md py-4 px-2 mt-16 w-11/12 md:w-2/5 mx-auto">
+        <div class="flex items-center justify-center bg-emerald-800 text-base-color1 rounded-md py-4 px-2 mt-16 w-11/12 md:w-2/5 mx-auto">
             <h3 id="total" class="text-xl font-semibold font-barlow uppercase ms-2">Total:</h3>
             <strong aria-describedby="total">
                 <CurrencyIcon styles="text-2xl me-1" currency={currency?.value} />
@@ -345,7 +345,7 @@
     </div>
 
     <div>
-        <div class="mt-10 flex justify-center relative w-80 mx-auto">
+        <div class="mt-10 relative flex justify-center">
             <InvoiceFormInput 
                 name="footerText" 
                 id="footer-text"
@@ -355,11 +355,11 @@
                 bind:value={footerText}
                 labelStyles="AT_only"
                 readOnly={!editFooterText} 
-                containerStyles="col-span-3 mt-4 mb-[0]"
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4"
+                containerStyles="mt-4 mb-[0]"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             
-            <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 right-0 bg-transparent text-stone-700">
+            <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 right-0 bg-[white] text-stone-700">
                 <IconButton styles="bg-transparent text-stone-700" on:click={() => editFooterText = true}>
                     <Icon icon="flowbite:edit-solid" class="text-3xl" />
                 </IconButton>

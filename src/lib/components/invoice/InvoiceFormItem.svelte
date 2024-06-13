@@ -25,7 +25,7 @@
     }
 </script>
 
-<div class={`bg-stone-700 text-base-color1 rounded-md p-4 mb-5 relative ${saved ? "lg:hidden" : ""}`} in:slide={{delay: 500, duration: 400, easing: eases.linear }} out:fade={{delay: 200, duration: 300 }}>
+<div class={`bg-transparent shadow-xl my-10 text-stone-800 rounded-md p-4 relative ${saved ? "lg:hidden" : ""}`} in:slide={{delay: 500, duration: 400, easing: eases.linear }}>
     <CustomTooltip styles="absolute bg-red-300 text-primary-very-dark-blue -top-2 -right-1" tooltipMssg="Remove">
         <IconButton on:click={() => handleRemoveItem(index)} styles="bg-transparent text-primary-very-dark-blue text-2xl"><Icon icon="mdi:cancel-box" /></IconButton>
     </CustomTooltip>
@@ -40,7 +40,7 @@
             labelStyles=""
             on:change={handleOnChange}
             containerStyles="col-span-3"
-            inputStyles="text-stone-700 bg-stone-100 border border-gray-500 w-full rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+            inputStyles="text-stone-700 bg-stone-100 border border-stone-700 w-full rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
         />
     {/if}
     {#if !saved}
@@ -55,7 +55,7 @@
                 labelStyles=""
                 on:change={handleOnChange}
                 containerStyles="w-[30%]"
-                inputStyles="text-stone-700 bg-stone-100 border w-full border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <InvoiceFormInput 
                 name="price" 
@@ -67,7 +67,7 @@
                 labelStyles=""
                 on:change={handleOnChange}
                 containerStyles="w-[30%]"
-                inputStyles="text-stone-700 bg-stone-100 border w-full border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <InvoiceFormInput 
                 name="amount" 
@@ -79,34 +79,34 @@
                 on:change={handleOnChange}
                 containerStyles="w-[30%]"
                 labelStyles=""
-                inputStyles="text-stone-700 bg-stone-100 border w-full border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
         </div>
+
+            
+        {#if Object.values(errors)[0]?.message}
+            <p role="alert" class="text-primary-accent-color3 text-sm mt-3 flex gap-2 items-center"><Icon class="text-xl" icon="ic:baseline-error" />{Object.values(errors)[0]?.message}</p>
+        {/if}
     {/if}
 
     {#if saved}
-        <div class="flex flex-wrap justify-between md:grid grid-cols-4 place-content-between lg:hidden">
-            <p class="text-emerald-300 w-2/5 md:w-full font-barlow text-lg">
+        <div class="flex flex-wrap gap-4 justify-between md:grid grid-cols-4 lg:mt-0 md:place-content-between lg:hidden">
+            <p class="text-emerald-700 font-medium w-2/5 md:w-full font-barlow">
                 Description 
-                <strong class="text-base-color1 block font-medium font-overpass">{description}</strong>
+                <strong class="text-stone-800 block font-normal font-overpass">{description}</strong>
             </p>
-            <p class="text-emerald-300 w-2/5 md:w-full font-barlow text-lg text-center">
+            <p class="text-emerald-700 font-medium w-2/5 md:w-full font-barlow md:text-center">
                 Quantity 
-                <strong class="text-base-color1 block font-medium font-overpass">{quantity}</strong>
+                <strong class="text-stone-800 block font-normal font-overpass">{quantity}</strong>
             </p>
-            <p class="text-emerald-300 w-2/5 md:w-full font-barlow text-lg text-center">
+            <p class="text-emerald-700 font-medium w-2/5 md:w-full font-barlow md:text-center">
                 Price 
-                <strong class="text-base-color1 block font-medium font-overpass">{price}</strong>
+                <strong class="text-stone-800 block font-normal font-overpass">{price}</strong>
             </p>
-            <p class="text-emerald-300 w-2/5 md:w-full font-barlow text-lg text-center">
+            <p class="text-emerald-700 font-medium w-2/5 md:w-full font-barlow md:text-center">
                 Amount 
-                <strong class="text-base-color1 block font-medium font-overpass">{amount}</strong>
+                <strong class="text-stone-800 block font-normal font-overpass">{amount}</strong>
             </p>
         </div>
-    {/if}
-
-
-    {#if Object.values(errors)[0]?.message}
-        <p role="alert" class="text-red-300 text-sm mt-3 flex gap-2 items-center"><Icon class="text-xl" icon="ic:baseline-error" />{Object.values(errors)[0]?.message}</p>
     {/if}
 </div>
