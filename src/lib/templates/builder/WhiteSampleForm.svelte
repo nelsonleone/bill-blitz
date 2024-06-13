@@ -253,7 +253,9 @@
 
     <div>
         <h2 class="font-medium text-xl mb-4">Items</h2>
-        <InvoiceItemsTable currency={currency.value} {invoiceItemsArr} />
+        {#if invoiceItemsArr?.length > 0 && (invoiceItemsArr.length > 1 && invoiceItemsArr[invoiceItemsArr.length - 1].saved)}
+            <InvoiceItemsTable currency={currency.value} {invoiceItemsArr} />
+        {/if}
        {#if invoiceItemsArr?.length}
          {#each invoiceItemsArr as item, i (i)}
             {#if item}
@@ -264,7 +266,7 @@
          <p class="text-sm text-primary-accent-color2">You Haven't Added Any Item Yet</p>
        {/if}
 
-       <CustomButton on:click={handleAddItem} styles="bg-stone-600 shadow-sm flex gap-2 items-center py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
+       <CustomButton on:click={handleAddItem} styles="bg-stone-600 lg:mt-8 shadow-sm flex gap-2 items-center py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
          <span>Add</span>
          <Icon icon="fluent:copy-add-24-filled" class="text-2xl" aria-label="add" />
        </CustomButton>

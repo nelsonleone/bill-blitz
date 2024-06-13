@@ -25,7 +25,7 @@
     }
 </script>
 
-<div class="bg-stone-700 text-base-color1 rounded-md p-4 mb-5 relative" in:slide={{delay: 500, duration: 400, easing: eases.linear }} out:fade={{delay: 200, duration: 300 }}>
+<div class={`bg-stone-700 text-base-color1 rounded-md p-4 mb-5 relative ${saved ? "lg:hidden" : ""}`} in:slide={{delay: 500, duration: 400, easing: eases.linear }} out:fade={{delay: 200, duration: 300 }}>
     <CustomTooltip styles="absolute bg-red-300 text-primary-very-dark-blue -top-2 -right-1" tooltipMssg="Remove">
         <IconButton on:click={() => handleRemoveItem(index)} styles="bg-transparent text-primary-very-dark-blue text-2xl"><Icon icon="mdi:cancel-box" /></IconButton>
     </CustomTooltip>
