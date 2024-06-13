@@ -12,22 +12,27 @@
     import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
     import { calculateInvoiceTotal } from "$lib/helperFns/calculateInvoiceTotal";
     import { generateInvoiceNumber } from "$lib/helperFns/generateInvoiceNumber";
-    import IconButton from "$lib/components/buttons/IconButton.svelte";
-    import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
-    import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
     import InvoiceItemsTable from "$lib/components/invoice/InvoiceItemsTable.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
+    import Signature from "$lib/components/inputs/Signature.svelte";
+    import { signatureLayer } from "../../../store";
 
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
     let currency : ICurrency;
     let total : number | undefined;
-    let includeBankDetails = false;
-    let editFooterText = false;
     let issuerEmail : string = "";
-    let footerText = setFooterText(issuerEmail)
     let invoiceDate : any;
     let invoiceNumber : string;
+    let includeSignature = false;
+    $: openSignaturePad = includeSignature;
+
+    const handleShowOpenSignaturePad = () => {
+        if(openSignaturePad && !$signatureLayer.length){
+            includeSignature = false;
+        }
+        openSignaturePad = !openSignaturePad;
+    }
 
     /** @type ValidationErrors */
     $: errors = {}
@@ -281,5 +286,49 @@
         <CustomButton disabled={!invoiceItemsArr.length} on:click={() => total = calculateInvoiceTotal(invoiceItemsArr)} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center disabled:cursor-not-allowed disabled:opacity-40 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">Use Total Calculator</CustomButton>
     </div>
 
-    <SignaturePad />
+    
+    <Separator.Root
+        class="my-8 lg:my-16 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+    /> 
+
+    <div>
+        <div class="mt-10 flex items-center gap-3">
+            <Checkbox.Root
+              id="terms"
+              aria-labelledby="terms-label"
+              class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
+              bind:checked={includeSignature}
+            >
+              <Checkbox.Indicator
+                let:isChecked
+                let:isIndeterminate
+                class="inline-flex items-center justify-center text-background"
+              >
+                {#if isChecked}
+                    <Icon icon="mingcute:check-2-fill" />
+                {:else if isIndeterminate}
+                    <Icon icon="fluent-emoji-flat:minus" />
+                {/if}
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+            <Label.Root
+              id="terms-label"
+              for="terms"
+              class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Include Signature
+            </Label.Root>
+        </div>
+        <SignaturePad {openSignaturePad} {handleShowOpenSignaturePad} />
+        
+        {#if $signatureLayer.length && includeSignature}
+            {#each $signatureLayer as layer}
+                <Signature {layer} />
+            {/each}
+            <button on:click={() => {
+                signatureLayer.set([])
+                includeSignature = false;
+            }} class="underline text-primary-accent-color3 opacity-90">Remove</button>
+        {/if}
+    </div>
 </form>

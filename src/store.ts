@@ -20,6 +20,7 @@ const imagePreviewModalVal : IimagePreviewModalStore = {
 }
 
 const builtTemplate : TemplateNames | null = null;
+const layers: { path: string; width: number; height: number }[] = []
 
 
 export const alertStore = writable(storeValue)
@@ -27,3 +28,4 @@ export const imagePreviewModalStore = writable(imagePreviewModalVal)
 export const hasUnsavedChanges = writable(false)
 export const showNav = writable(false)
 export const builtTemplateStore = writable(builtTemplate)
+export const signatureLayer = writable(layers)
