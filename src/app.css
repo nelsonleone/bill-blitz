@@ -37,11 +37,22 @@
 	.animate-ping-pong-hover {
 		animation: ping-pong-hover 1s ease-in-out infinite;
 	}
-	  
 }
 
 @layer components {
 	.page{
 		@apply px-4 lg:px-16 min-h-screen pt-20 pb-20 lg:pt-4;
 	}
+}
+
+
+
+
+/* Color Picker Forceful override */
+.color-input-li .wrapper{
+	position: absolute !important;
+	right: -10em !important;
+	top: -10em !important;
+	
+	@apply text-stone-700;
 }

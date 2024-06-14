@@ -105,8 +105,6 @@
         })
     }
 
-
-
     const handleRemoveItem = (index:number) => {
         invoiceItemsArr = invoiceItemsArr.filter((_,i) => i !== index)
     }
@@ -199,22 +197,22 @@
         <div class="mt-16">
             <p class="font-medium mb-3 text-xl">Bill To</p>
             <InvoiceFormInput 
-                name="billToEnterpriseName" 
-                id="billTo-EnterpriseName" 
+                name="billToCustomerName" 
+                id="billTo-CustomerName" 
                 inputType="text" 
-                placeholder="e.g Example enterprise" 
-                label="Enterprise Name:" 
+                placeholder="e.g Example customer" 
+                label="Customer Name:" 
                 labelStyles="block"
                 containerStyles="my-4"
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
             />
             <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
             <InvoiceFormInput 
-                name="billToEnterpriseAddress" 
-                id="billTo-EnterpriseAddress" 
+                name="billToCustomerAddress" 
+                id="billTo-CustomerAddress" 
                 inputType="textArea" 
-                placeholder="e.g no.5 enterprise address street" 
-                label="Enterprise Address:" 
+                placeholder="e.g no.5 customer address street" 
+                label="Customer Address:" 
                 labelStyles="block my-4"
                 containerStyles=""
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
@@ -225,21 +223,21 @@
             <p class="mb-2 text-primary-accent-color1 text-sm underline">Optional Fields</p>
             <div class="absolute left-72 h-1/2 w-1 bg-stone-300 bottom-8 md:left-[21em]"></div>
             <InvoiceFormInput 
-                name="billToEnterpriseEmail" 
-                id="billToEnterprise-email" 
+                name="billToCustomerEmail" 
+                id="billToCustomer-email" 
                 inputType="text" 
-                placeholder="Enter Enterprise email" 
-                label="Enterprise Email:" 
+                placeholder="Enter Customer email" 
+                label="Customer Email:" 
                 labelStyles="block"
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                 containerStyles="m-0"
             />
             <InvoiceFormInput 
-                name="enterprisePhone" 
-                id="enterprise-phone" 
+                name="customerPhone" 
+                id="customer-phone" 
                 inputType="text" 
-                placeholder="Enter Enterprise phone" 
-                label="Enterprise Phone:" 
+                placeholder="Enter customer phone" 
+                label="Customer Phone:" 
                 labelStyles="block"
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
@@ -302,7 +300,7 @@
     <div class="text-stone-700 ">
         <div class="mt-10 flex items-center gap-3">
             <Checkbox.Root
-              id="terms"
+              id="includeBankDetails"
               aria-labelledby="terms-label"
               class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
               bind:checked={includeBankDetails}
@@ -343,8 +341,12 @@
         {/if}
     </div>
 
+    <Separator.Root
+        class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+    /> 
+
     <div>
-        <div class="mt-10 relative flex justify-center w-11/12 mx-auto">
+        <div class="mt-10 relative flex justify-center mx-auto max-w-80">
             <InvoiceFormInput 
                 name="footerText" 
                 id="footer-text"
@@ -355,8 +357,9 @@
                 labelStyles="AT_only"
                 readOnly={!editFooterText} 
                 containerStyles="mt-4 mb-[0]"
-                inputStyles="w-[100%] md:w-80 bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                inputStyles="w-[100%] bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
+            
             
             <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 -right-1 bg-[white] text-stone-700">
                 <IconButton styles="bg-transparent text-stone-700" on:click={() => editFooterText = true}>

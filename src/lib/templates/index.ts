@@ -1,9 +1,9 @@
-import PlainTemplate from "./PlainTemplate.svelte";
+import BlackWhiteMinimalist from "./BlackWhiteMinimalist.svelte";
 import BlueMinimalist from "./BlueMinimalist.svelte";
 import WhiteSimple from "./WhiteSimple.svelte";
 
 export const templatesArray = {
-    PlainTemplate,
+    BlackWhiteMinimalist,
     BlueMinimalist,
     WhiteSimple
 }

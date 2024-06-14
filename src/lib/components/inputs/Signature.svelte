@@ -6,9 +6,7 @@
     }
 </script>
 
-<div class="h-36">
-    <svg class="fill-black" viewBox="0 0 {layer.width * 2} {layer.height * 2}">
-        <path d={layer.path} />
-    </svg>
-</div>
+<svg class="fill-black" height={150} viewBox="0 0 {layer.width * 2} {layer.height * 2}">
+    <path d={layer.path} />
+</svg>
   

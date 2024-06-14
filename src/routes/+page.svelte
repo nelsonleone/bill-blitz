@@ -6,7 +6,7 @@
     import { Video } from "flowbite-svelte";
 
 </script>
-<main class="page px-0 lg:px-0 w-full pt-0 lg:pt-0">
+<main class="page px-0 lg:px-0 w-full pt-20 lg:pt-0">
     <!-- Intro Section -->
     <section class="px-4 md:px-6 bg-intro-secton py-20 h-[85vh] lg:h-screen rounded-bl-[5.5em] md:rounded-bl-[9.5em] text-base-color1 flex justify-center text-center flex-col">
         <h1 class="text-4xl font-barlow font-semibold md:text-5xl">A modern bill generating platform</h1>

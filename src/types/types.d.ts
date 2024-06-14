@@ -1,3 +1,4 @@
+import type { SvelteComponent } from "svelte";
 import type { CurrencyEnum } from "../enums";
 
 export type AuthPageInputData = {
@@ -57,8 +58,8 @@ type InvoiceItems = {
 }
 
 interface IBasicInvoiceData {
-  logo: string,
-  logoText: string,
+  logo?: string,
+  logoText?: string,
   issuer: {
     name: string,
     contactInfo?: IinvoiceContactInfo
@@ -75,15 +76,12 @@ interface IBasicInvoiceData {
     items: InvoiceItems[]
   },
 
-  accountDetails: {
+  accountDetails?: {
     included: boolean,
     account: string
   },
 
-  signatureInfo:{
-    included: boolean,
-    signatureI: string
-  }
+  signature: SvelteComponent
 }
 
 

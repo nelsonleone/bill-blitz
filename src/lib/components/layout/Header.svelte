@@ -119,7 +119,12 @@
                             </DropdownMenu.Trigger>
                            
                             <DropdownMenu.Content class="absolute z-50 bg-gray-100 rounded-md text-primary-very-dark-blue shadow-2xl px-3 pt-8 pb-4">
-                              <DropdownMenu.Item class="text-primary-accent-color2">
+                              <DropdownMenu.Item class="flex items-center gap-4 mb-4">
+                                  <Icon class="text-2xl text-primary-very-dark-blue" icon="mage:email" />
+                                  <span>{user?.user_metadata.display_name || user?.user_metadata.full_name}</span>
+                              </DropdownMenu.Item>
+                              <DropdownMenu.Item class="flex items-center gap-4">
+                                  <Icon class="text-2xl text-primary-very-dark-blue" icon="zondicons:user" />
                                   <span>{user?.email}</span>
                               </DropdownMenu.Item>
                               <DropdownMenu.Item>

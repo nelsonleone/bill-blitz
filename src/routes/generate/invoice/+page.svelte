@@ -14,7 +14,7 @@
     let activeTab : "allInvoices" | "Downloaded" | "Draft"  = "allInvoices";
 </script>
 
-<main class="page text-primary-very-dark-blue bg-gray-100 lg:py-20 lg:px-24">
+<main class="page text-primary-very-dark-blue bg-gray-100 lg:py-20 md:px-8 xl:px-16">
     <h1 class="mt-16 relative pb-2 font-semibold text-4xl after:w-16 after:bottom-0 after:rounded-lg after:bg-primary-accent-color2 after:h-1 after:absolute after:left-0">Invoices</h1>
 
     <div class="mt-10 rounded-md p-4 bg-stone-300 flex flex-wrap gap-[5%] shadow-md md:max-w-[22em]">
@@ -30,15 +30,15 @@
     </div>
 
     <div>
-        <Tabs.Root value={activeTab || "invoice"} class="mx-auto w-full mt-8 md:w-96 bg-stone-400 rounded-md text-primary-very-dark-blue">
+        <Tabs.Root value={activeTab || "invoice"} class="mx-auto mt-8 md:w-96 bg-stone-400 rounded-md text-primary-very-dark-blue">
             <Tabs.List class="grid grid-cols-3 justify-items-center gap-0">
-              <Tabs.Trigger on:click={() => activeTab = "allInvoices"} class={`${activeTab === "allInvoices" ? "bg-base-color1" : "bg-transparent"} w-full rounded-tl-md rounded-bl-md border border-stone-400 p-3 text-center`} value="allInvoices">
+              <Tabs.Trigger on:click={() => activeTab = "allInvoices"} class={`${activeTab === "allInvoices" ? "bg-base-color1" : "bg-transparent"} min-w-full rounded-tl-md rounded-bl-md border border-stone-400 py-3 text-center`} value="allInvoices">
                     All Invoices
               </Tabs.Trigger>
-           <Tabs.Trigger on:click={() => activeTab = "Downloaded"} class={`${activeTab === "Downloaded" ? "bg-base-color1" : "bg-transparent"} w-full border border-r border-x-stone-500 border-stone-400 p-3 text-center`} value="Downloaded" >
+           <Tabs.Trigger on:click={() => activeTab = "Downloaded"} class={`${activeTab === "Downloaded" ? "bg-base-color1" : "bg-transparent"} min-w-full border-r border-r-stone-300 py-3 text-center`} value="Downloaded" >
                     Downloaded
               </Tabs.Trigger>
-              <Tabs.Trigger on:click={() => activeTab = "Draft"} class={`${activeTab === "Draft" ? "bg-base-color1" : "bg-transparent"} w-full rounded-tr-md rounded-br-md border border-stone-400 p-3 text-center`} value="Draft">
+              <Tabs.Trigger on:click={() => activeTab = "Draft"} class={`${activeTab === "Draft" ? "bg-base-color1" : "bg-transparent"} min-w-full rounded-tr-md rounded-br-md py-3 text-center`} value="Draft">
                     Draft
               </Tabs.Trigger>
     
@@ -48,7 +48,7 @@
         </Tabs.Root>
 
 
-        <div class="bg-base-color1 shadow-md mt-10 pt-4 pb-10 px-4">
+        <div class="bg-base-color1 shadow-md mt-10 pt-4 pb-10 px-4 lg:w-2/3 lg:mx-auto">
             <div class="flex justify-between items-center border-b border-b-slate-300">
                 <p>Invoice</p>
                 <p>Client</p>

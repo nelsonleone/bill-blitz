@@ -6,8 +6,8 @@
     import { fade, scale } from 'svelte/transition';
   
     let layers: { path: string; width: number; height: number }[] = []
-    let width: number;
-    let height: number;
+    let width: number = 100;
+    let height: number = 100;
     let preview: string;
     export let openSignaturePad = false;
     export let handleShowOpenSignaturePad : () => void;
@@ -40,7 +40,7 @@
             transition={scale}
             class="fixed left-[50%] top-[50%] z-50 lg:w-96 rounded-xl text-primary-dark-blue translate-x-[-50%] translate-y-[-50%] border bg-gray-100 p-5 pt-16 shadow-popover outline-none sm:max-w-[490px] md:px-10"
         >
-            <div class="relative w-full h-[200px] bg-gray-100 border border-dashed border-gray-300">
+            <div class="relative w-full h-[190px] bg-gray-100 border border-dashed border-gray-300">
                 <div class="absolute left-4 right-4 bottom-24 border-t border-dotted border-gray-300" />
                 <div
                 class="w-full h-full"
