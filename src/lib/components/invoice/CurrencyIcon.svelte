@@ -4,10 +4,6 @@
 
   export let currency : CurrencyEnum = CurrencyEnum.UnitedStates;
   export let styles : string = "";
-
-  $:{
-    console.log(currency)
-  }
 </script>
 
 <div>

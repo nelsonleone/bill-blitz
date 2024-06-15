@@ -11,6 +11,8 @@
     import { TemplateNames } from "../../../../enums";
     import ColorPicker from 'svelte-awesome-color-picker';
 
+    export let form;
+
     let borderColor = {
         hex: undefined,
         rgb: undefined,
@@ -72,7 +74,7 @@
         </div>
       {:else if searchParam === TemplateNames.BlackWhiteMinimalist}
         <div class="mt-16">
-            <BlackWhiteMinimalistForm {borderColor} />
+            <BlackWhiteMinimalistForm errorMessage={form?.errorMessage} {borderColor} />
         </div>
     {/if}
 </main>

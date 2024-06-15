@@ -16,11 +16,15 @@
     import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
     import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
     import InvoiceItemsTable from "$lib/components/invoice/InvoiceItemsTable.svelte";
-    import { invoiceBorderColor } from "$lib/componentsData/invoicesBorderColor";
     import { signatureLayer } from "../../../store";
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
+    
+    export let borderColor;
+    export let errorMessage;
 
+    alert(errorMessage)
+    
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
     let currency : ICurrency;
@@ -34,7 +38,6 @@
     let footerText = setFooterText(issuerEmail)
     let invoiceDate : any;
     let invoiceNumber : string;
-    let shownBorderColor: string | null;
     let includeSignature = false;
     $: openSignaturePad = includeSignature;
 
@@ -69,14 +72,22 @@
                 name: "price",
                 value: lastItem.price,
                 rules: {
-                required: "Enter item price"
+                    required: "Enter item price",
+                    min: {
+                        value: 1,
+                        message: "Please enter a valid price"
+                    }
                 }
             },
             {
                 name: "amount",
                 value: lastItem.amount,
                 rules: {
-                required: "Enter item amount"
+                    required: "Enter item amount",
+                    min: {
+                        value: 1,
+                        message: "Please enter a valid amount"
+                    }
                 }
             }
             ])  
@@ -104,7 +115,12 @@
             invoiceItemsArr = [...invoiceItemsArr, { amount: "", description: "", price: "", quantity: 1, saved: false }];
         }
     }
+    
 
+
+
+
+    
 
     //Used Any Type Because [name and value] as exist on type Event
     const clearErrorOnInputChange = (e:any) => {
@@ -112,6 +128,11 @@
             itemsErrors[e.currentTarget?.name].message = "";
         }
     }
+
+
+
+
+
     //
     const setItemsInputValues = (e:any,index:number) => {
 
@@ -122,12 +143,17 @@
         })
     }
 
+
+
+
+
     const handleRemoveItem = (index:number) => {
         invoiceItemsArr = invoiceItemsArr.filter((_,i) => i !== index)
     }
+
 </script>
 
-<form class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12">
+<form method="post" action="?/setInvoiceData" class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12" style="border: 2px solid {borderColor.hex}">
     <div class="mb-4">
         <CurrenciesSelect bind:currency={currency} />
     </div>
@@ -267,8 +293,8 @@
 
     <div>
         <h2 class="font-medium text-xl mb-4">Items</h2>
-        {#if invoiceItemsArr?.length > 0 && invoiceItemsArr[0].saved}
-            <InvoiceItemsTable currency={currency.value} {invoiceItemsArr} />
+        {#if invoiceItemsArr?.length > 0 && invoiceItemsArr[0]?.saved}
+            <InvoiceItemsTable currency={currency?.value} {invoiceItemsArr} />
         {/if}
        {#if invoiceItemsArr?.length}
          {#each invoiceItemsArr as item, i (i)}

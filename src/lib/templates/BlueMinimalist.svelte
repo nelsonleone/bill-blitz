@@ -19,7 +19,7 @@
             <h2 class="text-xl font-semibold font-rubik my-4">Blue Minimalist Company Invoice</h2>
             <p>Created By An Awesome Designer From <strong class="underline inline font-medium">Canva</strong></p>
 
-            <CustomButton styles="mx-auto min-w-fit w-40 py-3 mt-6 bg-primary-very-dark-blue hover:opacity-85 transition ease-in-out duration-200" on:click={() => goto("/generate/invoice/new?template=BlueMinimalist")}>Use Template</CustomButton>
+            <CustomButton styles="mx-auto min-w-fit w-40 py-3 mt-6 bg-primary-very-dark-blue hover:opacity-85 transition ease-in-out duration-200" href="/generate/invoice/new?template=BlueMinimalist">Use Template</CustomButton>
         </div>
     </div>
 {/if}

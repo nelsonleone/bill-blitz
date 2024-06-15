@@ -52,8 +52,8 @@ interface IinvoiceContactInfo {
 type InvoiceItems = {
   description: string,
   quantity?: number,
-  price: string,
-  amount: string,
+  price: number,
+  amount: number,
   saved: boolean
 }
 
@@ -81,7 +81,10 @@ interface IBasicInvoiceData {
     account: string
   },
 
-  signature: SvelteComponent
+  signature?: SvelteComponent,
+  total: number,
+  subTotal: number,
+  discount: number
 }
 
 

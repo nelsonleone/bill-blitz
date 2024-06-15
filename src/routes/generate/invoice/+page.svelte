@@ -60,7 +60,7 @@
                     <p></p>
                 {/each}
             {:else}
-                <p class="font-rubik text-sm my-8 text-center">You do not have an invoice <button on:click={() => goto("/generate/invoice/new")} class="inline text-primary-accent-color2">Add your first Invoice</button></p>
+                <p class="font-rubik text-sm my-8 text-center">You do not have an invoice <button on:click={() => goto("/generate/invoice/new?template=BlackWhiteMinimalist")} class="inline text-primary-accent-color2">Add your first Invoice</button></p>
             {/if}
         </div>
     </div>

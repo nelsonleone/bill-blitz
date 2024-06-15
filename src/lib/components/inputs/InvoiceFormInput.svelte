@@ -29,6 +29,7 @@
             {name}
             on:change
             on:input
+            on:keyup
             {id}
             class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
         />
@@ -43,6 +44,7 @@
             {name}
             {id}
             on:change
+            on:keyup
             on:input={(e) => {
                 e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '')
             }}
@@ -55,6 +57,7 @@
             aria-invalid={error ? "true" : "false"} 
             readOnly={readOnly}
             on:change
+            on:keyup
             on:input
             {name}
             bind:value={value}

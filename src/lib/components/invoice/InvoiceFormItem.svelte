@@ -1,17 +1,16 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
-    import type { ICurrency, ValidationErrors } from "../../../types/types";
+    import type { ValidationErrors } from "../../../types/types";
     import InvoiceFormInput from "../inputs/InvoiceFormInput.svelte";
-    import CurrencyIcon from "./CurrencyIcon.svelte";
     import IconButton from "../buttons/IconButton.svelte";
     import CustomTooltip from "../prompts/CustomTooltip.svelte";
-    import { fade, slide } from "svelte/transition";
+    import { slide } from "svelte/transition";
 	import * as eases from 'svelte/easing';
 
     export let description: string;
     export let quantity: number | undefined = undefined;
-    export let price : string;
-    export let amount : string;
+    export let price : number;
+    export let amount : number;
     export let index : number;
     export let saved : boolean;
     export let errors : ValidationErrors = {}
@@ -21,7 +20,6 @@
 
     const handleOnChange = (e:{ currentTarget: EventTarget & HTMLInputElement} | Event) => {
         setItemsInputValues(e,index)
-        clearErrors(e)
     }
 </script>
 
@@ -38,6 +36,7 @@
             placeholder="e.g Bag Of Rice" 
             label="Item Description" 
             labelStyles=""
+            on:keyup={clearErrors}
             on:change={handleOnChange}
             containerStyles="col-span-3"
             inputStyles="text-stone-700 bg-stone-100 border border-stone-700 w-full rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
@@ -53,6 +52,7 @@
                 placeholder="Item quantity" 
                 label="Quantity" 
                 labelStyles=""
+                on:keyup={clearErrors}
                 on:change={handleOnChange}
                 containerStyles="w-[30%]"
                 inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
@@ -65,6 +65,7 @@
                 placeholder="Item price" 
                 label="Price" 
                 labelStyles=""
+                on:keyup={clearErrors}
                 on:change={handleOnChange}
                 containerStyles="w-[30%]"
                 inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
@@ -76,6 +77,7 @@
                 inputType="number" 
                 placeholder="Item amount" 
                 label="Amount $" 
+                on:keyup={clearErrors}
                 on:change={handleOnChange}
                 containerStyles="w-[30%]"
                 labelStyles=""
@@ -89,7 +91,7 @@
         {/if}
     {/if}
 
-    {#if saved}
+    {#if saved && description && amount && price}
         <div class="flex flex-wrap gap-4 justify-between md:grid grid-cols-4 lg:mt-0 md:place-content-between lg:hidden">
             <p class="text-emerald-700 font-medium w-2/5 md:w-full font-barlow">
                 Description 
@@ -97,7 +99,7 @@
             </p>
             <p class="text-emerald-700 font-medium w-2/5 md:w-full font-barlow md:text-center">
                 Quantity 
-                <strong class="text-stone-800 block font-normal font-overpass">{quantity}</strong>
+                <strong class="text-stone-800 block font-normal font-overpass">{quantity || ""}</strong>
             </p>
             <p class="text-emerald-700 font-medium w-2/5 md:w-full font-barlow md:text-center">
                 Price 

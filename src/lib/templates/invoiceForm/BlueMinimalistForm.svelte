@@ -17,6 +17,8 @@
     import Signature from "$lib/components/inputs/Signature.svelte";
     import { signatureLayer } from "../../../store";
 
+    export let borderColor;
+
     let uploadedLogo : string | null;
     let invoiceItemsArr : InvoiceItems[] = []
     let currency : ICurrency;
@@ -58,14 +60,22 @@
                 name: "price",
                 value: lastItem.price,
                 rules: {
-                required: "Enter item price"
+                    required: "Enter item price",
+                    min: {
+                        value: 1,
+                        message: "Please enter a valid price"
+                    }
                 }
             },
             {
                 name: "amount",
                 value: lastItem.amount,
                 rules: {
-                required: "Enter item amount"
+                    required: "Enter item amount",
+                    min: {
+                        value: 1,
+                        message: "Please enter a valid amount"
+                    }
                 }
             }
             ])  
@@ -118,7 +128,7 @@
     }
 </script>
 
-<form class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12">
+<form class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 border-2" style="border: 2px solid {borderColor.hex}">
     <div class="mb-4">
         <CurrenciesSelect bind:currency={currency} />
     </div>
