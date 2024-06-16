@@ -30,7 +30,7 @@ export function validateInputs(inputs: InputObjForValidation[]): ValidationError
         errors[name] = {
           message: rules.min.message || `The minimum length for this field is ${rules.min.value}`
         }
-      }
+      } 
     }
   
     return errors;

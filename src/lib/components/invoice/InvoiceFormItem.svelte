@@ -9,8 +9,8 @@
 
     export let description: string;
     export let quantity: number | undefined = undefined;
-    export let price : number;
-    export let amount : number;
+    export let price : number | undefined;
+    export let amount : number | undefined;
     export let index : number;
     export let saved : boolean;
     export let errors : ValidationErrors = {}

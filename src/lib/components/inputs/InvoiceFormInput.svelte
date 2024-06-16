@@ -1,8 +1,10 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
+    import type { IBasicInvoiceData, IBasicInvoiceDataKeys, IinvoiceContactInfo, InvoiceItems, InvoiceUserDetails } from "../../../types/types";
+
     export let error: string | undefined = undefined
     export let label: string;
-    export let name: string;
+    export let name: keyof IBasicInvoiceData | IBasicInvoiceDataKeys
     export let value: string | number | undefined = "";
     export let placeholder: string;
     export let inputType: "email" | "text" | "number" | "textArea";
@@ -46,7 +48,11 @@
             on:change
             on:keyup
             on:input={(e) => {
-                e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '')
+               if(name === "tax"){
+                  e.currentTarget.value = `${e.currentTarget.value.replace(/[^0-9]/g, '')}%`
+               }else{
+                    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '')
+               }
             }}
             class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
         />

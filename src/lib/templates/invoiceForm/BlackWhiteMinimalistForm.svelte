@@ -19,17 +19,20 @@
     import { signatureLayer } from "../../../store";
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
+    import { handleInvoiceSubmit } from "$lib/helperFns/handleInvoiceSubmit";
     
     export let borderColor;
     export let errorMessage;
 
     alert(errorMessage)
     
-    let uploadedLogo : string | null;
+    let uploadedLogo : string | Blob;
     let invoiceItemsArr : InvoiceItems[] = []
     let currency : ICurrency;
     let total : number | undefined;
+    let tax : number | undefined;
     let includeBankDetails = false;
+    let includeTax = false;
     let includesubTotal = false;
     let includeDiscount = false;
     let editFooterText = false;
@@ -112,7 +115,7 @@
         }
         else if(invoiceItemsArr.length === 0 || (lastItem && lastItem.saved)){
             // Add a new item slot to the array
-            invoiceItemsArr = [...invoiceItemsArr, { amount: "", description: "", price: "", quantity: 1, saved: false }];
+            invoiceItemsArr = [...invoiceItemsArr, { amount: undefined, description: "", price: undefined, quantity: 1, saved: false }];
         }
     }
     
@@ -151,9 +154,23 @@
         invoiceItemsArr = invoiceItemsArr.filter((_,i) => i !== index)
     }
 
+
+    const handleSubmit = async(e:{ currentTarget: EventTarget & HTMLFormElement}) => {
+        const formData = new FormData(e.currentTarget)
+
+        formData.append("logo",uploadedLogo)
+        formData.append("currency",currency.value)
+        formData.append("tax",`${tax}`)
+
+        await fetch(e.currentTarget.action,{
+            method: "POST",
+            body: formData
+        })
+    }
+
 </script>
 
-<form method="post" action="?/setInvoiceData" class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12" style="border: 2px solid {borderColor.hex}">
+<form method="post" action="?/setInvoiceData" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12" style="border: 2px solid {borderColor.hex}">
     <div class="mb-4">
         <CurrenciesSelect bind:currency={currency} />
     </div>
@@ -163,7 +180,7 @@
         <div class="self-end text-right  text-stone-700 mt-4">
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
             <InvoiceFormInput 
-                name="enterpriseName" 
+                name="issuer.name" 
                 id="enterprise-name" 
                 inputType="text" 
                 placeholder="Enter Enterprise name" 
@@ -174,7 +191,7 @@
             <div>
                 <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
                 <InvoiceFormInput 
-                    name="enterpriseAddress" 
+                    name="issuer.contactInfo.address" 
                     id="enterprise-address" 
                     inputType="textArea" 
                     placeholder="Enter Enterprise address" 
@@ -186,7 +203,7 @@
                     <p class="mb-2 text-primary-accent-color1 text-sm underline">Optional Fields</p>
                     <div class="absolute right-72 h-1/2 w-1 bg-stone-300 bottom-8 md:right-[21em]"></div>
                     <InvoiceFormInput 
-                        name="enterpriseEmail" 
+                        name="issuer.contactInfo.email" 
                         id="enterprise-email" 
                         inputType="text" 
                         placeholder="Enter Enterprise email" 
@@ -197,7 +214,7 @@
                         containerStyles="m-0"
                     />
                     <InvoiceFormInput 
-                        name="billToEnterprisePhone" 
+                        name="issuer.contactInfo.phoneNumber" 
                         id="billToEnterprise-phone" 
                         inputType="text" 
                         placeholder="Enter Enterprise phone" 
@@ -216,7 +233,7 @@
         <div>
             <div>
                 <InvoiceFormInput 
-                    name="invoiceNumber" 
+                    name="invoiceData.invoiceNumber" 
                     id="invoice-number" 
                     inputType="text" 
                     placeholder="e.g 0001" 
@@ -240,7 +257,7 @@
         <div class="mt-16">
             <p class="font-medium mb-3 text-xl">Bill To</p>
             <InvoiceFormInput 
-                name="billToCustomerName" 
+                name="billTo.name" 
                 id="billTo-CustomerName" 
                 inputType="text" 
                 placeholder="e.g Example customer" 
@@ -251,7 +268,7 @@
             />
             <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
             <InvoiceFormInput 
-                name="billToCustomerAddress" 
+                name="billTo.contactInfo.address" 
                 id="billTo-CustomerAddress" 
                 inputType="textArea" 
                 placeholder="e.g no.5 customer address street" 
@@ -266,7 +283,7 @@
             <p class="mb-2 text-primary-accent-color1 text-sm underline">Optional Fields</p>
             <div class="absolute left-72 h-1/2 w-1 bg-stone-300 bottom-8 md:left-[21em]"></div>
             <InvoiceFormInput 
-                name="billToCustomerEmail" 
+                name="billTo.contactInfo.email" 
                 id="billToCustomer-email" 
                 inputType="text" 
                 placeholder="Enter Customer email" 
@@ -276,7 +293,7 @@
                 containerStyles="m-0"
             />
             <InvoiceFormInput 
-                name="customerPhone" 
+                name="billTo.contactInfo.phoneNumber" 
                 id="customer-phone" 
                 inputType="text" 
                 placeholder="Enter customer phone" 
@@ -373,9 +390,28 @@
 
         <div class="mx-auto mt-6 flex flex-col bg-emerald-800 text-base-color1 py-4 px-2 rounded-sm md:w-96 md:mx-auto">  
             
+            {#if includeTax}
+                <div class="flex justify-between my-2">
+                    <h3 id="sub-total" class="text-base text-nowrap font-semibold font-barlow uppercase ms-2">
+                        Tax:
+                    </h3>
+                    <InvoiceFormInput 
+                        name="tax" 
+                        id={`invoiceItems-tax`}
+                        inputType="number"
+                        bind:value={tax}
+                        placeholder="Enter tax percentage" 
+                        label="Tax Value"
+                        labelStyles="AT_only" 
+                        containerStyles="col-span-3 mb-[0]"
+                        inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                    />
+                </div>
+            {/if}
+            
             {#if includeDiscount}
                 <div class="flex justify-between my-2">
-                    <h3 id="sub-total" class="text-base text-nowrap flex items-center font-semibold font-barlow uppercase ms-2">
+                    <h3 id="sub-total" class="text-base text-nowrap items-center font-semibold font-barlow uppercase ms-2">
                         Discount:
                         <strong>
                             <CurrencyIcon styles="text-xl me-1 opacity-70" currency={currency?.value} />
@@ -473,7 +509,7 @@
 
         {#if includeBankDetails}
             <InvoiceFormInput 
-                name="bankDetails" 
+                name="accountDetails" 
                 id="bank-details"
                 inputType="textArea"
                 placeholder="Example bank&#10; 12345679&#10; Example name" 

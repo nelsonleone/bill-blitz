@@ -1,6 +1,16 @@
 import type { SvelteComponent } from "svelte";
 import type { CurrencyEnum } from "../enums";
 
+
+type NestedKeys<T, D extends number = 5> = [D] extends [0]
+  ? keyof T
+  : {
+      [K in keyof T]: `${K & string}.${NestedKeys<T[K], Prev<D>>}`;
+    }[keyof T];
+
+type Prev<T extends number> = [`0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`][T]
+type IBasicInvoiceDataKeys = NestedKeys<IBasicInvoiceData>
+
 export type AuthPageInputData = {
   name: string,
   id: string,
@@ -45,6 +55,7 @@ interface ITitleTextContent {
 
 
 interface IinvoiceContactInfo {
+  address: string,
   phoneNumber?: string,
   emailAddress?: string
 }
@@ -52,23 +63,22 @@ interface IinvoiceContactInfo {
 type InvoiceItems = {
   description: string,
   quantity?: number,
-  price: number,
-  amount: number,
+  price: number | undefined,
+  amount: number | undefined,
   saved: boolean
+}
+
+interface InvoiceUserDetails {
+  name: string,
+  contactInfo?: IinvoiceContactInfo
 }
 
 interface IBasicInvoiceData {
   logo?: string,
   logoText?: string,
-  issuer: {
-    name: string,
-    contactInfo?: IinvoiceContactInfo
-  },
+  issuer: InvoiceUserDetails,
 
-  billTo: {
-    name: string,
-    contactInfo?: IinvoiceContactInfo
-  }
+  billTo: InvoiceUserDetails
 
   invoiceData:{
     invoiceNumber: number,
@@ -76,15 +86,14 @@ interface IBasicInvoiceData {
     items: InvoiceItems[]
   },
 
-  accountDetails?: {
-    included: boolean,
-    account: string
-  },
-
+  accountDetails?: string,
+  currency: string,
   signature?: SvelteComponent,
-  total: number,
-  subTotal: number,
-  discount: number
+  total: number | undefined,
+  subTotal: number | undefined,
+  discount: number | undefined,
+  footerText: string,
+  tax: number | undefined
 }
 
 
