@@ -1,6 +1,5 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
-    import parsePhoneNumber from 'libphonenumber-js'
     import type { IBasicInvoiceData, IBasicInvoiceDataKeys } from "../../../types/types";
 
     export let error: string | undefined = undefined
@@ -31,9 +30,7 @@
             bind:value={value}
             {name}
             on:change
-            on:input={(e) => {
-                e.currentTarget.value = name?.includes("phoneNumber") && e.currentTarget.value ? parsePhoneNumber(e.currentTarget.value)?.formatInternational() || e.currentTarget.value: e.currentTarget.value;
-            }}
+            on:input
             on:keyup
             {id}
             class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}

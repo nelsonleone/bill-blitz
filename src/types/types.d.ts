@@ -87,7 +87,7 @@ interface IBasicInvoiceData {
   },
 
   accountDetails?: string,
-  currency: string,
+  currency: {label: string, value: CurrencyEnum },
   signature?: SvelteComponent,
   total: number | undefined,
   subTotal: number | undefined,

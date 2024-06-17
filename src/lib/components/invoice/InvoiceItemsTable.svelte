@@ -5,7 +5,7 @@
     import type { InvoiceItems } from '../../../types/types';
   
     export let invoiceItemsArr: InvoiceItems[]
-    export let currency: CurrencyEnum;
+    export let currency: CurrencyEnum | undefined;
  </script>
 
 <Table divClass="flex justify-center items-center mx-auto p-10" shadow>

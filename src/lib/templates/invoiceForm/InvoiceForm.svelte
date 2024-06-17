@@ -4,7 +4,7 @@
     import DatePicker from "$lib/components/inputs/DatePicker.svelte";
     import InvoiceFormInput from "$lib/components/inputs/InvoiceFormInput.svelte";
     import { Checkbox, Label, Separator } from "bits-ui";
-    import type { ICurrency, InvoiceItems, ValidationErrors } from "../../../types/types"
+    import type { IBasicInvoiceData, InvoiceItems, ValidationErrors } from "../../../types/types"
     import Icon from "@iconify/svelte";
     import InvoiceFormItem from "$lib/components/invoice/InvoiceFormItem.svelte";
     import CurrenciesSelect from "$lib/components/invoice/CurrenciesSelect.svelte";
@@ -23,29 +23,63 @@
     import { goto } from "$app/navigation";
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
+    import parsePhoneNumber from 'libphonenumber-js'
+    import { CurrencyEnum } from "../../../enums";
+
     
     export let borderColor;
     export let templateInUse;
 
 
-    let uploadedLogo : string | Blob;
+
     let invoiceItemsArr : InvoiceItems[] = []
-    let currency : ICurrency;
-    let total : number | undefined; 
-    let subTotal : number | undefined; 
-    let tax : number | undefined;
+    let issuerEmail : string;
+    let issuerName : string;
+    let issuerAddress : string;
+    let customerEmail: string; 
+    let customerName: string; 
+    let customerAddress: string; 
+    let issuerPhoneNumber : string;
+    let customerPhoneNumber : string;
+
+
+
+
     let includeBankDetails = false;
     let includeTax = false;
     let includesubTotal = false;
     let includeDiscount = false;
     let editFooterText = false;
-    let discount : number;
-    let issuerEmail : string = "";
-    $: footerText = setFooterText(issuerEmail)
     let invoiceDate : any;
     let invoiceNumber : string;
     let includeSignature = false;
     $: openSignaturePad = includeSignature;
+
+    let formInputData : Partial<IBasicInvoiceData>
+
+    $: formInputData = {
+        issuer: {
+            name: issuerName,
+            contactInfo: {
+                emailAddress: issuerEmail,
+                address: issuerAddress,
+                phoneNumber: issuerPhoneNumber
+            }
+        },
+        billTo: {
+            name: customerName,
+            contactInfo: {
+                emailAddress: customerEmail,
+                address: customerAddress,
+                phoneNumber: customerPhoneNumber
+            }
+        },
+        currency: {
+          value: CurrencyEnum.UnitedStates,
+          label: "US Dollar"
+       }
+    }
+    $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || "")
 
 
     const handleShowOpenSignaturePad = () => {
@@ -164,28 +198,31 @@
 
 
     const handleSubmit = async(e:{ currentTarget: EventTarget & HTMLFormElement}) => {
-        const formData = new FormData(e.currentTarget)
-
-        formData.append("logo",uploadedLogo)
-        formData.append("currency",currency.value)
-        formData.append("tax",`${tax}`)  
-        formData.append("templateInUse",templateInUse)  
 
         await fetch(e.currentTarget.action,{
             method: "POST",
-            body: formData
         })
+    }
+
+    const handleFormatPhoneNumber = (phoneFor:"customer" | "issuer") => {
+        if(phoneFor === "customer"){
+            customerPhoneNumber = parsePhoneNumber(customerPhoneNumber)?.formatInternational() || customerPhoneNumber;
+        }
+        else if(phoneFor === "issuer"){
+            issuerPhoneNumber = parsePhoneNumber(issuerPhoneNumber)?.formatInternational() || issuerPhoneNumber;
+        }
+        
     }
 
 </script>
 
 <form in:scale={{ duration: 1000, delay: 2000, easing: elasticIn }} method="post" action="?/setInvoiceData" id="invoice-form" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 mt-16" style="border: 2px solid {borderColor.hex}">
     <div class="mb-4">
-        <CurrenciesSelect bind:currency={currency} />
+        <CurrenciesSelect bind:currency={formInputData.currency} />
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
         <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-overpass w-fit h-fit">INVOICE</h2>
-        <CompanyLogoUpload {uploadedLogo} />
+        <CompanyLogoUpload uploadedLogo={formInputData.logo} />
         <div class="self-end text-right  text-stone-700 mt-4">
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
             <InvoiceFormInput 
@@ -195,6 +232,7 @@
                 placeholder="Enter Enterprise name" 
                 label="Enterprise Name:" 
                 labelStyles="block"
+                bind:value={issuerName}
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <div>
@@ -206,6 +244,7 @@
                     placeholder="Enter Enterprise address" 
                     label="Enterprise Address:" 
                     labelStyles="block"
+                    bind:value={issuerAddress}
                     inputStyles="md:w-80 bg-stone-100 font-barlow max-w-64 p-4 border border-gray-500 rounded-md focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                 />
                 <div class="relative">
@@ -229,6 +268,8 @@
                         placeholder="Enter Enterprise phone" 
                         label="Enterprise Phone:" 
                         labelStyles="block"
+                        bind:value={issuerPhoneNumber}
+                        on:input={() => handleFormatPhoneNumber("issuer")}
                         inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                     />
                 </div>
@@ -270,10 +311,11 @@
                 id="billTo-CustomerName" 
                 inputType="text" 
                 placeholder="e.g Example customer" 
-                label="Customer Name:" 
+                label="Customer Name:"
+                bind:value={customerName} 
                 labelStyles="block"
                 containerStyles="my-4"
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
             <InvoiceFormInput 
@@ -282,6 +324,7 @@
                 inputType="textArea" 
                 placeholder="e.g no.5 customer address street" 
                 label="Customer Address:" 
+                bind:value={customerAddress} 
                 labelStyles="block my-4"
                 containerStyles=""
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
@@ -297,6 +340,7 @@
                 inputType="text" 
                 placeholder="Enter Customer email" 
                 label="Customer Email:" 
+                bind:value={customerEmail} 
                 labelStyles="block"
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                 containerStyles="m-0"
@@ -305,6 +349,8 @@
                 name="billTo.contactInfo.phoneNumber" 
                 id="customer-phone" 
                 inputType="text" 
+                bind:value={customerPhoneNumber}
+                on:input={() => handleFormatPhoneNumber("customer")}
                 placeholder="Enter customer phone" 
                 label="Customer Phone:" 
                 labelStyles="block"
@@ -320,7 +366,7 @@
     <div>
         <h2 class="font-medium text-xl mb-4">Items</h2>
         {#if invoiceItemsArr?.length > 0 && invoiceItemsArr[0]?.saved}
-            <InvoiceItemsTable currency={currency?.value} {invoiceItemsArr} />
+            <InvoiceItemsTable currency={formInputData.currency?.value} {invoiceItemsArr} />
         {/if}
        {#if invoiceItemsArr?.length}
          {#each invoiceItemsArr as item, i (i)}
@@ -408,7 +454,7 @@
                         name="tax" 
                         id={`invoiceItems-tax`}
                         inputType="number"
-                        bind:value={tax}
+                        bind:value={formInputData.tax}
                         placeholder="Enter tax percentage" 
                         label="Tax Value"
                         labelStyles="AT_only" 
@@ -423,14 +469,14 @@
                     <h3 id="sub-total" class="text-base text-nowrap flex items-center font-semibold font-barlow uppercase ms-2">
                         Discount:
                         <strong>
-                            <CurrencyIcon styles="text-xl me-1 opacity-70" currency={currency?.value} />
+                            <CurrencyIcon styles="text-xl me-1 opacity-70" currency={formInputData.currency?.value} />
                         </strong>
                     </h3>
                     <InvoiceFormInput 
                         name="discount" 
                         id={`invoiceItems-discount`}
                         inputType="number"
-                        bind:value={discount}
+                        bind:value={formInputData.discount}
                         placeholder="Enter invoice discount" 
                         label="Service or Package Discount"
                         labelStyles="AT_only" 
@@ -444,14 +490,14 @@
                     <h3 id="sub-total" class="text-base text-nowrap flex items-center font-semibold font-barlow uppercase ms-2">
                         Sub Total:
                         <strong>
-                            <CurrencyIcon styles="text-xl me-1 opacity-70" currency={currency?.value} />
+                            <CurrencyIcon styles="text-xl me-1 opacity-70" currency={formInputData.currency?.value} />
                         </strong>
                     </h3>
                     <InvoiceFormInput 
                         name="subTotal" 
                         id={`invoiceItems-sub-total`}
                         inputType="number"
-                        bind:value={subTotal}
+                        bind:value={formInputData.subTotal}
                         placeholder="Enter invoice sub-total" 
                         label="Invoice items sub-total"
                         labelStyles="AT_only" 
@@ -464,7 +510,7 @@
                 <h3 id="total" class="text-xl flex items-center font-semibold font-barlow uppercase ms-2">
                     Total:
                     <strong>
-                        <CurrencyIcon styles="text-xl me-1 opacity-70" currency={currency?.value} />
+                        <CurrencyIcon styles="text-xl me-1 opacity-70" currency={formInputData.currency?.value} />
                     </strong>
                 </h3>
                 <InvoiceFormInput 
@@ -473,7 +519,7 @@
                     inputType="number"
                     placeholder="Enter invoice total" 
                     label="Invoice items total"
-                    bind:value={total}
+                    bind:value={formInputData.total}
                     labelStyles="AT_only" 
                     containerStyles="col-span-3 mb-[0]"
                     inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
@@ -481,8 +527,8 @@
             </div>
         </div>
         <CustomButton disabled={!invoiceItemsArr.length} on:click={() => {
-            subTotal = calculateInvoiceTotal(invoiceItemsArr,discount).subTotal;
-            total = calculateInvoiceTotal(invoiceItemsArr,discount,tax).total;
+            formInputData.subTotal = calculateInvoiceTotal(invoiceItemsArr,formInputData.discount).subTotal;
+            formInputData.total = calculateInvoiceTotal(invoiceItemsArr,formInputData.discount,formInputData.tax).total;
         }} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center disabled:cursor-not-allowed disabled:opacity-40 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">Use Total Calculator</CustomButton>
     </div>
 
@@ -547,7 +593,7 @@
                 inputType="textArea"
                 placeholder="" 
                 label="Help Information"
-                bind:value={footerText}
+                bind:value={formInputData.footerText}
                 labelStyles="AT_only"
                 readOnly={!editFooterText} 
                 containerStyles="mt-4 mb-[0]"
@@ -562,7 +608,7 @@
         </div>
         <CustomButton 
             on:click={() => {
-                footerText = setFooterText(issuerEmail)
+                formInputData.footerText = setFooterText(issuerEmail)
                 editFooterText = false;
             }} 
             styles="bg-stone-600 shadow-sm self-end flex gap-2 items-center mt-4 py-2 mx-auto text-center focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
@@ -616,4 +662,4 @@
     </div>
 </form>
 
-<CustomButton on:click={handleCancelCreation} styles="bg-transparent w-fit text-left p-0 text-primary-accent-color3 font-medium mt-5 mb-16 hover:underline focus:underline transition ease-in-out duration-200">Delete Invoice</CustomButton>
+<button on:click={handleCancelCreation} type="reset" class="bg-transparent w-fit text-left p-0 text-primary-accent-color3 font-medium mt-5 mb-16 hover:underline focus:underline transition ease-in-out duration-200">Delete Invoice</button>

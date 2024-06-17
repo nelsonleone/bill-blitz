@@ -3,18 +3,15 @@
     import { scale } from "svelte/transition";
     import Icon from "@iconify/svelte";
     import { CurrencyEnum } from "../../../enums";
-    import CurrencyIcon from "./CurrencyIcon.svelte";
 
     export let currency :  {
-            value: CurrencyEnum,
-            label: string,
-            icon: string
+          value: CurrencyEnum,
+          label: string
         } =         
-        {
-            value: CurrencyEnum.UnitedStates,
-            label: "US Dollar",
-            icon: "https://flagcdn.com/w20/us.png"
-        }
+      {
+          value: CurrencyEnum.UnitedStates,
+          label: "US Dollar"
+      }
 
     const currencies = [
         {
@@ -73,5 +70,5 @@
         </Select.Item>
       {/each}
     </Select.Content>
-    <Select.Input name="favoriteFruit" />
+    <Select.Input name="currency" />
 </Select.Root>
