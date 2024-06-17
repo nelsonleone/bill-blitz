@@ -81,8 +81,9 @@ interface IBasicInvoiceData {
   billTo: InvoiceUserDetails
 
   invoiceData:{
-    invoiceNumber: number,
-    date: Date,
+    invoiceNumber: string,
+    // still yet to find proper type for Bits-Ui DateInput DateValue
+    date: any, 
     items: InvoiceItems[]
   },
 
@@ -94,7 +95,8 @@ interface IBasicInvoiceData {
   discount: number | undefined,
   footerText: string,
   tax: number | undefined,
-  templateInUse: string
+  templateInUse: string,
+  borderColor?: string;
 }
 
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import CustomButton from "$lib/components/buttons/CustomButton.svelte";
     import { imagePreviewModalStore } from "../../store";
     import WhiteSimpleImg from "./design/White Simple Invoice.png";
@@ -12,7 +11,9 @@
 {:else}
     <div class="shadow-sm py-8 px-4 bg-gray-200 rounded-sm">
         <div>
-            <img src={WhiteSimpleImg} on:click={(e) => imagePreviewModalStore.set({ src: e.currentTarget.src })} class="cursor-pointer hover:scale-105 transition-all w-60 mx-auto ease-in-out duration-300" alt="White Simple Template" width={500} height={500} loading="eager" />
+            <button on:click={() => imagePreviewModalStore.set({ src: WhiteSimpleImg })} class="w-60 mx-auto focus:outline-none focus:outline-offset-0 focus:border-none">
+                <img src={WhiteSimpleImg} class="cursor-pointer hover:scale-105 transition-all w-full ease-in-out duration-300" alt="Blue Minimalist Template" width={500} height={500} loading="eager" />
+            </button>
         </div>
 
         <div class="text-center text-primary-very-dark-blue">

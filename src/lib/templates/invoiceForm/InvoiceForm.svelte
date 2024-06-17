@@ -19,12 +19,13 @@
     import { signatureLayer } from "../../../store";
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
-    import { handleInvoiceSubmit } from "$lib/helperFns/handleInvoiceSubmit";
+    import { validateInvoiceFormData } from "$lib/helperFns/handleInvoiceFormDataCheck";
     import { goto } from "$app/navigation";
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
     import parsePhoneNumber from 'libphonenumber-js'
     import { CurrencyEnum } from "../../../enums";
+    import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
 
     
     export let borderColor;
@@ -50,7 +51,6 @@
     let includesubTotal = false;
     let includeDiscount = false;
     let editFooterText = false;
-    let invoiceDate : any;
     let invoiceNumber : string;
     let includeSignature = false;
     $: openSignaturePad = includeSignature;
@@ -66,6 +66,11 @@
                 phoneNumber: issuerPhoneNumber
             }
         },
+        invoiceData: {
+            invoiceNumber,
+            date: undefined,
+            items: invoiceItemsArr
+        },
         billTo: {
             name: customerName,
             contactInfo: {
@@ -77,9 +82,11 @@
         currency: {
           value: CurrencyEnum.UnitedStates,
           label: "US Dollar"
-       }
+       },
+       borderColor,
+       templateInUse
     }
-    $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || "")
+    $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || formInputData.issuer?.contactInfo?.phoneNumber || "")
 
 
     const handleShowOpenSignaturePad = () => {
@@ -89,8 +96,15 @@
         openSignaturePad = !openSignaturePad;
     }
 
-    /** @type ValidationErrors */
-    $: errors = {}
+    $: errors = {
+        issuer: { message: ""},
+        issuerContactInfo: { message: ""},
+        billToContactInfo: { message: ""},
+        billToName: { message: ""},
+        currency: { message: ""},
+        items: { message: ""},
+        total: { message: ""}
+    }
     /** @type any */
     let itemsErrors : ValidationErrors;
 
@@ -196,14 +210,6 @@
         invoiceItemsArr = invoiceItemsArr.filter((_,i) => i !== index)
     }
 
-
-    const handleSubmit = async(e:{ currentTarget: EventTarget & HTMLFormElement}) => {
-
-        await fetch(e.currentTarget.action,{
-            method: "POST",
-        })
-    }
-
     const handleFormatPhoneNumber = (phoneFor:"customer" | "issuer") => {
         if(phoneFor === "customer"){
             customerPhoneNumber = parsePhoneNumber(customerPhoneNumber)?.formatInternational() || customerPhoneNumber;
@@ -214,6 +220,16 @@
         
     }
 
+    const handleSubmit = async() => {
+        const { isValid, validationErrors } = validateInvoiceFormData(formInputData)
+
+        if(!isValid && validationErrors){
+            console.log(errors)
+            errors = validationErrors;
+            return;
+        }
+    }
+
 </script>
 
 <form in:scale={{ duration: 1000, delay: 2000, easing: elasticIn }} method="post" action="?/setInvoiceData" id="invoice-form" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 mt-16" style="border: 2px solid {borderColor.hex}">
@@ -222,7 +238,8 @@
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
         <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-overpass w-fit h-fit">INVOICE</h2>
-        <CompanyLogoUpload uploadedLogo={formInputData.logo} />
+        <CompanyLogoUpload uploadedLogo={formInputData.logo} on:setUploadedLogo={(e) => formInputData.logo = e.detail} />
+        <ErrorPara error={errors.issuer?.message} />
         <div class="self-end text-right  text-stone-700 mt-4">
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
             <InvoiceFormInput 
@@ -275,6 +292,7 @@
                 </div>
             </div>
         </div>
+        <ErrorPara error={errors.issuer?.message} />
     </div>
     <Separator.Root
         class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
@@ -296,7 +314,7 @@
                 <CustomButton styles="bg-stone-700 py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out" on:click={() => invoiceNumber = generateInvoiceNumber()}>Generate</CustomButton>
             </div>
             <div class="flex items-end justify-end mt-8">
-                <DatePicker {invoiceDate} />
+                <DatePicker invoiceDate={formInputData.invoiceData?.date} />
             </div>
         </div>
 
@@ -357,6 +375,7 @@
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
         </div>
+        <ErrorPara error={errors.billToContactInfo?.message} />
     </div>
 
     <Separator.Root
@@ -378,6 +397,8 @@
          <p class="text-sm text-primary-accent-color2">You Haven't Added Any Item Yet</p>
        {/if}
 
+       <ErrorPara error={errors.items?.message} />
+
        <CustomButton on:click={handleAddItem} styles="bg-stone-600 lg:mt-8 shadow-sm flex gap-2 items-center py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
          <span>Add</span>
          <Icon icon="fluent:copy-add-24-filled" class="text-2xl" aria-label="add" />
@@ -388,8 +409,36 @@
     <div>
         <div class="mt-10 flex items-center gap-3">
             <Checkbox.Root
+              id="includeTax"
+              aria-labelledby="includeTax-label"
+              class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
+              bind:checked={includeTax}
+            >
+              <Checkbox.Indicator
+                let:isChecked
+                let:isIndeterminate
+                class="inline-flex items-center justify-center text-background"
+              >
+                {#if isChecked}
+                    <Icon icon="mingcute:check-2-fill" />
+                {:else if isIndeterminate}
+                    <Icon icon="fluent-emoji-flat:minus" />
+                {/if}
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+            <Label.Root
+              id="includeTax-label"
+              for="terms"
+              class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Include Taxes
+            </Label.Root>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <Checkbox.Root
               id="includeDiscount"
-              aria-labelledby="terms-label"
+              aria-labelledby="includeDiscount-label"
               class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
               bind:checked={includeDiscount}
             >
@@ -406,8 +455,8 @@
               </Checkbox.Indicator>
             </Checkbox.Root>
             <Label.Root
-              id="terms-label"
-              for="terms"
+              id="includeDiscount-label"
+              for="includeDiscount"
               class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Include Discount
@@ -417,7 +466,7 @@
         <div class="mt-3 flex items-center gap-3">
             <Checkbox.Root
               id="includesubTotal"
-              aria-labelledby="terms-label"
+              aria-labelledby="includesubTotal-label"
               class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
               bind:checked={includesubTotal}
             >
@@ -434,8 +483,8 @@
               </Checkbox.Indicator>
             </Checkbox.Root>
             <Label.Root
-              id="terms-label"
-              for="terms"
+              id="includesubTotal-label"
+              for="includesubTotal"
               class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Include Sub Total
@@ -446,9 +495,9 @@
         <div class="mx-auto mt-6 flex flex-col bg-emerald-800 text-base-color1 py-4 px-2 rounded-sm md:w-96 md:mx-auto">  
             
             {#if includeTax}
-                <div class="flex justify-between my-2">
+                <div class="flex items-center justify-between my-2">
                     <h3 id="sub-total" class="text-base text-nowrap font-semibold font-barlow uppercase ms-2">
-                        Tax:
+                        Tax Percentage:
                     </h3>
                     <InvoiceFormInput 
                         name="tax" 
@@ -524,6 +573,7 @@
                     containerStyles="col-span-3 mb-[0]"
                     inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                 />
+                <ErrorPara error={errors.total?.message} />
             </div>
         </div>
         <CustomButton disabled={!invoiceItemsArr.length} on:click={() => {
@@ -571,7 +621,7 @@
                 name="accountDetails" 
                 id="bank-details"
                 inputType="textArea"
-                placeholder="Example bank&#10; 12345679&#10; Example name" 
+                placeholder="Example bank\n12345679\nExample name" 
                 label="Bank Account Details:"
                 labelStyles="block" 
                 containerStyles="col-span-3 mb-[0] my-4"

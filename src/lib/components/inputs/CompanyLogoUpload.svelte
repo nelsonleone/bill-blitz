@@ -7,6 +7,7 @@
     import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
     import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
     import './filepond-override.css';
+    import { createEventDispatcher } from 'svelte';
 
     // Register the plugins
     registerPlugin(
@@ -19,6 +20,7 @@
     export let uploadedLogo;
 
     let name = 'uploadedLogo';
+    const dispatch = createEventDispatcher()
 
     const handleFileLoad = (fileItems) => {
         const uploadedFile = fileItems[0].file;
@@ -26,7 +28,7 @@
         const reader = new FileReader()
         reader.onloadend = () => {
           const base64String = reader.result;
-          uploadedLogo = base64String;
+          dispatch('setUploadedLogo', base64String)
         }
     
         reader.readAsDataURL(uploadedFile)

@@ -47,12 +47,8 @@
             {id}
             on:change
             on:keyup
-            on:input={(e) => {
-               if(name === "tax"){
-                  e.currentTarget.value = `${e.currentTarget.value.replace(/[^0-9]/g, '')}%`
-               }else{
-                    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '')
-               }
+            on:input={() => {
+               value = name === "tax" ? String(value)?.replace(/[^0-9]/g, '') + '%' : String(value)?.replace(/[^0-9]/g, '')
             }}
             class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
         />

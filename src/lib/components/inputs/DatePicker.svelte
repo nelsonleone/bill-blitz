@@ -2,12 +2,11 @@
     import { DatePicker } from "bits-ui";
     import { fly } from "svelte/transition";
     import Icon from "@iconify/svelte";
-    import { getInvoiceDateString } from "$lib/helperFns/getInvoiceDateValue";
 
     export let invoiceDate : any;
 </script>
    
-<DatePicker.Root weekdayFormat="short"  onValueChange={(val) => invoiceDate = getInvoiceDateString(val)} fixedWeeks={true}>
+<DatePicker.Root weekdayFormat="short" bind:value={invoiceDate} fixedWeeks={true}>
     <div class="flex flex-col gap-1.5 justify-end w-56">
       <DatePicker.Label class="block select-none font-overpass"
         >Date</DatePicker.Label

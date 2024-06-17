@@ -28,7 +28,7 @@
 </script>
 
 <main class="page pt-32 flex flex-col lg:ps-[28em] relative bg-gray-100">
-    <aside class="max-w-60 w-56 bg-stone-800 rounded-lg lg:fixed lg:top-32 lg:left-16 overflow-hidden">
+    <aside class="max-w-60 w-56 bg-stone-800 rounded-lg lg:fixed lg:top-28 lg:left-16 overflow-hidden">
         <ul class="grid grid-rows-[1fr, 3em] justify-between grid-cols-1">
             <li class="p-1 mx-auto max-w-56 overflow-hidden w-full">
                 {#if Template}
