@@ -93,7 +93,8 @@ interface IBasicInvoiceData {
   subTotal: number | undefined,
   discount: number | undefined,
   footerText: string,
-  tax: number | undefined
+  tax: number | undefined,
+  templateInUse: string
 }
 
 

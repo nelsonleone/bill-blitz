@@ -51,10 +51,7 @@
       aria-label="Select a currency"
     >
       <Icon class="text-3xl" icon="fluent-mdl2:all-currency" />
-      <div class="flex items-center gap-1">
-        <CurrencyIcon currency={currency?.value} styles="text-xl opacity-90" />
-        <Select.Value class="text-base" placeholder="Select a currency" />
-      </div>
+      <Select.Value class="text-base" placeholder="Select a currency" />
       <Icon class="text-2xl" icon="teenyicons:caret-vertical-small-outline" />
     </Select.Trigger>
     <Select.Content

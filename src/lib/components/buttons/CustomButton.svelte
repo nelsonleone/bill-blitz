@@ -13,12 +13,12 @@
 </script>
 
 {#if !href}
-<button type={buttonType} {disabled} {id} aria-label={ariaLabel} aria-controls={ariaControls} aria-expanded={ariaExpanded} class={`rounded p-4 block text-base-color1 text-center cursor-pointer font-meduim ${styles}`} on:click>
-    {#if text}
-        {text}
-        {:else}
-        <slot />
-    {/if}
+    <button type={buttonType} {disabled} {id} aria-label={ariaLabel} aria-controls={ariaControls} aria-expanded={ariaExpanded} class={`rounded p-4 block text-base-color1 text-center cursor-pointer font-meduim ${styles}`} on:click>
+        {#if text}
+            {text}
+            {:else}
+            <slot />
+        {/if}
     </button>
 
   {:else}

@@ -1,6 +1,7 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
-    import type { IBasicInvoiceData, IBasicInvoiceDataKeys, IinvoiceContactInfo, InvoiceItems, InvoiceUserDetails } from "../../../types/types";
+    import parsePhoneNumber from 'libphonenumber-js'
+    import type { IBasicInvoiceData, IBasicInvoiceDataKeys } from "../../../types/types";
 
     export let error: string | undefined = undefined
     export let label: string;
@@ -30,7 +31,9 @@
             bind:value={value}
             {name}
             on:change
-            on:input
+            on:input={(e) => {
+                e.currentTarget.value = name?.includes("phoneNumber") && e.currentTarget.value ? parsePhoneNumber(e.currentTarget.value)?.formatInternational() || e.currentTarget.value: e.currentTarget.value;
+            }}
             on:keyup
             {id}
             class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
@@ -68,7 +71,7 @@
             {name}
             bind:value={value}
             {id}
-            class={`outline-offset-0 focus:outline-offset-0 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
+            class={`outline-offset-0 focus:outline-offset-0 font-medium min-h-20 ${error ? "border border-primary-accent-color3 outline-primary-accent-color3 focus:outline focus:outline-2 focus:outline-primary-accent-color3 md:focus:outline-primary-accent-color3" : ""} ${inputStyles}`}
         />
     {/if}
 

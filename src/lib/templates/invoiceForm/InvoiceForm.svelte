@@ -20,16 +20,19 @@
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
     import { handleInvoiceSubmit } from "$lib/helperFns/handleInvoiceSubmit";
+    import { goto } from "$app/navigation";
+    import { scale } from "svelte/transition";
+    import { elasticIn } from "svelte/easing";
     
     export let borderColor;
-    export let errorMessage;
+    export let templateInUse;
 
-    alert(errorMessage)
-    
+
     let uploadedLogo : string | Blob;
     let invoiceItemsArr : InvoiceItems[] = []
     let currency : ICurrency;
-    let total : number | undefined;
+    let total : number | undefined; 
+    let subTotal : number | undefined; 
     let tax : number | undefined;
     let includeBankDetails = false;
     let includeTax = false;
@@ -38,11 +41,12 @@
     let editFooterText = false;
     let discount : number;
     let issuerEmail : string = "";
-    let footerText = setFooterText(issuerEmail)
+    $: footerText = setFooterText(issuerEmail)
     let invoiceDate : any;
     let invoiceNumber : string;
     let includeSignature = false;
     $: openSignaturePad = includeSignature;
+
 
     const handleShowOpenSignaturePad = () => {
         if(openSignaturePad && !$signatureLayer.length){
@@ -133,6 +137,10 @@
     }
 
 
+    const handleCancelCreation = () => {
+        signatureLayer.set([])
+        goto("/generate/invoice/new")
+    }
 
 
 
@@ -160,7 +168,8 @@
 
         formData.append("logo",uploadedLogo)
         formData.append("currency",currency.value)
-        formData.append("tax",`${tax}`)
+        formData.append("tax",`${tax}`)  
+        formData.append("templateInUse",templateInUse)  
 
         await fetch(e.currentTarget.action,{
             method: "POST",
@@ -170,12 +179,12 @@
 
 </script>
 
-<form method="post" action="?/setInvoiceData" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12" style="border: 2px solid {borderColor.hex}">
+<form in:scale={{ duration: 1000, delay: 2000, easing: elasticIn }} method="post" action="?/setInvoiceData" id="invoice-form" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 mt-16" style="border: 2px solid {borderColor.hex}">
     <div class="mb-4">
         <CurrenciesSelect bind:currency={currency} />
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
-        <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-rubik w-fit h-fit">INVOICE</h2>
+        <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-overpass w-fit h-fit">INVOICE</h2>
         <CompanyLogoUpload {uploadedLogo} />
         <div class="self-end text-right  text-stone-700 mt-4">
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
@@ -210,7 +219,7 @@
                         label="Enterprise Email:" 
                         labelStyles="block"
                         bind:value={issuerEmail}
-                        inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12"
+                        inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                         containerStyles="m-0"
                     />
                     <InvoiceFormInput 
@@ -411,7 +420,7 @@
             
             {#if includeDiscount}
                 <div class="flex justify-between my-2">
-                    <h3 id="sub-total" class="text-base text-nowrap items-center font-semibold font-barlow uppercase ms-2">
+                    <h3 id="sub-total" class="text-base text-nowrap flex items-center font-semibold font-barlow uppercase ms-2">
                         Discount:
                         <strong>
                             <CurrencyIcon styles="text-xl me-1 opacity-70" currency={currency?.value} />
@@ -442,11 +451,12 @@
                         name="subTotal" 
                         id={`invoiceItems-sub-total`}
                         inputType="number"
+                        bind:value={subTotal}
                         placeholder="Enter invoice sub-total" 
                         label="Invoice items sub-total"
                         labelStyles="AT_only" 
                         containerStyles="col-span-3 mb-[0]"
-                        inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                        inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10  focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                     />
                 </div>
             {/if}
@@ -470,7 +480,10 @@
                 />
             </div>
         </div>
-        <CustomButton disabled={!invoiceItemsArr.length} on:click={() => total = calculateInvoiceTotal(invoiceItemsArr,discount)} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center disabled:cursor-not-allowed disabled:opacity-40 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">Use Total Calculator</CustomButton>
+        <CustomButton disabled={!invoiceItemsArr.length} on:click={() => {
+            subTotal = calculateInvoiceTotal(invoiceItemsArr,discount).subTotal;
+            total = calculateInvoiceTotal(invoiceItemsArr,discount,tax).total;
+        }} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center disabled:cursor-not-allowed disabled:opacity-40 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">Use Total Calculator</CustomButton>
     </div>
 
 
@@ -602,3 +615,5 @@
         {/if}
     </div>
 </form>
+
+<CustomButton on:click={handleCancelCreation} styles="bg-transparent w-fit text-left p-0 text-primary-accent-color3 font-medium mt-5 mb-16 hover:underline focus:underline transition ease-in-out duration-200">Delete Invoice</CustomButton>
