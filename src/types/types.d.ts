@@ -98,7 +98,6 @@ interface IBasicInvoiceData {
   footerText: string,
   tax: number | undefined,
   templateInUse: string,
-  borderColor?: string;
 }
 
 

@@ -28,7 +28,6 @@
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
 
     
-    export let borderColor;
     export let templateInUse;
 
 
@@ -81,7 +80,6 @@
             }
         },
         currency: currency?.value || undefined,
-       borderColor,
        templateInUse
     }
     $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || formInputData.issuer?.contactInfo?.phoneNumber || "")
@@ -228,7 +226,7 @@
 
 </script>
 
-<form in:scale={{ duration: 1000, delay: 2000, easing: elasticIn }} method="post" action="?/setInvoiceData" id="invoice-form" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 mt-16" style="border: 2px solid {borderColor.hex}">
+<form in:scale={{ duration: 1000, delay: 2000, easing: elasticIn }} method="post" action="?/setInvoiceData" id="invoice-form" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 mt-16">
     <div class="mb-4">
         <CurrenciesSelect bind:currency={currency} />
     </div>

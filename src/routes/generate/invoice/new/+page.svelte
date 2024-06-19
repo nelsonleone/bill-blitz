@@ -7,14 +7,6 @@
     import WhiteSimple from "$lib/templates/WhiteSimple.svelte";
     import InvoiceForm from "$lib/templates/invoiceForm/InvoiceForm.svelte";
     import { TemplateNames } from "../../../../enums";
-    import ColorPicker from 'svelte-awesome-color-picker';
-
-    let borderColor = {
-        hex: undefined,
-        rgb: undefined,
-        hsv: undefined,
-        color: undefined
-    }
 
     let searchParam = $page.url.searchParams.get("template")
     let Template : typeof BlueMinimalist | typeof WhiteSimple | typeof BlackWhiteMinimalist | null;
@@ -54,22 +46,6 @@
             <li class="w-full">
                 <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600" on:click={() => goto("/templates")}>Change Template</button>
             </li>
-            <li class="w-full flex relative justify-center text-base-color1 p-2 md:p-3 hover:bg-stone-600 color-input-li">
-                <ColorPicker
-                    bind:hex={borderColor.hex}
-                    bind:rgb={borderColor.rgb}
-                    bind:hsv={borderColor.hsv}
-                    bind:color={borderColor.color}
-                    --picker-height="100px"
-                    --picker-width="100px"
-                    --slider-width="25px"
-                    --picker-indicator-size="25px"
-                    --picker-z-index="10"
-                    --focus-color="green"
-                    nullable
-                    label="Add Border"
-                />
-            </li>
             <li class="w-full">
                 <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600">Save To Drafts</button>
             </li>
@@ -81,7 +57,6 @@
 
     {#if searchParam && (searchParam.match(TemplateNames.BlackWhiteMinimalist) || searchParam.match(TemplateNames.BlueMinimalist) || searchParam.match(TemplateNames.WhiteSimple))}
         <InvoiceForm 
-            {borderColor}
            templateInUse={searchParam}
         />
     {/if}

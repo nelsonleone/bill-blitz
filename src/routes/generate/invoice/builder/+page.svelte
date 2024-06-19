@@ -11,6 +11,6 @@
     }
 </script>
 
-<div class="page flex justify-center items-center">
+<div class="page p-0 md:p-0 px-0 py-0 lg:px-0 lg:py-0">
     <BuiltTemplate />
 </div>

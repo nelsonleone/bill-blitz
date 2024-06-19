@@ -22,7 +22,9 @@ export default {
       fontFamily: {
         'overpass': ['Overpass', 'sans-serif'],
         'barlow': ['Barlow', 'sans-serif'],
-        'rubik': ['Rubik', 'sans-serif']
+        'rubik': ['Rubik', 'sans-serif'],
+        'open-sans': ['Open Sans', 'sans-serif'],
+        'montserrat': ['Montserrat', 'sans-serif']
       },
     },
 
