@@ -12,7 +12,7 @@
 {:else}
     <div class="shadow-sm py-8 px-4 bg-gray-200 rounded-sm">
         <div>
-            <button on:click={() => imagePreviewModalStore.set({ src: BlackWhiteMinimalist })} class="focus:outline-none  w-60 mx-auto focus:outline-offset-0 focus:border-none">
+            <button on:click={() => imagePreviewModalStore.set({ src: BlackWhiteMinimalist })} class="focus:outline-none flex justify-center  w-60 mx-auto focus:outline-offset-0 focus:border-none">
                 <img src={BlackWhiteMinimalist} class="cursor-pointer hover:scale-105 transition-all w-full ease-in-out duration-300" alt="Blue Minimalist Template" width={500} height={500} loading="eager" />
             </button>
         </div>

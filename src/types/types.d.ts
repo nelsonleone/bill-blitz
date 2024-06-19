@@ -1,5 +1,7 @@
 import type { SvelteComponent } from "svelte";
 import type { CurrencyEnum } from "../enums";
+import type Signature from "$lib/components/inputs/Signature.svelte";
+import type { signatureLayer } from "../store";
 
 
 type NestedKeys<T, D extends number = 5> = [D] extends [0]
@@ -88,8 +90,8 @@ interface IBasicInvoiceData {
   },
 
   accountDetails?: string,
-  currency: {label: string, value: CurrencyEnum },
-  signature?: SvelteComponent,
+  currency: CurrencyEnum,
+  signature?: typeof $signatureLayer,
   total: number | undefined,
   subTotal: number | undefined,
   discount: number | undefined,
@@ -116,4 +118,21 @@ type InvoiceDateValue  = {
   era: "AD",
   month: number,
   year: number,
+}
+
+
+interface InvoiceFormSubmitErrorMessage {
+  message: string
+}
+
+type InvoiceFormSubmitError = {
+  issuer: InvoiceFormSubmitErrorMessage,
+  issuerContactInfo: InvoiceFormSubmitErrorMessage,
+  billToContactInfo: InvoiceFormSubmitErrorMessage,
+  billToName: InvoiceFormSubmitErrorMessage,
+  currency: InvoiceFormSubmitErrorMessage,
+  items: InvoiceFormSubmitErrorMessage,
+  invoiceNumber: InvoiceFormSubmitErrorMessage,
+  date: InvoiceFormSubmitErrorMessage,
+  total: InvoiceFormSubmitErrorMessage
 }

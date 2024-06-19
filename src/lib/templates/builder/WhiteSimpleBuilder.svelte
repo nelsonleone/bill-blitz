@@ -1,62 +1,68 @@
 <script lang="ts">
-    
-    const demoInvoiceData = {
-  logo: "https://via.placeholder.com/150",
-  logoText: "ABC Company",
-  issuer: {
-    name: "ABC Company",
-    contactInfo: {
-      phoneNumber: "+1 (123) 456-7890",
-      emailAddress: "info@abccompany.com"
-    }
-  },
-  billTo: {
-    name: "John Doe",
-    contactInfo: {
-      phoneNumber: "+1 (987) 654-3210",
-      emailAddress: "john.doe@example.com"
-    }
-  },
-  invoiceData: {
-    invoiceNumber: 12345,
-    date: new Date("2024-06-13"),
-    items: [
-      {
-        description: "Consulting Services",
-        quantity: 20,
-        price: "$50.00",
-        amount: "$1,000.00",
-        saved: false
-      },
-      {
-        description: "Website Design",
-        quantity: 1,
-        price: "$2,500.00",
-        amount: "$2,500.00",
-        saved: true
-      },
-      {
-        description: "Hosting Services (3 months)",
-        quantity: 1,
-        price: "$150.00",
-        amount: "$450.00",
-        saved: false
-      }
-    ]
-  },
-  accountDetails: {
-    included: true,
-    account: "12345-67890"
-  },
-  signatureInfo: {
-    included: true,
-    signatureI: "https://via.placeholder.com/100x50"
-  }
+    import Signature from "$lib/components/inputs/Signature.svelte";
+    import { CurrencyEnum } from "../../../enums";
+    import type { IBasicInvoiceData } from "../../../types/types";
 
+  const demoData: IBasicInvoiceData = {
+    logo: 'https://via.placeholder.com/150',
+    logoText: 'MyCompany',
+    issuer: {
+      name: 'John Doe',
+      contactInfo: {
+        address: '123 Main St, Anytown USA',
+        phoneNumber: '555-1234',
+        emailAddress: 'john@mycompany.com'
+      }
+    },
+    billTo: {
+      name: 'Jane Doe',
+      contactInfo: {
+        address: '456 Oak Rd, Someplace CA',
+        phoneNumber: '555-5678',
+        emailAddress: 'jane@client.com'
+      }
+    },
+    invoiceData: {
+      invoiceNumber: '1234',
+      date: new Date('2023-05-15'),
+      items: [
+        {
+          description: 'Product A',
+          quantity: 2,
+          price: 10.99,
+          amount: 21.98,
+          saved: false
+        },
+        {
+          description: 'Service B',
+          quantity: 1,
+          price: 50.00,
+          amount: 50.00,
+          saved: true
+        },
+        {
+          description: 'Discount C',
+          quantity: 1,
+          price: -5.00,
+          amount: -5.00,
+          saved: true
+        }
+      ]
+    },
+    accountDetails: 'Bank Account: 12345678',
+    currency: CurrencyEnum.UnitedStates,
+    signature: [],
+    total: 66.98,
+    subTotal: 71.98,
+    discount: 5.00,
+    footerText: 'Thank you for your business!',
+    tax: 0,
+    templateInUse: 'template-a',
+    borderColor: 'green'
   }
 
 </script>
 
-<main>
+<main class="w-[210mm] h-[297mm] p-4 border" style={}>
     
 </main>

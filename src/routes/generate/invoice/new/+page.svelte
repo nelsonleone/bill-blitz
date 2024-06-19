@@ -27,6 +27,19 @@
 
 </script>
 
+
+
+<svelte:head>
+  <title>Bill-Blitz | Generate Invoice</title>
+  <meta name="description" content="Generate new invoice using cool templates" />
+  <meta property="og:title" content="Bill-Blitz | Generate Invoice" />
+  <meta name="twitter:title" content="Bill-Blitz | Generate Invoice" />
+  <meta name="twitter:description" content="Generate new invoice using cool templates" />
+</svelte:head>
+
+
+
+
 <main class="page pt-32 flex flex-col lg:ps-[28em] relative bg-gray-100">
     <aside class="max-w-60 w-56 bg-stone-800 rounded-lg lg:fixed lg:top-28 lg:left-16 overflow-hidden">
         <ul class="grid grid-rows-[1fr, 3em] justify-between grid-cols-1">

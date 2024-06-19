@@ -42,7 +42,7 @@
     ]
 </script>
    
-<Select.Root items={currencies} preventScroll={false} bind:selected={currency}>
+<Select.Root items={currencies} preventScroll={false} selected={currency}>
     <Select.Trigger
       class="inline-flex h-14 w-56 justify-between shadow-sm text-stone-800 items-center rounded-lg border-2 border-stone-500 bg-transparent px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50"
       aria-label="Select a currency"

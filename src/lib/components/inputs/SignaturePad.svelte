@@ -1,9 +1,9 @@
 <script lang="ts">
     import { signature } from 'svelte-signature-pad'
-    import { signatureLayer } from '../../../store';
     import { Dialog } from 'bits-ui';
     import CustomButton from '../buttons/CustomButton.svelte';
     import { fade, scale } from 'svelte/transition';
+    import { createEventDispatcher } from 'svelte';
   
     let layers: { path: string; width: number; height: number }[] = []
     let width: number = 100;
@@ -18,9 +18,10 @@
       layers = [...layers, { width, height, path }]
     }
 
+    const dispatch = createEventDispatcher()
 
     const handleSave = () => {
-        signatureLayer.set(layers)
+        dispatch("setSignature",layers)
         openSignaturePad = false;
     }
   

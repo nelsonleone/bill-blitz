@@ -48,7 +48,7 @@
         allowFileSizeValidation
         maxFileSize="200kb"
         imagePreviewMinHeight={280}
-        required
+        required={false}
         allowReplace
         {name}
         labelIdle='<span style={{display:"block", fontSize: ".9rem", color: "black"}}>Upload An Image</span> <span class="filepond--label-action" style={{display:"block"}}>Choose File</span>'
