@@ -59,16 +59,22 @@
     footerText: 'Thank you for your business!',
     tax: 0,
     templateInUse: 'template-a',
-    borderColor: 'red'
   }
 
 </script>
 
 
-<main class="p-8 font-open-sans font-normal w-full min-h-screen relative z-10" style="border: 2px solid {demoData.borderColor}">
+<main class="p-8 font-open-sans font-normal w-full min-h-screen relative z-10">
   <div style="background-image: url({stripesBgImg})" class="opacity-20 -z-10 brightness-50 -left-52 top-44 bg-no-repeat bg-cover w-80 rotate-180 aspect-square absolute"></div>
-  <div class="mt-10 flex justify-end flex-col text-right items-end gap-4">
-    <img src={demoData.logo} alt="logo" width={100} height={100} loading="eager" />
+  <div class="mt-10 flex justify-end flex-col text-right items-end">
+    <div>
+      {#if demoData.logo}
+        <img src={demoData.logo} alt="logo" width={100} height={100} loading="eager" />
+      {/if}
+      {#if demoData.logoText}
+      <h2 class="font-bold text-2xl">{demoData.logoText}</h2>
+      {/if}
+    </div>
 
     {#if demoData.issuer.name}
        <p class="font-semibold text-lg">{demoData.issuer.name}</p>
@@ -146,9 +152,16 @@
     </div>
   {/if}
 
+  {#if demoData.signature.length}
+    <div>
+      <Signature layer={demoData.signature} />
+      <p class="border-t border-t-stone-900 pt-4 mt-4">{demoData.issuer.name}</p>
+    </div>
+  {/if}
+
 
   {#if demoData.footerText}
-  <div class="text-center flex justify-center border-t border-t-gray-400 pt-10 my-16">
+  <div class="text-center flex justify-center border-t border-t-gray-400  py-10 my-8">
     <p>{demoData.footerText}</p>
   </div>
   {/if}

@@ -237,6 +237,17 @@
         <div class="self-end text-right  text-stone-700 mt-4">
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
             <InvoiceFormInput 
+                name="logoText" 
+                on:change={() => errors = setEmptyValidationErrors()}
+                id="logoText" 
+                inputType="text" 
+                placeholder="Enter logo alternative text" 
+                label="Logo Alternative:" 
+                labelStyles="block"
+                bind:value={issuerName}
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+            />
+            <InvoiceFormInput 
                 name="issuer.name" 
                 on:change={() => errors = setEmptyValidationErrors()}
                 id="enterprise-name" 
@@ -245,7 +256,7 @@
                 label="Enterprise Name:" 
                 labelStyles="block"
                 bind:value={issuerName}
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                inputStyles="md:w-80 bg-stone-100 mt-8 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <div>
                 <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>

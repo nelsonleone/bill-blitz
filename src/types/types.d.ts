@@ -80,7 +80,7 @@ interface IBasicInvoiceData {
   logoText?: string,
   issuer: InvoiceUserDetails,
 
-  billTo: InvoiceUserDetails
+  billTo: InvoiceUserDetails,
 
   invoiceData:{
     invoiceNumber: string,
