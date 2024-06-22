@@ -2,11 +2,14 @@
     import { DatePicker } from "bits-ui";
     import { fly } from "svelte/transition";
     import Icon from "@iconify/svelte";
+    import { createEventDispatcher } from "svelte";
 
-    export let invoiceDate : any;
+    export let value : any;
+
+    const dispatch = createEventDispatcher()
 </script>
    
-<DatePicker.Root weekdayFormat="short" bind:value={invoiceDate} fixedWeeks={true}>
+<DatePicker.Root weekdayFormat="short" {value} onValueChange={(val) => dispatch('setDate',val ? new Date(val?.toString()) : undefined)} fixedWeeks={true}>
     <div class="flex flex-col gap-1.5 justify-end w-56">
       <DatePicker.Label class="block select-none font-overpass"
         >Date</DatePicker.Label

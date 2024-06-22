@@ -2,14 +2,13 @@
     import BlueMinimalistBuilder from "$lib/templates/builder/BlueMinimalistBuilder.svelte";
     import WhiteSimpleBuilder from "$lib/templates/builder/WhiteSimpleBuilder.svelte";
     import { TemplateNames } from "../../../../enums";
-    import { builtTemplateStore } from "../../../../store";
-
+    import { newInvoiceDataStore } from "../../../../store";
 
     let BuiltTemplate : typeof WhiteSimpleBuilder;
 
-    if($builtTemplateStore === TemplateNames.WhiteSimple){
+    if($newInvoiceDataStore.templateInUse === TemplateNames.WhiteSimple){
         BuiltTemplate = WhiteSimpleBuilder;
-    }else if($builtTemplateStore !== TemplateNames.BlueMinimalist){
+    }else if($newInvoiceDataStore.templateInUse === TemplateNames.BlueMinimalist){
         BuiltTemplate = BlueMinimalistBuilder;
     }
 </script>
@@ -22,5 +21,6 @@
 <style>
     @page {
         size: A4;
+        background: red;
     }
 </style>

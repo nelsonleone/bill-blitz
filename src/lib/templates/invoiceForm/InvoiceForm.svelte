@@ -24,16 +24,14 @@
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
     import parsePhoneNumber from 'libphonenumber-js'
-    import { AlertSeverity, CurrencyEnum } from "../../../enums";
+    import { AlertSeverity } from "../../../enums";
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
 
-    
     export let templateInUse;
-
-
 
     let invoiceItemsArr : InvoiceItems[] = []
     let issuerEmail : string;
+    let signature : { path: string; width: number; height: number }[] = []
     let issuerName : string;
     let issuerAddress : string;
     let customerEmail: string; 
@@ -42,11 +40,24 @@
     let issuerPhoneNumber : string;
     let customerPhoneNumber : string;
     let currency : ICurrency;
+    let logoText : string;
+    let tax : number;
+    let subTotal : number;
+    let total : number;
+    let discount : number;
+    let date : Date | undefined; 
+    
 
-
+    $: {
+        if(useAutoTotalCalc){
+            total =  calculateInvoiceTotal(invoiceItemsArr,discount,tax).total;
+            subTotal =  calculateInvoiceTotal(invoiceItemsArr,discount,tax).subTotal;
+        }
+    }
 
 
     let includeBankDetails = false;
+    let useAutoTotalCalc = false;
     let includeTax = false;
     let includesubTotal = false;
     let includeDiscount = false;
@@ -68,7 +79,7 @@
         },
         invoiceData: {
             invoiceNumber,
-            date: undefined,
+            date,
             items: invoiceItemsArr
         },
         billTo: {
@@ -80,16 +91,26 @@
             }
         },
         currency: currency?.value || undefined,
-       templateInUse
+       templateInUse,
+       logoText,
+       total,
+       subTotal,
+       tax,
+       date,
+       signature,
+       discount
     }
     $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || formInputData.issuer?.contactInfo?.phoneNumber || "")
 
+    $:{
+        console.log(signature)
+    }
 
     const handleShowOpenSignaturePad = () => {
-        if(openSignaturePad && formInputData.signature.length){
+        if(openSignaturePad){
             includeSignature = false;
         }
-        openSignaturePad = !openSignaturePad;
+        openSignaturePad = false;
     }
 
     let errors : InvoiceFormSubmitError;
@@ -208,11 +229,10 @@
         
     }
 
-    const handleSubmit = async() => {
+    const handleSubmit = async(e: { currentTarget: EventTarget & HTMLFormElement}) => {
         const { isValid, validationErrors } = validateInvoiceFormData(formInputData)
 
         if(!isValid && validationErrors){
-            console.log(validationErrors)
             errors = validationErrors;
 
             alertStore.set({
@@ -222,6 +242,11 @@
 
             return;
         }
+
+        await fetch(e.currentTarget.action,{
+            method: "POST",
+            body: JSON.stringify(formInputData)
+        })
     }
 
 </script>
@@ -238,31 +263,32 @@
             <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
             <InvoiceFormInput 
                 name="logoText" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="logoText" 
                 inputType="text" 
                 placeholder="Enter logo alternative text" 
                 label="Logo Alternative:" 
                 labelStyles="block"
-                bind:value={issuerName}
+                bind:value={logoText}
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <InvoiceFormInput 
                 name="issuer.name" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="enterprise-name" 
                 inputType="text" 
                 placeholder="Enter Enterprise name" 
                 label="Enterprise Name:" 
+                containerStyles="mt-8"
                 labelStyles="block"
                 bind:value={issuerName}
-                inputStyles="md:w-80 bg-stone-100 mt-8 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <div>
                 <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
                 <InvoiceFormInput 
                     name="issuer.contactInfo.address" 
-                    on:change={() => errors = setEmptyValidationErrors()}
+                    on:keyup={() => setEmptyValidationErrors()}
                     id="enterprise-address" 
                     inputType="textArea" 
                     placeholder="Enter Enterprise address" 
@@ -276,7 +302,7 @@
                     <div class="absolute right-72 h-1/2 w-1 bg-stone-300 bottom-8 md:right-[21em]"></div>
                     <InvoiceFormInput 
                         name="issuer.contactInfo.email" 
-                        on:change={() => errors = setEmptyValidationErrors()}
+                        on:keyup={() => errors = setEmptyValidationErrors()}
                         id="enterprise-email" 
                         inputType="text" 
                         placeholder="Enter Enterprise email" 
@@ -288,7 +314,7 @@
                     />
                     <InvoiceFormInput 
                         name="issuer.contactInfo.phoneNumber" 
-                        on:change={() => errors = setEmptyValidationErrors()}
+                        on:keyup={() => errors = setEmptyValidationErrors()}
                         id="billToEnterprise-phone" 
                         inputType="text" 
                         placeholder="Enter Enterprise phone" 
@@ -311,7 +337,7 @@
             <div>
                 <InvoiceFormInput 
                     name="invoiceData.invoiceNumber" 
-                    on:change={() => errors = setEmptyValidationErrors()}
+                    on:keyup={() => errors = setEmptyValidationErrors()}
                     id="invoice-number" 
                     inputType="text" 
                     placeholder="e.g 0001" 
@@ -324,9 +350,22 @@
                 <CustomButton styles="bg-stone-700 py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out" on:click={() => invoiceNumber = generateInvoiceNumber()}>Generate</CustomButton>
                 <ErrorPara error={errors?.invoiceNumber?.message} />
             </div>
-            <div class="flex items-end justify-end mt-8">
-                <DatePicker invoiceDate={formInputData.invoiceData?.date} />
-                <ErrorPara error={errors?.date.message} />
+            <div class="flex items-end justify-end mt-8 flex-col">
+                <ErrorPara error={errors?.date.message} styles=""  />
+                <DatePicker bind:value={date} on:setDate={(e) => {
+
+                    formInputData = {...formInputData, invoiceData: {
+                        ...formInputData.invoiceData,
+                        invoiceNumber: formInputData.invoiceData?.invoiceNumber || "",
+                        date: e.detail,
+                        items: formInputData.invoiceData?.items || []
+                    }}  
+
+
+                    if(errors){
+                        errors.date.message = ""
+                    }
+                }} />
             </div>
         </div>
 
@@ -338,7 +377,7 @@
             <p class="font-medium mb-3 text-xl">Bill To</p>
             <InvoiceFormInput 
                 name="billTo.name" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="billTo-CustomerName" 
                 inputType="text" 
                 placeholder="e.g Example customer" 
@@ -352,7 +391,7 @@
             <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
             <InvoiceFormInput 
                 name="billTo.contactInfo.address" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="billTo-CustomerAddress" 
                 inputType="textArea" 
                 placeholder="e.g no.5 customer address street" 
@@ -369,7 +408,7 @@
             <div class="absolute left-72 h-1/2 w-1 bg-stone-300 bottom-8 md:left-[21em]"></div>
             <InvoiceFormInput 
                 name="billTo.contactInfo.email" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="billToCustomer-email" 
                 inputType="text" 
                 placeholder="Enter Customer email" 
@@ -381,7 +420,7 @@
             />
             <InvoiceFormInput 
                 name="billTo.contactInfo.phoneNumber" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="customer-phone" 
                 inputType="text" 
                 bind:value={customerPhoneNumber}
@@ -452,7 +491,7 @@
             </Label.Root>
         </div>
         
-        <div class="flex items-center gap-3">
+        <div class="flex mt-3 items-center gap-3">
             <Checkbox.Root
               id="includeDiscount"
               aria-labelledby="includeDiscount-label"
@@ -518,10 +557,10 @@
                     </h3>
                     <InvoiceFormInput 
                         name="tax" 
-                        on:change={() => errors = setEmptyValidationErrors()}
+                        on:keyup={() => errors = setEmptyValidationErrors()}
                         id={`invoiceItems-tax`}
                         inputType="number"
-                        bind:value={formInputData.tax}
+                        bind:value={tax}
                         placeholder="Enter tax percentage" 
                         label="Tax Value"
                         labelStyles="AT_only" 
@@ -532,74 +571,104 @@
             {/if}
             
             {#if includeDiscount}
-                <div class="flex justify-between my-2">
-                    <h3 id="sub-total" class="text-base text-nowrap flex items-center font-semibold font-barlow uppercase ms-2">
+                <div class="flex items-center justify-between my-2">
+                    <h3 id="sub-total" class="text-base text-nowrap font-semibold font-barlow uppercase ms-2">
                         Discount:
+                    </h3>
+                    <div class="flex justify-center items-center">
                         <strong>
                             <CurrencyIcon styles="text-xl me-1 opacity-70" currency={formInputData.currency} />
                         </strong>
+                        <InvoiceFormInput 
+                            name="discount" 
+                            on:keyup={() => errors = setEmptyValidationErrors()}
+                            id={`invoiceItems-discount`}
+                            inputType="number"
+                            bind:value={discount}
+                            placeholder="Enter invoice discount" 
+                            label="Service or Package Discount"
+                            labelStyles="AT_only" 
+                            containerStyles="col-span-3 mb-[0]"
+                            inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                        />
+                    </div>
+                </div>
+            {/if}
+            {#if includesubTotal}
+                <div class="flex justify-between my-2 items-center">
+                    <h3 id="sub-total" class="text-base text-nowrap font-semibold font-barlow uppercase ms-2">
+                        Sub Total:
                     </h3>
+                    <div class="flex justify-center items-center">
+                        <strong>
+                            <CurrencyIcon styles="text-xl me-1 opacity-70" currency={formInputData.currency} />
+                        </strong>
+                        <InvoiceFormInput 
+                            name="subTotal" 
+                            on:keyup={() => errors = setEmptyValidationErrors()}
+                            id={`invoiceItems-sub-total`}
+                            inputType="number"
+                            bind:value={subTotal}
+                            placeholder="Enter invoice sub-total" 
+                            label="Invoice items sub-total"
+                            labelStyles="AT_only" 
+                            containerStyles="col-span-3 mb-[0]"
+                            inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10  focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                        />
+                    </div>
+                </div>
+            {/if}
+            <div class="flex justify-between items-center my-2">
+                <h3 id="total" class="text-xl font-semibold font-barlow uppercase ms-2">
+                    Total:
+                </h3>
+                <div class="flex justify-center items-center">
+                    <strong>
+                        <CurrencyIcon styles="text-xl text-center me-1 opacity-70" currency={formInputData.currency} />
+                    </strong>
                     <InvoiceFormInput 
-                        name="discount" 
-                        on:change={() => errors = setEmptyValidationErrors()}
-                        id={`invoiceItems-discount`}
+                        name="total" 
+                        on:keyup={() => errors = setEmptyValidationErrors()}
+                        id={`invoiceItems-total`}
                         inputType="number"
-                        bind:value={formInputData.discount}
-                        placeholder="Enter invoice discount" 
-                        label="Service or Package Discount"
+                        placeholder="Enter invoice total" 
+                        label="Invoice items total"
+                        bind:value={total}
                         labelStyles="AT_only" 
                         containerStyles="col-span-3 mb-[0]"
                         inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
                     />
                 </div>
-            {/if}
-            {#if includesubTotal}
-                <div class="flex justify-between my-2">
-                    <h3 id="sub-total" class="text-base text-nowrap flex items-center font-semibold font-barlow uppercase ms-2">
-                        Sub Total:
-                        <strong>
-                            <CurrencyIcon styles="text-xl me-1 opacity-70" currency={formInputData.currency} />
-                        </strong>
-                    </h3>
-                    <InvoiceFormInput 
-                        name="subTotal" 
-                        on:change={() => errors = setEmptyValidationErrors()}
-                        id={`invoiceItems-sub-total`}
-                        inputType="number"
-                        bind:value={formInputData.subTotal}
-                        placeholder="Enter invoice sub-total" 
-                        label="Invoice items sub-total"
-                        labelStyles="AT_only" 
-                        containerStyles="col-span-3 mb-[0]"
-                        inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10  focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-                    />
-                </div>
-            {/if}
-            <div class="flex justify-between my-2">
-                <h3 id="total" class="text-xl flex items-center font-semibold font-barlow uppercase ms-2">
-                    Total:
-                    <strong>
-                        <CurrencyIcon styles="text-xl me-1 opacity-70" currency={formInputData.currency} />
-                    </strong>
-                </h3>
-                <InvoiceFormInput 
-                    name="total" 
-                    on:change={() => errors = setEmptyValidationErrors()}
-                    id={`invoiceItems-total`}
-                    inputType="number"
-                    placeholder="Enter invoice total" 
-                    label="Invoice items total"
-                    bind:value={formInputData.total}
-                    labelStyles="AT_only" 
-                    containerStyles="col-span-3 mb-[0]"
-                    inputStyles="w-[95%] text-stone-700 text-primary-very-dark-blue w-full rounded-sm p-3 h-10 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-                />
             </div>
         </div>
-        <CustomButton disabled={!invoiceItemsArr.length} on:click={() => {
-            formInputData.subTotal = calculateInvoiceTotal(invoiceItemsArr,formInputData.discount).subTotal;
-            formInputData.total = calculateInvoiceTotal(invoiceItemsArr,formInputData.discount,formInputData.tax).total;
-        }} styles="bg-stone-600 shadow-sm flex gap-2 items-center mt-4 mx-auto py-3 text-center disabled:cursor-not-allowed disabled:opacity-40 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">Use Total Calculator</CustomButton>
+        <div class="flex justify-center items-center gap-3 mt-3 border border-stone-300 shadow-md w-fit mx-auto p-4 rounded-md">
+            <Checkbox.Root
+              id="useAutoTotalCalc"
+              disabled={!invoiceItemsArr.length}
+              aria-labelledby="useAutoTotalCalc-label"
+              class="peer inline-flex size-[25px] disabled:hover:cursor-not-allowed items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
+              bind:checked={useAutoTotalCalc}
+            >
+              <Checkbox.Indicator
+                let:isChecked
+                let:isIndeterminate
+                class="inline-flex items-center justify-center text-background"
+              >
+                {#if isChecked}
+                    <Icon class="text-emerald-700" icon="mingcute:check-2-fill" />
+                {:else if isIndeterminate}
+                    <Icon class="text-emerald-700" icon="fluent-emoji-flat:minus" />
+                {/if}
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+            <Label.Root
+              id="useAutoTotalCalc-label"
+              for="useAutoTotalCalc"
+              class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Use Auto Calc
+            </Label.Root>
+        </div>
         <ErrorPara error={errors?.total?.message} />
     </div>
 
@@ -612,7 +681,7 @@
         <div class="mt-10 flex items-center gap-3">
             <Checkbox.Root
               id="includeBankDetails"
-              aria-labelledby="terms-label"
+              aria-labelledby="includeBankDetails-label"
               class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
               bind:checked={includeBankDetails}
             >
@@ -629,8 +698,8 @@
               </Checkbox.Indicator>
             </Checkbox.Root>
             <Label.Root
-              id="terms-label"
-              for="terms"
+              id="includeBankDetails-label"
+              for="includeBankDetails"
               class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Include Bank Details
@@ -640,7 +709,7 @@
         {#if includeBankDetails}
             <InvoiceFormInput 
                 name="accountDetails" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="bank-details"
                 inputType="textArea"
                 placeholder="Example bank\n12345679\nExample name" 
@@ -661,7 +730,7 @@
         <div class="mt-10 relative flex justify-center mx-auto max-w-80">
             <InvoiceFormInput 
                 name="footerText" 
-                on:change={() => errors = setEmptyValidationErrors()}
+                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="footer-text"
                 inputType="textArea"
                 placeholder="" 
@@ -721,9 +790,9 @@
               Include Signature
             </Label.Root>
         </div>
-        <SignaturePad {openSignaturePad} on:setSignature={(e) => formInputData.signature = e.detail} {handleShowOpenSignaturePad} />
+        <SignaturePad {openSignaturePad} on:setSignature={(e) => signature = e.detail} {handleShowOpenSignaturePad} />
         
-        {#if formInputData.signature.length && includeSignature}
+        {#if formInputData.signature?.length && includeSignature}
             {#each formInputData.signature as layer}
                 <Signature {layer} />
             {/each}
@@ -735,4 +804,4 @@
     </div>
 </form>
 
-<button on:click={handleCancelCreation} type="reset" class="bg-transparent w-fit text-left p-0 text-primary-accent-color3 font-medium mt-5 mb-16 hover:underline focus:underline transition ease-in-out duration-200">Delete Invoice</button>
+<button on:click={handleCancelCreation} type="reset" class="bg-transparent w-full text-right p-0 text-primary-accent-color3 font-medium mt-5 mb-16 hover:underline focus:underline transition ease-in-out duration-200">Delete Invoice</button>

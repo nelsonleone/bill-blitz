@@ -65,8 +65,8 @@
 
 
 <main class="p-8 font-open-sans font-normal w-full min-h-screen relative z-10 text-[#475C7B] bg-[#E7EEF8]">
-    <div class="w-full">
-        <div style="background-image: url({waveBgImg})" class=" brightness-50 left-0 bottom-44 bg-no-repeat bg-cover w-full h-80 absolute"></div>
+    <div class="w-full overflow-hidden">
+        <img src={waveBgImg} alt="" class="w-full bottom-0 h-[60em] opacity-15 absolute left-0" />
         <div class="mt-10 flex justify-end flex-col text-right items-end">
             {#if demoData.logo}
               <img src={demoData.logo} alt="logo" width={100} height={100} loading="eager" />
@@ -103,10 +103,10 @@
                 {#if demoData.invoiceData.items.length}
                     {#each demoData.invoiceData.items as item, i (i)}              
                     <tr class="">
-                        <td class="px-6 py-4 whitespace-nowrap text-center border-x-2 border-x-[#475C7B]">{item.description}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center border-x-2 border-x-[#475C7B]">{item.quantity}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center border-x-2 border-x-[#475C7B]">{item.price}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center border-x-2 border-x-[#475C7B]">{item.amount}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.description}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.quantity}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.price}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.amount}</td>
                     </tr>
                     {/each}
                 {/if}
@@ -121,14 +121,16 @@
                     <p class="flex uppercase font-semibold text-xl gap-4">TOTAL: <span>{demoData.total}</span></p>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end">
+            {#if demoData.signature.length}
+              <div class="my-10 flex justify-end">
                 <div class="text-center relative">
                     <div class="before:w-full before:h-1 before:rounded-md before:bg-[#475C7B] before:absolute before:block before:bottom-10">
                         <Signature layer={demoData.signature} />
                     </div>
-                    <p class="border-t 0 w-48 mx-auto">{demoData.issuer.name}</p>
+                    <p class="border-t 0 w-48 mx-auto font-medium uppercase">{demoData.issuer.name}</p>
                 </div>
-            </div>
+              </div>
+            {/if}
         </div>
     </div>
 </main>

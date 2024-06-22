@@ -64,8 +64,8 @@
 </script>
 
 
-<main class="p-8 font-open-sans font-normal w-full min-h-screen relative z-10">
-  <div style="background-image: url({stripesBgImg})" class="opacity-20 -z-10 brightness-50 -left-52 top-44 bg-no-repeat bg-cover w-80 rotate-180 aspect-square absolute"></div>
+<main class="p-8 font-open-sans font-normal w-full min-h-screen relative z-10 overflow-hidden">
+  <img src={stripesBgImg} alt="" class="w-[20em] -rotate-180 top-80 opacity-15 absolute -left-32" />
   <div class="mt-10 flex justify-end flex-col text-right items-end">
     <div>
       {#if demoData.logo}
@@ -153,16 +153,20 @@
   {/if}
 
   {#if demoData.signature.length}
-    <div>
-      <Signature layer={demoData.signature} />
-      <p class="border-t border-t-stone-900 pt-4 mt-4">{demoData.issuer.name}</p>
+    <div class="my-10 flex justify-end">
+      <div class="text-center relative">
+          <div class="before:w-full before:h-1 before:rounded-md before:bg-stone-500 before:absolute before:block before:bottom-10">
+              <Signature layer={demoData.signature} />
+          </div>
+          <p class="border-t 0 w-48 mx-auto font-medium uppercase">{demoData.issuer.name}</p>
+      </div>
     </div>
   {/if}
-
 
   {#if demoData.footerText}
   <div class="text-center flex justify-center border-t border-t-gray-400  py-10 my-8">
     <p>{demoData.footerText}</p>
   </div>
   {/if}
+
 </main>

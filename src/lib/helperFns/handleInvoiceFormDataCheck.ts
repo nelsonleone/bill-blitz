@@ -3,6 +3,8 @@ import type { IBasicInvoiceData, InvoiceFormSubmitError } from "../../types/type
 export function validateInvoiceFormData(formData: Partial<IBasicInvoiceData>) {
   let validationErrors = setEmptyValidationErrors()
 
+  console.log(formData.invoiceData?.date,formData.currency)
+
   // Validate logo and company name
   if (!formData.logo && !formData.issuer?.name) {
     validationErrors.issuer.message = 'Company name is required if there is no logo.';
@@ -27,17 +29,18 @@ export function validateInvoiceFormData(formData: Partial<IBasicInvoiceData>) {
   }
 
   // Validate invoice items
-  if (formData.invoiceData && formData.invoiceData.items.length < 1) {
+  if (formData.invoiceData && formData.invoiceData.items?.length < 1) {
     validationErrors.items.message = 'No item was added'
   }
 
   // Validate other fields
   if (!formData.invoiceData?.invoiceNumber) {
-    validationErrors.invoiceNumber.message = 'Please select a Currency.'
+    validationErrors.invoiceNumber.message = 'Please select input an invoice number.'
   }
   if (!formData.invoiceData?.date) {
     validationErrors.date.message = 'Please select date for invoice'
   }
+
   if (!formData.total) {
     validationErrors.total.message = 'Please sum up Total or use the total calculator tool'
   }
@@ -45,7 +48,7 @@ export function validateInvoiceFormData(formData: Partial<IBasicInvoiceData>) {
 
   const errorMessagesArr = Object.values(validationErrors).map(val => val?.message && val.message) || []
 
-  const isValid = Object.values(errorMessagesArr).length === 0;
+  const isValid = errorMessagesArr.find(val => val) ? false : true;
   return { isValid, validationErrors }
 }
 
