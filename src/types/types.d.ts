@@ -132,5 +132,6 @@ type InvoiceFormSubmitError = {
   items: InvoiceFormSubmitErrorMessage,
   invoiceNumber: InvoiceFormSubmitErrorMessage,
   date: InvoiceFormSubmitErrorMessage,
+  logo: InvoiceFormSubmitErrorMessage,
   total: InvoiceFormSubmitErrorMessage
 }

@@ -12,7 +12,7 @@ export const actions = {
                 })
             }
             
-            const data = request.json()
+            const data = await request.json()
 
 
             console.log(data)

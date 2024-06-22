@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import CustomButton from "$lib/components/buttons/CustomButton.svelte";
-    import { imagePreviewModalStore } from "../../store";
-    import BlackWhiteMinimalist from "./design/Black-White-Minimalist.png";
+    import { imagePreviewModalStore } from "../../../store";
+    import BlackWhiteMinimalist from "./../design/Black-White-Minimalist.png";
 
     export let noDetails : boolean = true;
 </script>

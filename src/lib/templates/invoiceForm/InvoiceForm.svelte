@@ -24,7 +24,7 @@
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
     import parsePhoneNumber from 'libphonenumber-js'
-    import { AlertSeverity } from "../../../enums";
+    import { AlertSeverity, CurrencyEnum, TemplateNames } from "../../../enums";
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
 
     export let templateInUse;
@@ -52,6 +52,50 @@
         if(useAutoTotalCalc){
             total =  calculateInvoiceTotal(invoiceItemsArr,discount,tax).total;
             subTotal =  calculateInvoiceTotal(invoiceItemsArr,discount,tax).subTotal;
+        }
+    }
+
+    $: {
+        for (let key in formInputData) {
+            if (formInputData[key as keyof IBasicInvoiceData]) {
+               if(key === "issuer"){
+                  for(let key in formInputData.issuer?.contactInfo){
+                        if(formInputData.issuer?.contactInfo[key as keyof object]){
+                            errors.issuerContactInfo.message = ""
+                        }
+                    }
+                    if(formInputData.issuer?.name && errors.issuer){
+                        errors.issuer.message = "";
+                    }
+               }
+
+               else if (key === "billTo"){
+                  for(let key in formInputData.billTo?.contactInfo){
+                        if(formInputData.billTo?.contactInfo[key as keyof object]){
+                            errors.billToContactInfo.message = ""
+                        }
+                    }
+                    if(formInputData.billTo?.name && errors.billToName){
+                        errors.billToName.message = "";
+                    }
+               }
+
+                else if (key === "total" && formInputData.total){
+                    errors.total.message = ""
+                }
+                else if (key === "invoiceData" && formInputData.invoiceData?.date){
+                    errors.date.message = ""
+                }
+                else if (key === "invoiceData" && formInputData.invoiceData?.invoiceNumber){
+                    errors.invoiceNumber.message = ""
+                }
+                else if (key === "invoiceData" && formInputData.invoiceData?.items.length){
+                    errors.items.message = ""
+                }
+                else if (key === "logo" && (formInputData.logo || formInputData.logoText)){
+                    errors.logo.message = ""
+                }
+            }
         }
     }
 
@@ -102,9 +146,6 @@
     }
     $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || formInputData.issuer?.contactInfo?.phoneNumber || "")
 
-    $:{
-        console.log(signature)
-    }
 
     const handleShowOpenSignaturePad = () => {
         if(openSignaturePad){
@@ -229,6 +270,10 @@
         
     }
 
+
+
+    // Submit Handler
+
     const handleSubmit = async(e: { currentTarget: EventTarget & HTMLFormElement}) => {
         const { isValid, validationErrors } = validateInvoiceFormData(formInputData)
 
@@ -243,9 +288,65 @@
             return;
         }
 
+        const demoData: IBasicInvoiceData = {
+    logo: 'https://via.placeholder.com/150',
+    logoText: 'MyCompany',
+    issuer: {
+      name: 'John Doe',
+      contactInfo: {
+        address: '123 Main St, Anytown USA',
+        phoneNumber: '555-1234',
+        emailAddress: 'john@mycompany.com'
+      }
+    },
+    billTo: {
+      name: 'Jane Doe',
+      contactInfo: {
+        address: '456 Oak Rd, Someplace CA',
+        phoneNumber: '555-5678',
+        emailAddress: 'jane@client.com'
+      }
+    },
+    invoiceData: {
+      invoiceNumber: '1234',
+      date: new Date('2023-05-15'),
+      items: [
+        {
+          description: 'Product A',
+          quantity: 2,
+          price: 10.99,
+          amount: 21.98,
+          saved: false
+        },
+        {
+          description: 'Service B',
+          quantity: 1,
+          price: 50.00,
+          amount: 50.00,
+          saved: true
+        },
+        {
+          description: 'Discount C',
+          quantity: 1,
+          price: -5.00,
+          amount: -5.00,
+          saved: true
+        }
+      ]
+    },
+    accountDetails: 'Bank Account: 12345678',
+    currency: CurrencyEnum.UnitedStates,
+    signature: [],
+    total: 66.98,
+    subTotal: 71.98,
+    discount: 5.00,
+    footerText: 'Thank you for your business!',
+    tax: 0,
+    templateInUse: TemplateNames.BlackWhiteMinimalist,
+  }
         await fetch(e.currentTarget.action,{
             method: "POST",
-            body: JSON.stringify(formInputData)
+            body: JSON.stringify(demoData)
         })
     }
 
@@ -258,32 +359,36 @@
     <div class="relative flex flex-col justify-end md:items-end">
         <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-overpass w-fit h-fit">INVOICE</h2>
         <CompanyLogoUpload uploadedLogo={formInputData.logo} on:setUploadedLogo={(e) => formInputData.logo = e.detail} />
-        <ErrorPara error={errors?.issuer?.message} />
-        <div class="self-end text-right  text-stone-700 mt-4">
-            <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
+            <div class="self-end text-right  text-stone-700 mt-4">
+                <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
             <InvoiceFormInput 
                 name="logoText" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="logoText" 
                 inputType="text" 
                 placeholder="Enter logo alternative text" 
                 label="Logo Alternative:" 
                 labelStyles="block"
                 bind:value={logoText}
+                containerStyles="mb-0"
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
+            <ErrorPara styles="text-right justify-end" error={errors?.logo?.message} />
+           
+           
             <InvoiceFormInput 
                 name="issuer.name" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="enterprise-name" 
                 inputType="text" 
                 placeholder="Enter Enterprise name" 
                 label="Enterprise Name:" 
-                containerStyles="mt-8"
                 labelStyles="block"
                 bind:value={issuerName}
+                containerStyles="mt-8 mb-0"
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
+            <ErrorPara styles="text-right justify-end" error={errors?.issuer?.message} />
+           
+           
             <div>
                 <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
                 <InvoiceFormInput 
@@ -302,7 +407,7 @@
                     <div class="absolute right-72 h-1/2 w-1 bg-stone-300 bottom-8 md:right-[21em]"></div>
                     <InvoiceFormInput 
                         name="issuer.contactInfo.email" 
-                        on:keyup={() => errors = setEmptyValidationErrors()}
+    
                         id="enterprise-email" 
                         inputType="text" 
                         placeholder="Enter Enterprise email" 
@@ -314,7 +419,7 @@
                     />
                     <InvoiceFormInput 
                         name="issuer.contactInfo.phoneNumber" 
-                        on:keyup={() => errors = setEmptyValidationErrors()}
+    
                         id="billToEnterprise-phone" 
                         inputType="text" 
                         placeholder="Enter Enterprise phone" 
@@ -337,7 +442,7 @@
             <div>
                 <InvoiceFormInput 
                     name="invoiceData.invoiceNumber" 
-                    on:keyup={() => errors = setEmptyValidationErrors()}
+
                     id="invoice-number" 
                     inputType="text" 
                     placeholder="e.g 0001" 
@@ -377,7 +482,6 @@
             <p class="font-medium mb-3 text-xl">Bill To</p>
             <InvoiceFormInput 
                 name="billTo.name" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="billTo-CustomerName" 
                 inputType="text" 
                 placeholder="e.g Example customer" 
@@ -391,7 +495,6 @@
             <h3 class="my-4 font-semibold text-primary-accent-color2 text-lg underline">Contact Info</h3>
             <InvoiceFormInput 
                 name="billTo.contactInfo.address" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="billTo-CustomerAddress" 
                 inputType="textArea" 
                 placeholder="e.g no.5 customer address street" 
@@ -408,7 +511,6 @@
             <div class="absolute left-72 h-1/2 w-1 bg-stone-300 bottom-8 md:left-[21em]"></div>
             <InvoiceFormInput 
                 name="billTo.contactInfo.email" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="billToCustomer-email" 
                 inputType="text" 
                 placeholder="Enter Customer email" 
@@ -420,7 +522,6 @@
             />
             <InvoiceFormInput 
                 name="billTo.contactInfo.phoneNumber" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="customer-phone" 
                 inputType="text" 
                 bind:value={customerPhoneNumber}
@@ -557,7 +658,7 @@
                     </h3>
                     <InvoiceFormInput 
                         name="tax" 
-                        on:keyup={() => errors = setEmptyValidationErrors()}
+    
                         id={`invoiceItems-tax`}
                         inputType="number"
                         bind:value={tax}
@@ -581,7 +682,7 @@
                         </strong>
                         <InvoiceFormInput 
                             name="discount" 
-                            on:keyup={() => errors = setEmptyValidationErrors()}
+        
                             id={`invoiceItems-discount`}
                             inputType="number"
                             bind:value={discount}
@@ -605,7 +706,7 @@
                         </strong>
                         <InvoiceFormInput 
                             name="subTotal" 
-                            on:keyup={() => errors = setEmptyValidationErrors()}
+        
                             id={`invoiceItems-sub-total`}
                             inputType="number"
                             bind:value={subTotal}
@@ -628,7 +729,7 @@
                     </strong>
                     <InvoiceFormInput 
                         name="total" 
-                        on:keyup={() => errors = setEmptyValidationErrors()}
+    
                         id={`invoiceItems-total`}
                         inputType="number"
                         placeholder="Enter invoice total" 
@@ -709,7 +810,6 @@
         {#if includeBankDetails}
             <InvoiceFormInput 
                 name="accountDetails" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="bank-details"
                 inputType="textArea"
                 placeholder="Example bank\n12345679\nExample name" 
@@ -730,7 +830,6 @@
         <div class="mt-10 relative flex justify-center mx-auto max-w-80">
             <InvoiceFormInput 
                 name="footerText" 
-                on:keyup={() => errors = setEmptyValidationErrors()}
                 id="footer-text"
                 inputType="textArea"
                 placeholder="" 

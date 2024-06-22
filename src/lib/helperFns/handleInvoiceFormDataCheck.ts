@@ -3,11 +3,14 @@ import type { IBasicInvoiceData, InvoiceFormSubmitError } from "../../types/type
 export function validateInvoiceFormData(formData: Partial<IBasicInvoiceData>) {
   let validationErrors = setEmptyValidationErrors()
 
-  console.log(formData.invoiceData?.date,formData.currency)
-
   // Validate logo and company name
-  if (!formData.logo && !formData.issuer?.name) {
-    validationErrors.issuer.message = 'Company name is required if there is no logo.';
+  if (!formData.logo && !formData.logoText) {
+    validationErrors.logo.message = 'Logo Text Alt. is required if there is no logo.';
+  }
+
+
+  if (!formData.issuer?.name) {
+    validationErrors.issuer.message = 'Please enter issuer name';
   }
 
   // Validate issuer contact info
@@ -19,7 +22,7 @@ export function validateInvoiceFormData(formData: Partial<IBasicInvoiceData>) {
 
   // Validate bill to contact info
   if (!formData.billTo?.name) {
-    validationErrors.billToName.message = 'Bill to name is required.';
+    validationErrors.billToName.message = 'Customer name is required.';
   }
 
   if (formData.billTo?.contactInfo) {
@@ -63,6 +66,7 @@ export const setEmptyValidationErrors : () => InvoiceFormSubmitError = () => {
     items: { message: ""},
     invoiceNumber: { message: ""},
     date: { message: ""},
+    logo: { message: ""},
     total: { message: ""}
   }
 }

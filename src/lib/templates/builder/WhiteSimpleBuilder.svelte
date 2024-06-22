@@ -1,65 +1,10 @@
 <script lang="ts">
-    import Signature from "$lib/components/inputs/Signature.svelte";
-    import { CurrencyEnum } from "../../../enums";
-    import type { IBasicInvoiceData } from "../../../types/types";
-    import stripesBgImg from "../design-asset/grey-lines.png"
+  import Signature from "$lib/components/inputs/Signature.svelte";
+  import { CurrencyEnum } from "../../../enums";
+  import type { IBasicInvoiceData } from "../../../types/types";
+  import stripesBgImg from "../design-asset/grey-lines.png"
 
-  const demoData: IBasicInvoiceData = {
-    logo: 'https://lh3.googleusercontent.com/a/ACg8ocLmzUgT2jZj9H28e4dJXIbK10QILGcYrvX26fGwgJNxZNao=s96-c',
-    logoText: 'MyCompany',
-    issuer: {
-      name: 'John Doe',
-      contactInfo: {
-        address: '123 Main St, Anytown USA',
-        phoneNumber: '555-1234',
-        emailAddress: 'john@mycompany.com'
-      }
-    },
-    billTo: {
-      name: 'Jane Doe',
-      contactInfo: {
-        address: '456 Oak Rd, Someplace CA',
-        phoneNumber: '555-5678',
-        emailAddress: 'jane@client.com'
-      }
-    },
-    invoiceData: {
-      invoiceNumber: '1234',
-      date: new Date('2023-05-15'),
-      items: [
-        {
-          description: 'Product A',
-          quantity: 2,
-          price: 10.99,
-          amount: 21.98,
-          saved: false
-        },
-        {
-          description: 'Service B',
-          quantity: 1,
-          price: 50.00,
-          amount: 50.00,
-          saved: true
-        },
-        {
-          description: 'Discount C',
-          quantity: 1,
-          price: -5.00,
-          amount: -5.00,
-          saved: true
-        }
-      ]
-    },
-    accountDetails: 'Bank Account: 12345678',
-    currency: CurrencyEnum.UnitedStates,
-    signature: [],
-    total: 66.98,
-    subTotal: 71.98,
-    discount: 5.00,
-    footerText: 'Thank you for your business!',
-    tax: 0,
-    templateInUse: 'template-a',
-  }
+  export let invoiceData : IBasicInvoiceData;
 
 </script>
 
@@ -68,21 +13,21 @@
   <img src={stripesBgImg} alt="" class="w-[20em] -rotate-180 top-80 opacity-15 absolute -left-32" />
   <div class="mt-10 flex justify-end flex-col text-right items-end">
     <div>
-      {#if demoData.logo}
-        <img src={demoData.logo} alt="logo" width={100} height={100} loading="eager" />
+      {#if invoiceData.logo}
+        <img src={invoiceData.logo} alt="logo" width={100} height={100} loading="eager" />
       {/if}
-      {#if demoData.logoText}
-      <h2 class="font-bold text-2xl">{demoData.logoText}</h2>
+      {#if invoiceData.logoText}
+      <h2 class="font-bold text-2xl">{invoiceData.logoText}</h2>
       {/if}
     </div>
 
-    {#if demoData.issuer.name}
-       <p class="font-semibold text-lg">{demoData.issuer.name}</p>
+    {#if invoiceData.issuer.name}
+       <p class="font-semibold text-lg">{invoiceData.issuer.name}</p>
     {/if}
 
-    {#if demoData.issuer.contactInfo}
+    {#if invoiceData.issuer.contactInfo}
       <div class="flex flex-col gap-1">
-        {#each Object.values(demoData.issuer?.contactInfo) as info, i (i)}
+        {#each Object.values(invoiceData.issuer?.contactInfo) as info, i (i)}
           <p class="text-sm text-nowrap">{info}</p>
         {/each}
       </div>
@@ -93,17 +38,17 @@
 
   <div class="font-open-sans">
     <div class="flex justify-between">
-      <p class="font-semibold">Invoice No: <span class="ms-7 font-normal">{demoData.invoiceData.invoiceNumber}</span></p>
-      <p class="font-semibold">Date: <span class="ms-7 font-normal">{demoData.invoiceData.date.toLocaleDateString()}</span></p>
+      <p class="font-semibold">Invoice No: <span class="ms-7 font-normal">{invoiceData.invoiceData.invoiceNumber}</span></p>
+      <p class="font-semibold">Date: <span class="ms-7 font-normal">{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
     </div>
 
     <div class="flex gap-7 mt-4">
       <p class="font-semibold">Bill to:</p>
       <div class="ms-10">
-        <p class="font-medium text-lg">{demoData.billTo.name}</p>
-        <p>{demoData.billTo.contactInfo?.address}</p>
-        <p>{demoData.billTo.contactInfo?.emailAddress}</p>
-        <p>{demoData.billTo.contactInfo?.phoneNumber}</p>
+        <p class="font-medium text-lg">{invoiceData.billTo.name}</p>
+        <p>{invoiceData.billTo.contactInfo?.address}</p>
+        <p>{invoiceData.billTo.contactInfo?.emailAddress}</p>
+        <p>{invoiceData.billTo.contactInfo?.phoneNumber}</p>
       </div>
     </div>
   </div>
@@ -120,8 +65,8 @@
             </tr>
         </thead>
         <tbody class="bg-white">
-          {#if demoData.invoiceData.items.length}
-            {#each demoData.invoiceData.items as item, i (i)}              
+          {#if invoiceData.invoiceData.items.length}
+            {#each invoiceData.invoiceData.items as item, i (i)}              
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-center">{i + 1}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-center">{item.description}</td>
@@ -136,36 +81,38 @@
   </div>
 
   <div class="mt-10 grid grid-rows-3 place-content-end">
-    {#if demoData.tax}
-      <h3 class="text-xl font-semibold mt-4 flex gap-32 justify-between">Tax <span>{demoData.tax}</span></h3>
+    {#if invoiceData.tax}
+      <h3 class="text-xl font-semibold mt-4 flex gap-32 justify-between">Tax <span>{invoiceData.tax}</span></h3>
     {/if}
-    {#if demoData.subTotal}
-     <h3 class="text-xl font-semibold mt-4 flex gap-32 justify-between">Sub-Total <span>{demoData.subTotal}</span></h3>
+    {#if invoiceData.subTotal}
+     <h3 class="text-xl font-semibold mt-4 flex gap-32 justify-between">Sub-Total <span>{invoiceData.subTotal}</span></h3>
     {/if}
-    <h2 class="text-2xl font-bold mt-4 flex gap-32 justify-between">Total <span>{demoData.total}</span></h2>
+    <h2 class="text-2xl font-bold mt-4 flex gap-32 justify-between">Total <span>{invoiceData.total}</span></h2>
   </div>
 
-  {#if demoData.accountDetails}
+  {#if invoiceData.accountDetails}
     <div>
       <h3 class="text-lg font-semibold mt-4 flex gap-32 justify-between">Bank Details:</h3>
-      <p class="">{demoData.accountDetails}</p>
+      <p class="">{invoiceData.accountDetails}</p>
     </div>
   {/if}
 
-  {#if demoData.signature.length}
+  {#if invoiceData.signature?.length}
     <div class="my-10 flex justify-end">
       <div class="text-center relative">
           <div class="before:w-full before:h-1 before:rounded-md before:bg-stone-500 before:absolute before:block before:bottom-10">
-              <Signature layer={demoData.signature} />
+              {#each invoiceData.signature as layer}
+                <Signature {layer} />
+              {/each}
           </div>
-          <p class="border-t 0 w-48 mx-auto font-medium uppercase">{demoData.issuer.name}</p>
+          <p class="border-t 0 w-48 mx-auto font-medium uppercase">{invoiceData.issuer.name}</p>
       </div>
     </div>
   {/if}
 
-  {#if demoData.footerText}
+  {#if invoiceData.footerText}
   <div class="text-center flex justify-center border-t border-t-gray-400  py-10 my-8">
-    <p>{demoData.footerText}</p>
+    <p>{invoiceData.footerText}</p>
   </div>
   {/if}
 

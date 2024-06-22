@@ -1,7 +1,7 @@
 <script lang="ts">
     import CustomButton from "$lib/components/buttons/CustomButton.svelte";
-    import { imagePreviewModalStore } from "../../store";
-    import WhiteSimpleImg from "./design/White Simple Invoice.png";
+    import { imagePreviewModalStore } from "../../../store";
+    import WhiteSimpleImg from "./../design/White Simple Invoice.png";
 
     export let noDetails : boolean = true;
 </script>

@@ -2,11 +2,11 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import { getTemplate } from "$lib/helperFns/getTemplate";
-    import BlackWhiteMinimalist from "$lib/templates/BlackWhiteMinimalist.svelte";
-    import BlueMinimalist from "$lib/templates/BlueMinimalist.svelte";
-    import WhiteSimple from "$lib/templates/WhiteSimple.svelte";
+    import BlackWhiteMinimalist from "$lib/templates/templateAsComponents/BlackWhiteMinimalist.svelte";
     import InvoiceForm from "$lib/templates/invoiceForm/InvoiceForm.svelte";
+    import BlueMinimalist from "$lib/templates/templateAsComponents/BlueMinimalist.svelte";
     import { TemplateNames } from "../../../../enums";
+    import WhiteSimple from "$lib/templates/templateAsComponents/WhiteSimple.svelte";
 
     let searchParam = $page.url.searchParams.get("template")
     let Template : typeof BlueMinimalist | typeof WhiteSimple | typeof BlackWhiteMinimalist | null;
