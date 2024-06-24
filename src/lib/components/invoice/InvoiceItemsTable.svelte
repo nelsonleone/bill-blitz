@@ -3,6 +3,8 @@
     import CurrencyIcon from './CurrencyIcon.svelte';
     import type { CurrencyEnum } from '../../../enums';
     import type { InvoiceItems } from '../../../types/types';
+    import IconButton from '../buttons/IconButton.svelte';
+    import Icon from '@iconify/svelte';
   
     export let invoiceItemsArr: InvoiceItems[]
     export let currency: CurrencyEnum | undefined;
@@ -20,25 +22,29 @@
   <TableBody tableBodyClass="divide-y">
     {#each invoiceItemsArr as invoiceItem, i (i)}
       {#if invoiceItem?.description && invoiceItem?.price && invoiceItem?.amount}
-      <TableBodyRow>
-          <TableBodyCell tdClass="py-4 text-base font-overpass">
-              <p class="text-left text-stone-700">{invoiceItem?.description}</p>
-              </TableBodyCell>
-              <TableBodyCell tdClass="py-4 text-base font-overpass">
-              <p class="text-left text-stone-700">{invoiceItem?.quantity || ""}</p>
-              </TableBodyCell>
-              <TableBodyCell tdClass="py-4 text-base font-overpass">
-              <p class="text-center text-stone-700 flex items-center">
-                  <CurrencyIcon styles="text-base font-normal inline opacity-80" {currency} />
-                  <span>{invoiceItem?.price}</span>
-              </p>
-              </TableBodyCell>
-              <TableBodyCell tdClass="py-4 text-base font-overpass">
-              <p class="text-stone-700 flex items-center justify-end">
-                  <CurrencyIcon styles="text-base font-normal opacity-80" {currency} />
-                  <span>{invoiceItem?.amount}</span>
-              </p>
-              </TableBodyCell>
+      <TableBodyRow class="relative">
+        <TableBodyCell tdClass="py-5 relative text-base font-overpass overflow-hidden">
+            <p class="text-left text-stone-700">{invoiceItem?.description}</p>
+            </TableBodyCell>
+            <TableBodyCell tdClass="py-4 text-base font-overpass">
+            <p class="text-left text-stone-700">{invoiceItem?.quantity || ""}</p>
+            </TableBodyCell>
+            <TableBodyCell tdClass="py-4 text-base font-overpass">
+            <p class="text-center text-stone-700 flex items-center">
+                <CurrencyIcon styles="text-base font-normal inline opacity-80" {currency} />
+                <span>{invoiceItem?.price}</span>
+            </p>
+            </TableBodyCell>
+            <TableBodyCell tdClass="py-4 text-base font-overpass">
+            <p class="text-stone-700 flex items-center justify-end">
+                <CurrencyIcon styles="text-base font-normal opacity-80" {currency} />
+                <span>{invoiceItem?.amount}</span>
+            </p>
+
+            <IconButton styles="absolute -right-12 w-fit bg-transparent p-0 text-primary-accent-color3 text-xl top-0 bottom-0 h-fit transition ease-in-out duration-200">
+              <Icon aria-label="trash" icon="entypo:trash" />
+            </IconButton>
+          </TableBodyCell>
         </TableBodyRow>
       {/if}
     {/each}

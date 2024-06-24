@@ -16,16 +16,17 @@
     import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
     import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
     import InvoiceItemsTable from "$lib/components/invoice/InvoiceItemsTable.svelte";
-    import { alertStore } from "../../../store";
+    import { alertStore, newInvoiceDataStore } from "../../../store";
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
-    import { setEmptyValidationErrors, validateInvoiceFormData } from "$lib/helperFns/handleInvoiceFormDataCheck";
+    import { demoData, setEmptyValidationErrors, validateInvoiceFormData } from "$lib/helperFns/handleInvoiceFormDataCheck";
     import { goto } from "$app/navigation";
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
     import parsePhoneNumber from 'libphonenumber-js'
-    import { AlertSeverity, CurrencyEnum, TemplateNames } from "../../../enums";
+    import { AlertSeverity } from "../../../enums";
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
+    import { createEventDispatcher } from "svelte";
 
     export let templateInUse;
 
@@ -60,39 +61,40 @@
             if (formInputData[key as keyof IBasicInvoiceData]) {
                if(key === "issuer"){
                   for(let key in formInputData.issuer?.contactInfo){
-                        if(formInputData.issuer?.contactInfo[key as keyof object]){
+                        if(formInputData.issuer?.contactInfo[key as keyof object] && errors?.issuer?.message){
                             errors.issuerContactInfo.message = ""
                         }
                     }
-                    if(formInputData.issuer?.name && errors.issuer){
+                    if(formInputData.issuer?.name && errors?.issuer?.message){
                         errors.issuer.message = "";
                     }
                }
 
                else if (key === "billTo"){
                   for(let key in formInputData.billTo?.contactInfo){
-                        if(formInputData.billTo?.contactInfo[key as keyof object]){
+                        if(formInputData.billTo?.contactInfo[key as keyof object] && errors?.billToContactInfo?.message){
                             errors.billToContactInfo.message = ""
                         }
                     }
-                    if(formInputData.billTo?.name && errors.billToName){
+                    if(formInputData.billTo?.name && errors?.billToName?.message){
                         errors.billToName.message = "";
                     }
                }
 
-                else if (key === "total" && formInputData.total){
+                else if (key === "total" && formInputData.total && errors?.total?.message){
                     errors.total.message = ""
                 }
-                else if (key === "invoiceData" && formInputData.invoiceData?.date){
+                else if (key === "invoiceData" && formInputData.invoiceData?.date && errors?.date?.message){
                     errors.date.message = ""
                 }
-                else if (key === "invoiceData" && formInputData.invoiceData?.invoiceNumber){
+                else if (key === "invoiceData" && formInputData.invoiceData?.invoiceNumber && errors?.invoiceNumber?.message){
                     errors.invoiceNumber.message = ""
                 }
-                else if (key === "invoiceData" && formInputData.invoiceData?.items.length){
+                else if (key === "invoiceData" && formInputData.invoiceData?.items.length && errors?.items?.message){
                     errors.items.message = ""
                 }
-                else if (key === "logo" && (formInputData.logo || formInputData.logoText)){
+                else if (key === "logo" || key === "logoText")
+                  if((formInputData.logo || formInputData.logoText) && errors?.logo?.message){
                     errors.logo.message = ""
                 }
             }
@@ -108,9 +110,13 @@
     let editFooterText = false;
     let invoiceNumber : string;
     let includeSignature = false;
-    $: openSignaturePad = includeSignature;
-
     let formInputData : Partial<IBasicInvoiceData>
+        
+        
+    const dispatch = createEventDispatcher()
+        
+        
+    $: openSignaturePad = includeSignature;
 
     $: formInputData = {
         issuer: {
@@ -134,7 +140,7 @@
                 phoneNumber: customerPhoneNumber
             }
         },
-        currency: currency?.value || undefined,
+       currency: currency?.value || undefined,
        templateInUse,
        logoText,
        total,
@@ -277,77 +283,41 @@
     const handleSubmit = async(e: { currentTarget: EventTarget & HTMLFormElement}) => {
         const { isValid, validationErrors } = validateInvoiceFormData(formInputData)
 
-        if(!isValid && validationErrors){
-            errors = validationErrors;
-
-            alertStore.set({
-                severity: AlertSeverity.ERROR,
-                mssg: "Fix The Errors To Continue"
+        try{
+            dispatch("setSubmitting",true)
+            
+            const res = await fetch(e.currentTarget.action,{
+                method: "POST",
+                body: JSON.stringify(demoData)
             })
 
-            return;
+            const data = await res.json()
+
+            if(res.ok){
+                newInvoiceDataStore.set(data)
+                goto("/generate/invoice/builder")
+            }
+        }
+        catch(err : any | unknown){
+            alertStore.set({
+                severity: AlertSeverity.ERROR,
+                mssg: err.message || "An error occurred, try again"
+            })
+        }
+        finally{
+            dispatch("setSubmitting",false)
         }
 
-        const demoData: IBasicInvoiceData = {
-    logo: 'https://via.placeholder.com/150',
-    logoText: 'MyCompany',
-    issuer: {
-      name: 'John Doe',
-      contactInfo: {
-        address: '123 Main St, Anytown USA',
-        phoneNumber: '555-1234',
-        emailAddress: 'john@mycompany.com'
-      }
-    },
-    billTo: {
-      name: 'Jane Doe',
-      contactInfo: {
-        address: '456 Oak Rd, Someplace CA',
-        phoneNumber: '555-5678',
-        emailAddress: 'jane@client.com'
-      }
-    },
-    invoiceData: {
-      invoiceNumber: '1234',
-      date: new Date('2023-05-15'),
-      items: [
-        {
-          description: 'Product A',
-          quantity: 2,
-          price: 10.99,
-          amount: 21.98,
-          saved: false
-        },
-        {
-          description: 'Service B',
-          quantity: 1,
-          price: 50.00,
-          amount: 50.00,
-          saved: true
-        },
-        {
-          description: 'Discount C',
-          quantity: 1,
-          price: -5.00,
-          amount: -5.00,
-          saved: true
-        }
-      ]
-    },
-    accountDetails: 'Bank Account: 12345678',
-    currency: CurrencyEnum.UnitedStates,
-    signature: [],
-    total: 66.98,
-    subTotal: 71.98,
-    discount: 5.00,
-    footerText: 'Thank you for your business!',
-    tax: 0,
-    templateInUse: TemplateNames.BlackWhiteMinimalist,
-  }
-        await fetch(e.currentTarget.action,{
-            method: "POST",
-            body: JSON.stringify(demoData)
-        })
+        // if(!isValid && validationErrors){
+        //     errors = validationErrors;
+
+        //     alertStore.set({
+        //         severity: AlertSeverity.ERROR,
+        //         mssg: "Fix The Errors To Continue"
+        //     })
+
+        //     return;
+        // }
     }
 
 </script>

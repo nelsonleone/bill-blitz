@@ -1,6 +1,5 @@
 <script lang="ts">
     import Signature from "$lib/components/inputs/Signature.svelte";
-    import { CurrencyEnum } from "../../../enums";
     import type { IBasicInvoiceData } from "../../../types/types";
     import waveBgImg from "../design-asset/wave.png"
 
