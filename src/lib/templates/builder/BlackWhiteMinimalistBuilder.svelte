@@ -1,81 +1,97 @@
 <script lang="ts">
     import Signature from "$lib/components/inputs/Signature.svelte";
+    import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
+    import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
     import type { IBasicInvoiceData } from "../../../types/types";
-    import waveBgImg from "../design-asset/wave.png"
 
     export let invoiceData : IBasicInvoiceData;
 
 </script>
 
 
-<main class="p-8 font-open-sans bg-gray-100 font-normal w-full min-h-screen relative z-10 text-[#3D3B3A]">
+<main  id="builder" class="py-8 px-12 font-open-sans bg-[#fff] w-[210mm] min-h-5h-[300mm] font-normal min-h-screen relative z-10 text-[#3D3B3A]">
     <div>
-        <div class="flex mt-12 mb-28 justify-center items-center flex-col">
+        <div class="flex mt-8 mb-24 justify-center items-center flex-col">
             <img src={invoiceData.logo} alt="Company Logo" class="w-20 mb-4">
-            <h1 class="text-2xl font-bold">{invoiceData.logoText}</h1>
+            <h1 class="text-4xl font-bold">{invoiceData.logoText}</h1>
         </div>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between items-start pb-1/2">
             <div class="mb-8">
-                <h2 class="text-sm font-semibold mb-2">ISSUED TO :</h2>
-                <p>Jonathan Patterson</p>
-                <p>Liceria & Co.</p>
-                <p>123 Anywhere St., Any City</p>
+                <h2 class="text-lg font-semibold mb-2">ISSUED TO :</h2>
+                <p class="text-base">{invoiceData.billTo.name}</p>
+                <p class="text-base">{invoiceData.billTo.contactInfo?.address}</p>
+                <p class="text-base">{invoiceData.billTo.contactInfo?.emailAddress}</p>
+                <p class="text-base">{invoiceData.billTo.contactInfo?.phoneNumber}</p>
             </div>
-            <div class="text-right">
-                <p class="text-sm font-semibold mb-4">INVOICE NO: <span class="ms-4 font-normal">01234</span></p>
-                <p class="text-sm font-semibold">DATE: <span class="ms-4 font-normal">11.02.2030</span></p>
+            <div class="grid grid-rows-[2em] grid-cols-1">
+                <p class="text-lg font-semibold mb-4">INVOICE NO: <span class="ms-4 text-base font-normal">{invoiceData.invoiceData.invoiceNumber}</span></p>
+                <p class="text-lg font-semibold">DATE: <span class="ms-4 text-base font-normal">{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
             </div>
         </div>
-    
-        <table class="w-full my-12">
-            <thead class="border-b-2 bg-[#E3DCD4]">
-                <tr class="">
-                    <th class="text-left py-2 px-4">DESCRIPTION</th>
-                    <th class="text-left py-2 px-4">UNIT PRICE</th>
-                    <th class="text-left py-2 px-4">QTY</th>
-                    <th class="text-left py-2 px-4">AMOUNT</th>
-                </tr>
-            </thead>
-            <tbody>
+        <Table divClass="mt-20 relative text-[#3D3B3A]">
+            <TableHead class="h-10 p-2 text-[#3D3B3A] font-semibold">
+                <TableHeadCell class="text-left py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">DESCRIPTION</TableHeadCell>
+                <TableHeadCell class="text-center py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">UNIT PRICE</TableHeadCell>
+                <TableHeadCell class="text-center py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">QTY</TableHeadCell>
+                <TableHeadCell class="text-right py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">AMOUNT</TableHeadCell>
+            </TableHead>
+                
+            <TableBody tableBodyClass="divide-y">
                 {#if invoiceData.invoiceData.items?.length > 0}
                     {#each invoiceData.invoiceData.items as item, i (i)}
-                        <tr class="border-b">
-                            <td class="py-2 px-4">{item.description}</td>
-                            <td class="py-2 px-4">{item.price}</td>
-                            <td class="py-2 px-4">{item.quantity}</td>
-                            <td class="py-2 px-4 text-left">{item.amount}</td>
-                        </tr>
+                     <TableBodyRow class="border-none bg-transparent lowercase text-[#3D3B3A]">
+                        <TableBodyCell class="py-2 px-8 text-lg">{item.description}</TableBodyCell>
+                        <TableBodyCell class="py-2 px-8 text-lg text-center">{item.price}</TableBodyCell>
+                        <TableBodyCell class="py-2 px-8 text-lg text-center">{item.quantity}</TableBodyCell>
+                        <TableBodyCell class="py-2 px-8 text-lg text-left flex justify-end items-center">
+                            <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
+                           <span> {item.amount}</span>
+                        </TableBodyCell>
+                     </TableBodyRow>
                     {/each}
                 {/if}
-            </tbody>
-        </table>
+            </TableBody>
+        </Table>  
     
-        <div class="mb-8">
-            <div class="flex justify-between items-center">
-                <p class="font-bold">SUBTOTAL</p>
-                <p class="font-bold">$500</p>
+        <div class="my-6">
+            <div class="flex justify-between items-center px-6">
+                <p class="font-semibold">SUBTOTAL</p>
+                <p class="font-semibold flex flex-row-reverse items-center text-lg">
+                    <span>{invoiceData.subTotal} </span>
+                    <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
+                </p>
             </div>
-            <div class="flex justify-end items-center gap-8 mt-8 mb-3">
-                <p class="">Tax 10%</p>
-                <p class="">$50</p>
+            <div class="flex justify-end text-lg items-center gap-24 text-right mt-10 mb-3 w-full px-3">
+                <p>Tax</p>
+                <span>
+                    {invoiceData.tax}%
+                </span>
             </div>
-            <div class="flex justify-end  bg-[#E3DCD4] items-center font-bold my-4 gap-8 h-10 p-3">
-                <p class="">TOTAL</p>
-                <p>$550</p>
+            <div class="flex justify-end text-lg items-center text-right gap-24 mb-3 w-full px-3">
+                <p>Discount</p>
+                <p class="relative z-10 font-semibold flex text-lg flex-row-reverse items-center">
+                    <span>{invoiceData.discount}</span>
+                    <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
+                </p>
+            </div>
+            <div class="relative z-10  font-semibold bg-[#E3DCD4] flex justify-end h-10 p-2 pb-6 gap-[23%] items-center">
+                <p class="relative z-10 font-semibold">TOTAL</p>
+                <p class="relative z-10 font-semibold flex text-lg flex-row-reverse items-center">
+                    <span>{invoiceData.subTotal} </span>
+                    <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
+                </p>
             </div>
         </div>
 
-        <div class="flex justify-between mt-20 mb-7">
+        <div class="flex justify-between mt-20 mb-10">
             <div class="">
-                <h2 class="text-sm font-semibold mb-2">BANK DETAILS</h2>
-                <p class="">Borcele Bank</p>
-                <p class="">Account Name: Avery Davis</p>
-                <p class="">Account No.: 0123 4567 8901</p>
+                <h2 class="text-base font-semibold mb-2">BANK DETAILS</h2>
+                <p class="text-lg">{invoiceData.accountDetails}</p>
             </div>
         
-            <div class="text-sm font-semibold mb-2">
-                <p class="text-sm ">THANK YOU</p>
+            <div>
+                <p class="text-base font-semibold">THANK YOU</p>
                 {#if invoiceData.signature && invoiceData.signature?.length}
                     <div class="before:w-full before:h-1 before:rounded-md before:bg-[#475C7B] before:absolute before:block before:bottom-10">
                         {#each invoiceData.signature as layer}
@@ -83,7 +99,7 @@
                         {/each}
                     </div>
                 {/if}
-                <p class="border-t 0 mt-9 font-medium uppercase">{invoiceData.issuer.name}</p>
+                <p class="text-lg mt-4 font-medium uppercase font-playwrite">{invoiceData.issuer.name}</p>
             </div>
         </div>
     </div>

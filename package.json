@@ -38,6 +38,8 @@
 		"filepond-plugin-image-exif-orientation": "^1.0.11",
 		"filepond-plugin-image-preview": "^4.6.12",
 		"flowbite-svelte": "^0.46.1",
+		"html2canvas": "^1.4.1",
+		"jspdf": "^2.5.1",
 		"libphonenumber-js": "^1.11.3",
 		"postcss": "^8.4.38",
 		"svelte-filepond": "^0.2.2",

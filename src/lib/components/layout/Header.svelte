@@ -7,15 +7,16 @@
     import { browser } from '$app/environment';
     import { clickOutside } from "$lib/helperFns/clickOutside";
     import { onMount } from "svelte";
-    import type { User } from "@supabase/supabase-js";
+    import type { SupabaseClient, User } from "@supabase/supabase-js";
     import UserAvatar from "./UserAvatar.svelte";
     import { fade } from "svelte/transition";
     import { DropdownMenu } from "bits-ui";
-    import { showNav } from "../../../store";
+    import { alertStore, showNav } from "../../../store";
     import { handleHideNavOnNavigation } from "$lib/helperFns/handleHideNavOnNavigation";
-    import { Breapoints } from "../../../enums";
+    import { AlertSeverity, Breapoints } from "../../../enums";
 
     export let beenAuthenticated;
+    export let supabase : SupabaseClient;
     export let user : User | null;
 
     let windowInnerWidth = Breapoints.Desktop;
@@ -65,6 +66,17 @@
     const toggleShowNav = (e: MouseEvent) => {
         e.stopPropagation()
         showNav.set($showNav ? false : true)
+    }
+
+    const handleSignOut = async() => {
+        await supabase.auth.signOut()
+
+        alertStore.set({
+            mssg: "Signed Out",
+            severity: AlertSeverity.SUCCESS
+        })
+
+        window.location.reload()
     }
 
 </script>
@@ -118,18 +130,19 @@
                                 <UserAvatar user={user} />
                             </DropdownMenu.Trigger>
                            
-                            <DropdownMenu.Content class="absolute z-50 bg-gray-100 rounded-md text-primary-very-dark-blue shadow-2xl px-3 pt-8 pb-4">
+                            <DropdownMenu.Content class="absolute z-50 bg-emerald-900 rounded-md text-base-color1 shadow-2xl px-3 pt-8 pb-4">
                               <DropdownMenu.Item class="flex items-center gap-4 mb-4">
-                                  <Icon class="text-2xl text-primary-very-dark-blue" icon="mage:email" />
+                                  <Icon class="text-2xl" icon="mage:email" />
                                   <span>{user?.user_metadata.display_name || user?.user_metadata.full_name}</span>
                               </DropdownMenu.Item>
                               <DropdownMenu.Item class="flex items-center gap-4">
-                                  <Icon class="text-2xl text-primary-very-dark-blue" icon="zondicons:user" />
+                                  <Icon class="text-2xl" icon="zondicons:user" />
                                   <span>{user?.email}</span>
                               </DropdownMenu.Item>
                               <DropdownMenu.Item>
-                                  <CustomButton styles="bg-primary-accent-color3 my-4 text-base-color1 w-full">Delete Account</CustomButton>
+                                  <CustomButton on:click={handleSignOut} styles="bg-primary-accent-color3 my-6 py-3 h-12 text-base-color1 w-52 mx-auto hover:opacity-80">Sign Out</CustomButton>
                               </DropdownMenu.Item>
+                              <button class="font-medium text-center mx-auto block hover:underline focus:underline">Delete Account</button>
                             </DropdownMenu.Content>
                         </DropdownMenu.Root>
                     </div>

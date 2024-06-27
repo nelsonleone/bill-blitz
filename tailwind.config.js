@@ -24,7 +24,8 @@ export default {
         'barlow': ['Barlow', 'sans-serif'],
         'rubik': ['Rubik', 'sans-serif'],
         'open-sans': ['Open Sans', 'sans-serif'],
-        'montserrat': ['Montserrat', 'sans-serif']
+        'montserrat': ['Montserrat', 'sans-serif'],
+        'playwrite': ['Playwrite MX', 'cursive']
       },
     },
 

@@ -118,38 +118,42 @@
         
     $: openSignaturePad = includeSignature;
 
-    $: formInputData = {
-        issuer: {
-            name: issuerName,
-            contactInfo: {
-                emailAddress: issuerEmail,
-                address: issuerAddress,
-                phoneNumber: issuerPhoneNumber
-            }
-        },
-        invoiceData: {
-            invoiceNumber,
-            date,
-            items: invoiceItemsArr
-        },
-        billTo: {
-            name: customerName,
-            contactInfo: {
-                emailAddress: customerEmail,
-                address: customerAddress,
-                phoneNumber: customerPhoneNumber
-            }
-        },
-       currency: currency?.value || undefined,
-       templateInUse,
-       logoText,
-       total,
-       subTotal,
-       tax,
-       date,
-       signature,
-       discount
-    }
+  $: formInputData = {
+    issuer: {
+        name: issuerName || "Your Company Name",
+        contactInfo: {
+            emailAddress: issuerEmail || "your-email@example.com",
+            address: issuerAddress || "Your Company Address",
+            phoneNumber: issuerPhoneNumber || "123-456-7890"
+        }
+    },
+    invoiceData: {
+        invoiceNumber: invoiceNumber || "INV-0001",
+        date: date || new Date(), // Default to today's date
+        items:  [
+            // Sample items
+            { description: "Service 1", unitPrice: 100, quantity: 1 },
+            { description: "Service 2", unitPrice: 200, quantity: 1 }
+        ]
+    },
+    billTo: {
+        name: customerName || "Customer Name",
+        contactInfo: {
+            emailAddress: customerEmail || "customer-email@example.com",
+            address: customerAddress || "Customer Address",
+            phoneNumber: customerPhoneNumber || "098-765-4321"
+        }
+    },
+    currency: currency?.value || "USD",
+    templateInUse: templateInUse,
+    logoText: logoText || "Your Logo",
+    total: 4000 || 0,
+    subTotal: subTotal || 0,
+    tax: tax || 0,
+    date: date || new Date().toISOString().split('T')[0], // Default to today's date
+    signature: signature || "Your Signature",
+    discount: discount || 0
+}
     $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || formInputData.issuer?.contactInfo?.phoneNumber || "")
 
 
@@ -283,6 +287,20 @@
     const handleSubmit = async(e: { currentTarget: EventTarget & HTMLFormElement}) => {
         const { isValid, validationErrors } = validateInvoiceFormData(formInputData)
 
+
+        if(!isValid && validationErrors){
+            errors = validationErrors;
+
+            console.log(validationErrors)
+
+            alertStore.set({
+                severity: AlertSeverity.ERROR,
+                mssg: "Fix The Errors To Continue"
+            })
+
+            return;
+        }
+
         try{
             dispatch("setSubmitting",true)
             
@@ -291,10 +309,8 @@
                 body: JSON.stringify(demoData)
             })
 
-            const data = await res.json()
-
             if(res.ok){
-                newInvoiceDataStore.set(data)
+                newInvoiceDataStore.set(formInputData)
                 goto("/generate/invoice/builder")
             }
         }
@@ -307,17 +323,6 @@
         finally{
             dispatch("setSubmitting",false)
         }
-
-        // if(!isValid && validationErrors){
-        //     errors = validationErrors;
-
-        //     alertStore.set({
-        //         severity: AlertSeverity.ERROR,
-        //         mssg: "Fix The Errors To Continue"
-        //     })
-
-        //     return;
-        // }
     }
 
 </script>

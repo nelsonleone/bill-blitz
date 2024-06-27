@@ -30,7 +30,7 @@ export const actions = {
                 })
             }
 
-            return { success: true, data }
+            return { success: true }
         }
 
         catch(err:any|unknown){

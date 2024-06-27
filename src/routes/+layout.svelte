@@ -10,11 +10,7 @@
     import { beforeNavigate, goto } from '$app/navigation';
 
     export let data;
-    $: ({ beenAuthenticated, user } = data)
-
-    $:{
-      console.log(user?.user_metadata)
-    }
+    $: ({ beenAuthenticated, supabase, user } = data)
 
   const pageTitle = 'Bill-Blitz';
   const pageDescription = 'Create fast and easy bills (invoices and receipts)';
@@ -65,14 +61,14 @@
 
 <!-- HEADER -->
 {#if !$page.url.pathname.match("/generate/invoice/builder")}
-  <Header beenAuthenticated={beenAuthenticated} user={user}  />
+  <Header beenAuthenticated={beenAuthenticated} user={user} {supabase}  />
 {/if}
 <!-- POPUPS -->
 <Alert />
 <CustomImagePreviewModal />
 
 <!-- PAGES -->
-<slot />
+<slot {user} />
 <!-- FOOTER -->
 {#if !$page.url.pathname.match("/auth/create_account") && !$page.url.pathname.match("/generate/invoice/builder")}
   <Footer />
