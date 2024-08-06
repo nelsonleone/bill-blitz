@@ -8,9 +8,10 @@
   
     export let invoiceItemsArr: InvoiceItems[]
     export let currency: CurrencyEnum | undefined;
+    export let handleRemoveItem : (indeX:number) => void;
  </script>
 
-<Table divClass="flex justify-center items-center mx-auto p-10" shadow>
+<Table divClass="hidden md:flex justify-center items-center mx-auto p-10" shadow>
   <TableHead class="border-b border-b-gray-200">
     <TableHeadCell class="p-0 text-stone-700 font-medium text-left text-base">Description</TableHeadCell>
     <TableHeadCell class="p-0 text-stone-700 font-medium text-left text-base">Quantity</TableHeadCell>
@@ -41,7 +42,7 @@
                 <span>{invoiceItem?.amount}</span>
             </p>
 
-            <IconButton styles="absolute -right-12 w-fit bg-transparent p-0 text-primary-accent-color3 text-xl top-0 bottom-0 h-fit transition ease-in-out duration-200">
+            <IconButton on:click={() => handleRemoveItem(i)} styles="absolute -right-12 w-fit bg-transparent p-0 text-primary-accent-color3 text-xl top-0 bottom-0 h-fit transition ease-in-out duration-200">
               <Icon aria-label="trash" icon="entypo:trash" />
             </IconButton>
           </TableBodyCell>

@@ -30,10 +30,33 @@
 
     export let templateInUse;
 
-    let invoiceItemsArr : InvoiceItems[] = []
+    let invoiceItemsArr : InvoiceItems[] = [
+      {
+        description: 'Product A',
+        quantity: 2,
+        price: 10.99,
+        amount: 21.98,
+        saved: true
+      },
+      {
+        description: 'Service B',
+        quantity: 1,
+        price: 50.00,
+        amount: 50.00,
+        saved: true
+      },
+      {
+        description: 'Discount C',
+        quantity: 1,
+        price: 5.00,
+        amount: 5.00,
+        saved: true
+      }
+    ]
     let issuerEmail : string;
     let signature : { path: string; width: number; height: number }[] = []
     let issuerName : string;
+    let logo: string;
     let issuerAddress : string;
     let customerEmail: string; 
     let customerName: string; 
@@ -46,7 +69,8 @@
     let subTotal : number;
     let total : number;
     let discount : number;
-    let date : Date | undefined; 
+    let accountDetails : string;
+    let date : Date | undefined;  
     
 
     $: {
@@ -61,14 +85,14 @@
             if (formInputData[key as keyof IBasicInvoiceData]) {
                if(key === "issuer"){
                   for(let key in formInputData.issuer?.contactInfo){
-                        if(formInputData.issuer?.contactInfo[key as keyof object] && errors?.issuer?.message){
+                        if(formInputData.issuer?.contactInfo[key as keyof object] && errors?.issuerContactInfo?.message){
                             errors.issuerContactInfo.message = ""
                         }
                     }
                     if(formInputData.issuer?.name && errors?.issuer?.message){
                         errors.issuer.message = "";
                     }
-               }
+                }
 
                else if (key === "billTo"){
                   for(let key in formInputData.billTo?.contactInfo){
@@ -110,7 +134,7 @@
     let editFooterText = false;
     let invoiceNumber : string;
     let includeSignature = false;
-    let formInputData : Partial<IBasicInvoiceData>
+    let formInputData : IBasicInvoiceData;
         
         
     const dispatch = createEventDispatcher()
@@ -118,43 +142,40 @@
         
     $: openSignaturePad = includeSignature;
 
-  $: formInputData = {
-    issuer: {
-        name: issuerName || "Your Company Name",
-        contactInfo: {
-            emailAddress: issuerEmail || "your-email@example.com",
-            address: issuerAddress || "Your Company Address",
-            phoneNumber: issuerPhoneNumber || "123-456-7890"
-        }
-    },
-    invoiceData: {
-        invoiceNumber: invoiceNumber || "INV-0001",
-        date: date || new Date(), // Default to today's date
-        items:  [
-            // Sample items
-            { description: "Service 1", unitPrice: 100, quantity: 1 },
-            { description: "Service 2", unitPrice: 200, quantity: 1 }
-        ]
-    },
-    billTo: {
-        name: customerName || "Customer Name",
-        contactInfo: {
-            emailAddress: customerEmail || "customer-email@example.com",
-            address: customerAddress || "Customer Address",
-            phoneNumber: customerPhoneNumber || "098-765-4321"
-        }
-    },
-    currency: currency?.value || "USD",
-    templateInUse: templateInUse,
-    logoText: logoText || "Your Logo",
-    total: 4000 || 0,
-    subTotal: subTotal || 0,
-    tax: tax || 0,
-    date: date || new Date().toISOString().split('T')[0], // Default to today's date
-    signature: signature || "Your Signature",
-    discount: discount || 0
-}
-    $: formInputData.footerText = setFooterText(formInputData.issuer?.contactInfo?.emailAddress || formInputData.issuer?.contactInfo?.phoneNumber || "")
+    $: formInputData = {
+        issuer: {
+            name: issuerName,
+            contactInfo: {
+                emailAddress: issuerEmail,
+                address: issuerAddress,
+                phoneNumber: issuerPhoneNumber
+            }
+        },
+        invoiceData: {
+            invoiceNumber: invoiceNumber,
+            date: date || new Date(), // Default to today's date
+            items: invoiceItemsArr
+        },
+        billTo: {
+            name: customerName,
+            contactInfo: {
+                emailAddress: customerEmail,
+                address: customerAddress,
+                phoneNumber: customerPhoneNumber
+            }
+        },
+        currency: currency?.value || "USD",
+        templateInUse,
+        logoText,
+        logo,
+        total,
+        subTotal,
+        tax,
+        signature,
+        accountDetails,
+        discount,
+        footerText: setFooterText(issuerEmail || issuerPhoneNumber || "")
+    }
 
 
     const handleShowOpenSignaturePad = () => {
@@ -281,6 +302,13 @@
     }
 
 
+    $: {
+        if((formInputData.logo || formInputData.logoText) && errors){
+            errors.logo.message = ""
+        }
+    }
+
+
 
     // Submit Handler
 
@@ -290,8 +318,6 @@
 
         if(!isValid && validationErrors){
             errors = validationErrors;
-
-            console.log(validationErrors)
 
             alertStore.set({
                 severity: AlertSeverity.ERROR,
@@ -306,7 +332,7 @@
             
             const res = await fetch(e.currentTarget.action,{
                 method: "POST",
-                body: JSON.stringify(demoData)
+                body: JSON.stringify(formInputData)
             })
 
             if(res.ok){
@@ -333,7 +359,7 @@
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
         <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-overpass w-fit h-fit">INVOICE</h2>
-        <CompanyLogoUpload uploadedLogo={formInputData.logo} on:setUploadedLogo={(e) => formInputData.logo = e.detail} />
+            <CompanyLogoUpload uploadedLogo={formInputData.logo} on:setUploadedLogo={(e) => logo = e.detail} />
             <div class="self-end text-right  text-stone-700 mt-4">
                 <p class="text-sm text-stone-700 my-3">If Logo Does Not Contain Enterprise Name And You Wish To Add It</p>
             <InvoiceFormInput 
@@ -417,7 +443,6 @@
             <div>
                 <InvoiceFormInput 
                     name="invoiceData.invoiceNumber" 
-
                     id="invoice-number" 
                     inputType="text" 
                     placeholder="e.g 0001" 
@@ -517,12 +542,12 @@
     <div>
         <h2 class="font-medium text-xl mb-4">Items</h2>
         {#if invoiceItemsArr?.length > 0 && invoiceItemsArr[0]?.saved}
-            <InvoiceItemsTable currency={formInputData.currency} {invoiceItemsArr} />
+            <InvoiceItemsTable {handleRemoveItem} currency={formInputData.currency} {invoiceItemsArr} />
         {/if}
        {#if invoiceItemsArr?.length}
          {#each invoiceItemsArr as item, i (i)}
             {#if item}
-                <InvoiceFormItem handleRemoveItem={handleRemoveItem} errors={itemsErrors} setItemsInputValues={setItemsInputValues}  {...item} index={i} clearErrors={clearErrorOnInputChange} />
+                <InvoiceFormItem {handleRemoveItem} errors={itemsErrors} setItemsInputValues={setItemsInputValues}  {...item} index={i} clearErrors={clearErrorOnInputChange} />
             {/if}
          {/each}
        {:else}
@@ -791,6 +816,7 @@
                 label="Bank Account Details:"
                 labelStyles="block" 
                 containerStyles="col-span-3 mb-[0] my-4"
+                bind:value={accountDetails}
                 inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <p class="font-rubik text-sm text-primary-accent-color2">Break into new lines after each detail</p>
@@ -813,7 +839,7 @@
                 labelStyles="AT_only"
                 readOnly={!editFooterText} 
                 containerStyles="mt-4 mb-[0]"
-                inputStyles="w-[100%] bg-stone-100 border border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                inputStyles="w-[100%] bg-stone-100 border h-14 border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             
             <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 -right-1 bg-[white] text-stone-700">
@@ -878,4 +904,16 @@
     </div>
 </form>
 
-<button on:click={handleCancelCreation} type="reset" class="bg-transparent w-full text-right p-0 text-primary-accent-color3 font-medium mt-5 mb-16 hover:underline focus:underline transition ease-in-out duration-200">Delete Invoice</button>
+<div class="flex justify-between items-center mt-5">
+    <button on:click={() => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        })
+    }} type="reset" class="bg-transparent w-full p-0 text-stone-800 font-medium mb-16 hover:underline focus:underline transition flex items-center ease-in-out duration-200">
+        <span>To Top</span>
+        <Icon icon="ep:top" aria-label="arrow up" />
+    </button>
+
+    <button on:click={handleCancelCreation} type="reset" class="bg-transparent w-full text-right p-0 text-primary-accent-color3 font-medium mb-16 hover:underline focus:underline transition ease-in-out duration-200">Delete Invoice</button>
+</div>

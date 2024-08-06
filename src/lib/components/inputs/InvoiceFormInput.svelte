@@ -43,6 +43,8 @@
             aria-invalid={error ? "true" : "false"} 
             readOnly={readOnly}
             bind:value={value}
+            step="0.01" 
+            min="0"
             {name}
             {id}
             on:change

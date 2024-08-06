@@ -14,7 +14,7 @@ export function calculateInvoiceTotal(invoiceItemsArr: InvoiceItems[], discount:
     const total = subTotal - discount - taxAmount;
 
     return {
-        subTotal: subTotal,
-        total: total
+        subTotal: parseFloat(subTotal.toFixed(2)),
+        total: parseFloat(total.toFixed(2))
     }
 }

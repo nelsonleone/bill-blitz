@@ -135,3 +135,6 @@ type InvoiceFormSubmitError = {
   logo: InvoiceFormSubmitErrorMessage,
   total: InvoiceFormSubmitErrorMessage
 }
+
+
+interface ISavedInvoice { invoice_data: IBasicInvoiceData, id: string, created_at: string }

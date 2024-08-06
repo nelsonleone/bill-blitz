@@ -6,7 +6,8 @@
   }
 </script>
 
-<svg class="fill-black" height={150} viewBox="0 0 {layer.width * 2} {layer.height * 2}">
-    <path d={layer.path} />
-</svg>
-  
+<div class="relative pb-2 overflow-hidden max-w-40">
+  <svg class="fill-black" viewBox="0 0 {layer.width * 2} {layer.height * 2}">
+      <path d={layer.path} />
+  </svg>
+</div>

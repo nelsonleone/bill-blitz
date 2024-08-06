@@ -7,7 +7,7 @@
     import BlueMinimalist from "$lib/templates/templateAsComponents/BlueMinimalist.svelte";
     import { TemplateNames } from "../../../../enums";
     import WhiteSimple from "$lib/templates/templateAsComponents/WhiteSimple.svelte";
-    import InterwindLoader from "$lib/templates/design-asset/interwind-loader.svg";
+    import InterwindLoader from "$lib/statics-assets/interwind-loader.svg";
 
     let searchParam = $page.url.searchParams.get("template")
     let submitting = false;
@@ -54,9 +54,8 @@
             <li class="w-full">
                 <button disabled={submitting} aria-controls="invoice-form" type="submit" form="invoice-form" class="bg-emerald-700 max-h-12 w-full flex justify-center items-center gap-3 text-base-color1 p-3 disabled:cursor-not-allowed hover:bg-stone-700 focus:bg-stone-700 {submitting ? "bg-stone-700" : ""}">
                     <span>Save</span>
-                    {#if submitting}
-                        <img src={InterwindLoader} alt="submitting" width={70} height={70} />
-                    {/if}
+                    <img src={InterwindLoader} alt="submitting" aria-hidden="true" width={submitting ? 70 : 0} class="{
+                        !submitting ? "invisible w-0" : "visible w-20"}" height={submitting ? 70 : 0} />
                </button>
             </li>
         </ul>

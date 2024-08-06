@@ -6,16 +6,11 @@
     import { onMount } from "svelte";
     import { AlertSeverity, TemplateNames } from "../../../../enums";
     import { alertStore, newInvoiceDataStore } from "../../../../store";
-    import html2canvas from 'html2canvas';
+    import puppeteer, { ElementHandle } from 'puppeteer-core';
     import BlackWhiteMinimalistBuilder from "$lib/templates/builder/BlackWhiteMinimalistBuilder.svelte";
     import DownloadBillModal from "$lib/components/prompts/DownloadBillModal.svelte";
     import { browser } from "$app/environment";
-    import type { User } from "@supabase/supabase-js";
     import BlueMinimalist from "$lib/templates/templateAsComponents/BlueMinimalist.svelte";
-
-    export let user : User;
-
-    console.log(user)
 
     if (browser) {
         const isNewInvoiceDataStoreEmpty = !$newInvoiceDataStore || 
@@ -31,33 +26,44 @@
     let building : boolean = true; 
     let showDownloadDialog : boolean = false; 
     let downloadUrl : string; 
+    let downloading = false;
 
     async function captureSectionAsImage() {
-        const section = document.getElementById("builder")
+        try {
+            const response = await fetch("/saveAndDownloadInvoice", {
+                method: "POST",
+                body: JSON.stringify({ invoiceData: $newInvoiceDataStore }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        if(section){
-            const canvas = await html2canvas(section, {
-                scale: 4,
-                useCORS: true,
-                scrollX: 0,
-                scrollY: 0,
+            if (!response.ok) {
+                const { message } = await response.json();
+                throw new Error(message);
+            }
+
+            const { pngImg } = await response.json();
+            downloadUrl = pngImg; // Set the download URL for the image
+
+            alertStore.set({
+                mssg: "Invoice downloaded",
+                severity: AlertSeverity.SUCCESS
             })
-    
-           
-            setTimeout(() => {
-                downloadUrl = canvas.toDataURL('image/png')
-                building = false;
-                showDownloadDialog = true;
-            }, 4000)
+        } catch (err:any|unknown) {
+            alertStore.set({
+                mssg: err.message || "An error occurred while capturing the image, try again later",
+                severity: AlertSeverity.ERROR
+            })
         }
-
     }
 
     async function downloadImage(isDraft:boolean = false) {
         try{
-            const result = await fetch("?/",{
+            downloading = true;
+            const result = await fetch("?/saveAndDownloadInvoice",{
                 method: "POST",
-                body: JSON.stringify({ isDraft, $newInvoiceDataStore, downloadUrl })
+                body: JSON.stringify({ isDraft, invoiceData: $newInvoiceDataStore, downloadUrl })
             })
 
             if(!result.ok){
@@ -85,6 +91,10 @@
                 severity: AlertSeverity.ERROR
             })
         }
+
+        finally{
+            downloading = false;
+        }
     }
 
     onMount(() => {
@@ -107,7 +117,7 @@
             <Template noDetails />
         </BuilderIndicator>
         {:else if !building && showDownloadDialog}
-        <DownloadBillModal billType="invoice" {downloadImage}>
+        <DownloadBillModal billType="invoice" {downloadImage} {downloading}>
             <Template noDetails />
         </DownloadBillModal>
     {/if}
@@ -122,10 +132,3 @@
         {/if}
     </div>
 </div>
-
-
-<style>
-    @page {
-        size: A4;
-    }
-</style>

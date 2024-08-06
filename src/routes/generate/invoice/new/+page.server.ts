@@ -1,7 +1,6 @@
-import { error, redirect } from "@sveltejs/kit"
+import { error } from "@sveltejs/kit"
 import type { RequestEvent } from "./$types"
 import type { IBasicInvoiceData } from "../../../../types/types"
-import { newInvoiceDataStore } from "../../../../store"
 
 export const actions = {
     setInvoiceData: async({ request, url, locals: { supabase } }:RequestEvent) => {

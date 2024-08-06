@@ -73,7 +73,7 @@ export const setEmptyValidationErrors : () => InvoiceFormSubmitError = () => {
 }
 
 export const demoData: IBasicInvoiceData = {
-  logo: 'https://via.placeholder.com/150',
+  logo: '',
   logoText: 'MyCompany',
   issuer: {
     name: 'John Doe',
@@ -112,8 +112,8 @@ export const demoData: IBasicInvoiceData = {
       {
         description: 'Discount C',
         quantity: 1,
-        price: -5.00,
-        amount: -5.00,
+        price: 5.00,
+        amount: 5.00,
         saved: true
       }
     ]

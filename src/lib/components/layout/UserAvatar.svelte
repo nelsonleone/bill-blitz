@@ -7,7 +7,7 @@
 </script>
 <div class="relative h-12 w-12">
     <Avatar.Root
-        class="w-full h-full rounded-full cursor-pointer border bg-orange-600 bg-muted text-[17px] font-medium uppercase text-muted-foreground"
+        class="w-full h-full rounded-full cursor-pointer border bg-emerald-700 bg-muted text-[17px] font-medium uppercase text-muted-foreground"
         >
         <div
             class="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-2 border-transparent"

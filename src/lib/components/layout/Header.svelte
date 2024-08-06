@@ -120,11 +120,7 @@
         <div class="flex items-center gap-3">
             <ul>
                 {#if beenAuthenticated}
-                    <div class="flex justify-between gap-4 md:gap-8 items-center">
-                        {#if !user?.user_metadata.pro_user}
-                            <li><a href="/account/upgrade" class="hidden md:block w-[5.5em] py-[.55em] rounded-3xl text-base-color1 bg-custom-dark-green text-center hover:shadow-lg hover:bg-transparent hover:text-custom-dark-green focus:text-custom-dark-green hover:border hover:border-custom-dark-green focus:drop-shadow-md focus:shadow-lg focus:bg-transparent focus:outline focus:outline-1 transition ease-linear duration-300 focus:outline-custom-dark-green hover:drop-shadow-md">Upgrade</a></li>
-                        {/if}
-
+                    <div>
                         <DropdownMenu.Root>
                             <DropdownMenu.Trigger>
                                 <UserAvatar user={user} />

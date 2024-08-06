@@ -4,32 +4,55 @@
     import CustomButton from '../buttons/CustomButton.svelte';
     import { fade, scale } from 'svelte/transition';
     import { createEventDispatcher } from 'svelte';
-  
-    let layers: { path: string; width: number; height: number }[] = []
+
+    let layers: { path: string; width: number; height: number, x: number, y: number }[] = []
     let width: number = 100;
     let height: number = 100;
     let preview: string;
     export let openSignaturePad = false;
     export let handleShowOpenSignaturePad : () => void;
-    
+
     const ondraw = (path: string) => (preview = path)
+
+    const getBoundingBox = (path: string) => {
+      const svgNamespace = "http://www.w3.org/2000/svg";
+      const svgElement = document.createElementNS(svgNamespace, "svg")
+      const pathElement = document.createElementNS(svgNamespace, "path")
+
+      pathElement.setAttribute("d", path)
+      svgElement.appendChild(pathElement)
+      document.body.appendChild(svgElement)
+      const boundingBox = pathElement.getBBox()
+      document.body.removeChild(svgElement)
+
+      return boundingBox;
+    }
+    
     const oncomplete = (path: string) => {
-      preview = ''
-      layers = [...layers, { width, height, path }]
+      const boundingBox = getBoundingBox(path)
+      const adjustedPath = {
+        path,
+        width: boundingBox.width,
+        height: boundingBox.height,
+        x: boundingBox.x,
+        y: boundingBox.y
+      };
+      layers = [...layers, adjustedPath]
+      preview = '';
     }
 
     const dispatch = createEventDispatcher()
 
     const handleSave = () => {
-        dispatch("setSignature",layers)
+        dispatch("setSignature", layers)
         openSignaturePad = false;
     }
-  
+
     const clear = () => {
       layers = []
     }
 </script>
-  
+
 <Dialog.Root open={openSignaturePad} onOutsideClick={handleShowOpenSignaturePad}>
     <Dialog.Portal>
         <Dialog.Overlay
@@ -51,7 +74,7 @@
                 on:touchmove|preventDefault={() => false}
                 >
                 {#each layers as layer}
-                    <svg class="absolute w-full h-full fill-black pointer-events-none" viewBox="0 0 {layer.width} {layer.height}">
+                    <svg class="absolute w-full h-full fill-black pointer-events-none" viewBox="{layer.x} {layer.y} {layer.width} {layer.height}">
                     <path d={layer.path} />
                     </svg>
                 {/each}

@@ -5,12 +5,13 @@
   import { page } from '$app/stores';
   import Footer from '$lib/components/layout/Footer.svelte';
   import CustomImagePreviewModal from '$lib/components/modals/CustomImagePreviewModal.svelte';
-    import { hasUnsavedChanges } from '../store';
-    import DiscardChangesModal from '$lib/components/modals/DiscardChangesModal.svelte';
-    import { beforeNavigate, goto } from '$app/navigation';
+  import { hasUnsavedChanges } from '../store';
+  import DiscardChangesModal from '$lib/components/modals/DiscardChangesModal.svelte';
+  import { beforeNavigate, goto } from '$app/navigation';
+  import BuyMeACoffeeModal from '$lib/components/layout/BuyMeACoffeeModal.svelte';
 
-    export let data;
-    $: ({ beenAuthenticated, supabase, user } = data)
+  export let data;
+  $: ({ beenAuthenticated, supabase, user } = data)
 
   const pageTitle = 'Bill-Blitz';
   const pageDescription = 'Create fast and easy bills (invoices and receipts)';
@@ -61,11 +62,14 @@
 
 <!-- HEADER -->
 {#if !$page.url.pathname.match("/generate/invoice/builder")}
-  <Header beenAuthenticated={beenAuthenticated} user={user} {supabase}  />
+  <Header beenAuthenticated={beenAuthenticated} {user} {supabase}  />
 {/if}
 <!-- POPUPS -->
 <Alert />
 <CustomImagePreviewModal />
+{#if !$page.url.pathname.match("/generate/")}
+  <BuyMeACoffeeModal />
+{/if}
 
 <!-- PAGES -->
 <slot {user} />

@@ -59,7 +59,7 @@
                 <img src="/images/illustration-phone.png" class="relative -top-28" alt="phones" />
             </div>
             <div class="mb-8 md:w-1/2 -mt-28 md:-mt-0 md:self-center lg:w-2/5">
-                <h3 class="my-4 font-semibold text-2xl"><span class="text-primary-accent-color2">Deliver quick</span> receipts are receiving payment</h3>
+                <h3 class="my-4 font-semibold text-2xl"><span class="text-primary-accent-color2">Deliver quick</span> receipts and receive payments</h3>
                 <p>Bill Blitz web app saves you time to deliver receipts to client, bulding your intergrity.</p>
             </div>
         </div>

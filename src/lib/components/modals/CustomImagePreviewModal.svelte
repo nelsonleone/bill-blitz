@@ -20,7 +20,7 @@
 
     const handleClose = () => {
         imagePreviewModalStore.set({ src: null })
-         showModal = false;
+        showModal = false;
     }
 </script>
 

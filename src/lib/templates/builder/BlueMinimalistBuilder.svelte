@@ -1,7 +1,7 @@
 <script lang="ts">
     import Signature from "$lib/components/inputs/Signature.svelte";
     import type { IBasicInvoiceData } from "../../../types/types";
-    import waveBgImg from "../design-asset/wave.png"
+    import waveBgImg from "../../statics-assets/wave.png"
 
     export let invoiceData : IBasicInvoiceData;
 

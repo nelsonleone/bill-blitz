@@ -1,17 +1,22 @@
 <script lang="ts">
-    import CustomButton from "$lib/components/buttons/CustomButton.svelte";
-    import { Tabs } from "bits-ui";
-    import { Pagination } from "bits-ui";
-    import  Icon from "@iconify/svelte";
-    import { goto } from "$app/navigation";
+  import CustomButton from "$lib/components/buttons/CustomButton.svelte";
+  import { Tabs } from "bits-ui";
+  import { Pagination } from "bits-ui";
+  import  Icon from "@iconify/svelte";
+  import { goto } from "$app/navigation";
+  import type { ISavedInvoice } from "../../../types/types";
+  import InvoiceDetailsModal from "$lib/components/modals/InvoiceDetailsModal.svelte";
 
-    export let invoicesData;
+  export let data : { user_invoices: ISavedInvoice[] }
 
+  let invoices = data.user_invoices;
 
-    $:count = invoicesData?.length || 10;
+  $:count = invoices?.length;
 
-    let searchValue = "";
-    let activeTab : "allInvoices" | "Downloaded" | "Draft"  = "allInvoices";
+  let toShowInModal : ISavedInvoice | null = null;
+  
+  let searchValue = "";
+  let activeTab : "allInvoices" | "Downloaded" | "Draft"  = "allInvoices";
 </script>
 
 <main class="page text-primary-very-dark-blue bg-gray-100 lg:py-20 md:px-8 xl:px-16">
@@ -49,23 +54,44 @@
 
 
         <div class="bg-base-color1 shadow-md mt-10 pt-4 pb-10 px-4 lg:w-2/3 lg:mx-auto">
-            <div class="flex justify-between items-center border-b border-b-slate-300">
-                <p>Invoice</p>
-                <p>Client</p>
-                <p>Amount</p>
-            </div>
-
-            {#if false}
-                {#each [] as item}
-                    <p></p>
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-b-slate-300">
+                <th class="text-left py-2">Invoice</th>
+                <th class="text-left py-2">Client</th>
+                <th class="text-left py-2">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#if invoices && invoices.length > 0}
+                {#each invoices as item (item.id)}
+                  <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
+                    <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
+                    <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
+                    <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                  </tr>
                 {/each}
-            {:else}
-                <p class="font-rubik text-sm my-8 text-center">You do not have an invoice <button on:click={() => goto("/generate/invoice/new?template=BlackWhiteMinimalist")} class="inline text-primary-accent-color2">Add your first Invoice</button></p>
-            {/if}
+              {:else}
+                <tr>
+                  <td colspan="3" class="font-rubik text-sm my-8 text-center">
+                    You do not have an invoice
+                    <a href="/generate/invoice/new?template=BlackWhiteMinimalist" class="inline text-primary-accent-color2">
+                      Add your first Invoice
+                    </a>
+                  </td>
+                </tr>
+              {/if}
+            </tbody>
+          </table>
         </div>
     </div>
 
-    <Pagination.Root {count} perPage={10} let:pages let:range>
+
+
+    <InvoiceDetailsModal invoiceDetails={toShowInModal ? [toShowInModal] : null} />
+
+
+    <Pagination.Root {count} perPage={15} let:pages let:range>
         <div class="my-14 flex flex-col items-center justify-center mx-4 sm:mx-auto">
           <div class="flex items-center justify-between w-full sm:w-auto space-x-4">
             <Pagination.PrevButton

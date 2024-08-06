@@ -1,8 +1,7 @@
 <script lang="ts">
   import Signature from "$lib/components/inputs/Signature.svelte";
-  import { CurrencyEnum } from "../../../enums";
   import type { IBasicInvoiceData } from "../../../types/types";
-  import stripesBgImg from "../design-asset/grey-lines.png"
+  import stripesBgImg from "../../statics-assets/grey-lines.png"
 
   export let invoiceData : IBasicInvoiceData;
 

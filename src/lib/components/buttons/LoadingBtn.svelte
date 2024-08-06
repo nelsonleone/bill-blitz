@@ -1,4 +1,6 @@
 <script lang="ts">
+    import LoadingEllipse from "../../statics-assets/loading-ellipse.svg"
+
     export let styles;
     export let id: string | undefined = undefined;
     export let text: string | undefined = "";
@@ -10,6 +12,6 @@
     {#if !loading}
         {text}
         {:else}
-        <img src="/icons/loading-ellipse.svg" width={50} height={50} loading="eager" aria-label="loading"  alt="" class={`top-0 bottom-0 w-12 left-0 right-0 block m-auto absolute`} />
+        <img src={LoadingEllipse} width={50} height={50} loading="eager" aria-label="loading"  alt="" class={`top-0 bottom-0 w-12 left-0 right-0 block m-auto absolute`} />
     {/if}
 </button>

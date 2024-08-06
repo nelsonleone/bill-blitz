@@ -3,6 +3,17 @@ import type { LayoutServerLoad } from './$types'
 
 export const load: LayoutServerLoad = async ({ url ,locals: { session, supabase } }) => {
 
+  if (session && session.expires_at) {
+    const expirationTime = session?.expires_at * 1000;
+    const currentTime = Date.now()
+
+    if (currentTime > expirationTime) {
+      // Session has expired
+      supabase.auth.signOut()
+      throw redirect(303,"/auth/sign_in")
+    }
+  }
+
   if(session && url.pathname.match("/auth")){
     throw redirect(303,"/")
   }
@@ -12,6 +23,6 @@ export const load: LayoutServerLoad = async ({ url ,locals: { session, supabase 
 
   return {
     session,
-    user: supabase.auth.getUser()
+    user: (await supabase.auth.getUser()).data.user
   }
 }
