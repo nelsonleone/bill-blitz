@@ -124,7 +124,7 @@ export const demoData: IBasicInvoiceData = {
   total: 66.98,
   subTotal: 71.98,
   discount: 5.00,
-  footerText: 'Thank you for your business!',
+  footerText: 'Thank you for your business! teddybear@gmail.com',
   tax: 0,
   templateInUse: TemplateNames.BlackWhiteMinimalist,
 }

@@ -14,7 +14,8 @@ export enum CurrencyEnum {
     Euro = "EUR",
     Japan = "JPY",
     UnitedKingdom = "GBP",
-    Nigeria = "NGN"
+    Nigeria = "NGN",
+    China = "CNY"
 }
 
 export enum Breapoints {

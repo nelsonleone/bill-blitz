@@ -1,10 +1,20 @@
-<script> 
+<script>
     import Icon from '@iconify/svelte';
     import { createEventDispatcher } from 'svelte'; 
     import IconButton from '../buttons/IconButton.svelte';
+    import { browser } from '$app/environment';
     
-    let showModal = true; 
-    const dispatch = createEventDispatcher()
+    let showModal = false; 
+    const dispatch = createEventDispatcher();
+
+    // Check session storage to see if modal has been shown
+    if(browser){
+        if (!sessionStorage.getItem('modalShown')) {
+            showModal = true;
+            sessionStorage.setItem('modalShown', 'true')
+        }
+    }
+
     function toggleModal() { 
         showModal = !showModal; 
         dispatch('modal-toggled', { showModal }) 
@@ -12,13 +22,12 @@
 </script> 
 
 <style> 
-    .modal { position: fixed; z-index: 1; right: 0; left: 0; bottom: 0; top: 0; max-width: 95%; width: 20em; min-height: 5em; overflow: auto;display: flex; justify-content: center; align-items: center; } 
+    .modal { position: fixed; right: 0; left: 0; bottom: 0; top: 0; max-width: 95%; width: 20em; min-height: 5em; overflow: auto; display: flex; justify-content: center; align-items: center; } 
 </style>
 
-
 {#if showModal}
-<div class="modal m-auto z-[100]">
-    <div class="p-8 text-center rounded shadow-3xl drop-shadow-2xl relative pt-3 bg-gray-100">
+<div class="modal m-auto z-[200]">
+    <div class="p-8 text-center rounded shadow-3xl drop-shadow-3xl relative pt-3 bg-gray-100">
         <IconButton on:click={toggleModal} styles="bg-transparent text-base-color2">
             <Icon icon="ic:twotone-close" class="absolute right-4 top-4 text-xl" />
         </IconButton>
@@ -38,5 +47,3 @@
         <Icon icon="simple-icons:buymeacoffee" />
     </IconButton>
 {/if}
-
-

@@ -16,7 +16,7 @@
     if(searchParam && (searchParam.match(TemplateNames.BlackWhiteMinimalist) || searchParam.match(TemplateNames.BlueMinimalist) || searchParam.match(TemplateNames.WhiteSimple))){
         Template = getTemplate(searchParam as TemplateNames)
     }else{
-        goto("/templates")
+        goto("/generate/invoice/templates")
     }
 
 </script>
@@ -41,12 +41,12 @@
                 {#if Template}
                     <div class="relative hover:scale-105 transition ease-out duration-300 overflow-hidden h-52 md:h-60">
                         <div class="backdrop-opacity-40 w-full h-full top-0 bg-slate-400/20 flex justify-center items-center left-0 absolute">In Use</div>
-                        <Template noDetails={true} />
+                        <svelte:component this={Template} noDetails={true}></svelte:component>
                     </div>
                 {/if}
             </li>
             <li class="w-full">
-                <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600" on:click={() => goto("/templates")}>Change Template</button>
+                <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600" on:click={() => goto("/generate/invoice/templates")}>Change Template</button>
             </li>
             <li class="w-full">
                 <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600">Save To Drafts</button>
@@ -63,8 +63,8 @@
 
     {#if searchParam && (searchParam.match(TemplateNames.BlackWhiteMinimalist) || searchParam.match(TemplateNames.BlueMinimalist) || searchParam.match(TemplateNames.WhiteSimple))}
         <InvoiceForm 
-           templateInUse={searchParam}
-           on:setSubmitting={(e) => submitting = e.detail}
+            templateInUse={searchParam}
+            on:setSubmitting={(e) => submitting = e.detail}
         />
     {/if}
 </main>

@@ -43,7 +43,7 @@
         />
     {/if}
     {#if !saved}
-        <div class="flex justify-between">
+        <div class="flex justify-between flex-wrap">
            <InvoiceFormInput 
                 name="quantity" 
                 value={quantity}
@@ -54,7 +54,7 @@
                 labelStyles=""
                 on:keyup={clearErrors}
                 on:change={handleOnChange}
-                containerStyles="w-[30%]"
+                containerStyles="w-full"
                 inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <InvoiceFormInput 
@@ -67,7 +67,7 @@
                 labelStyles=""
                 on:keyup={clearErrors}
                 on:change={handleOnChange}
-                containerStyles="w-[30%]"
+                containerStyles="w-[45%]"
                 inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />
             <InvoiceFormInput 
@@ -79,7 +79,7 @@
                 label="Amount $" 
                 on:keyup={clearErrors}
                 on:change={handleOnChange}
-                containerStyles="w-[30%]"
+                containerStyles="w-[45%]"
                 labelStyles=""
                 inputStyles="text-stone-700 bg-stone-100 border w-full border-stone-700 rounded-md p-3 h-12 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
             />

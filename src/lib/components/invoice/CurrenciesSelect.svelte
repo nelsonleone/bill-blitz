@@ -30,6 +30,11 @@
             icon: "https://flagcdn.com/w20/jp.png"
         },
         {
+            value: CurrencyEnum.China,
+            label: "Chinese Yuan",
+            icon: "https://flagcdn.com/w20/cn.png"
+        },
+        {
             value: CurrencyEnum.UnitedKingdom,
             label: "British Pound",
             icon: "https://flagcdn.com/w20/gb.png"

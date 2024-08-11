@@ -3,6 +3,7 @@
     import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
     import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
     import type { IBasicInvoiceData } from "../../../types/types";
+    import { formatCurrency } from "$lib/helperFns/formatAmount";
 
     export let invoiceData : IBasicInvoiceData;
 
@@ -55,51 +56,60 @@
         </Table>  
     
         <div class="my-6">
-            <div class="flex justify-between items-center px-6">
-                <p class="font-semibold">SUBTOTAL</p>
-                <p class="font-semibold flex flex-row-reverse items-center text-lg">
-                    <span>{invoiceData.subTotal} </span>
-                    <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
-                </p>
+            {#if invoiceData.subTotal}
+                <div class="flex justify-between items-center px-6">
+                    <p class="font-semibold">SUBTOTAL</p>
+                    <p class="font-semibold text-lg">
+                        {formatCurrency(invoiceData.subTotal)}
+                    </p>
+                </div>
+            {/if}
+
+            <div class="flex flex-col items-end">
+                {#if invoiceData.tax}
+                <div class="flex gap-20 text-lg items-center text-right mt-10 mb-3 px-3">
+                    <p>Tax</p>
+                    <span>
+                        {invoiceData.tax}%
+                    </span>
+                </div>
+            {/if}
+            {#if invoiceData.discount}
+                <div class="flex gap-20 text-lg items-center text-right mb-3 px-3">
+                    <p>Discount</p>
+                    <p class="relative z-10 font-semibold text-lg">
+                        {formatCurrency(invoiceData.discount)}
+                    </p>
+                </div>
+            {/if}
             </div>
-            <div class="flex justify-end text-lg items-center gap-24 text-right mt-10 mb-3 w-full px-3">
-                <p>Tax</p>
-                <span>
-                    {invoiceData.tax}%
-                </span>
-            </div>
-            <div class="flex justify-end text-lg items-center text-right gap-24 mb-3 w-full px-3">
-                <p>Discount</p>
-                <p class="relative z-10 font-semibold flex text-lg flex-row-reverse items-center">
-                    <span>{invoiceData.discount}</span>
-                    <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
-                </p>
-            </div>
-            <div class="relative z-10 font-semibold bg-[#E3DCD4] flex justify-end h-10 p-2 pb-6 gap-24 items-center">
+
+            <div class="relative z-10 font-semibold bg-[#E3DCD4] flex justify-end h-10 p-2 pb-6 gap-16 items-center">
                 <p class="relative z-10 font-semibold text-lg">TOTAL</p>
-                <p class="relative z-10 font-semibold flex text-lg flex-row-reverse items-center">
-                    <span>{invoiceData.subTotal} </span>
-                    <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
+                <p class="relative z-10 font-semibold text-lg">
+                    {formatCurrency(invoiceData.total || 0)}
                 </p>
             </div>
         </div>
 
-        <div class="flex justify-between mt-20 mb-10">
-            <div class="">
-                <h2 class="text-base font-semibold mb-2">BANK DETAILS</h2>
-                <p class="text-lg">{invoiceData.accountDetails}</p>
-            </div>
+        <div class="flex {invoiceData.accountDetails ? "justify-between" : "justify-end"} mt-20 mb-10">
+            {#if invoiceData.accountDetails}
+                <div class="">
+                    <h2 class="text-base font-semibold mb-2">BANK DETAILS</h2>
+                    <p class="text-lg">{@html invoiceData.accountDetails.replace(/\n/g, '<br/>')}</p>
+                </div>
+            {/if}
         
-            <div>
+            <div class="">
                 <p class="text-base font-semibold">THANK YOU</p>
                 {#if invoiceData.signature && invoiceData.signature?.length}
-                    <div class="relative pb-2 min-h-20 overflow-hidden">
+                    <div class="relative overflow-hidden">
                         {#each invoiceData.signature as layer}
                             <Signature {layer} />
                         {/each}
                     </div>
                 {/if}
-                <p class="text-lg mt-4 font-medium uppercase font-playwrite">{invoiceData.issuer.name}</p>
+                <p class="text-lg pt-4 border-t font-medium uppercase font-playwrite">{invoiceData.issuer.name}</p>
             </div>
         </div>
     </div>

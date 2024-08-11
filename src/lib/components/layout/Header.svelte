@@ -112,7 +112,7 @@
                 </DropdownMenu.Root>
             </li>
 
-            <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/templates" ? "text-primary-accent-color2" : ""}`}><a href="/templates">Templates</a></li>
+            <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice/templates" ? "text-primary-accent-color2" : ""}`}><a href="/generate/invoice/templates">Templates</a></li>
             <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
             <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </ul>
@@ -194,7 +194,7 @@
         </div>
         
         <div class="flex flex-col gap-4 items-center">
-            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/templates" ? "text-primary-accent-color1" : ""}`}><a href="/templates">Templates</a></li>
+            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice/templates" ? "text-primary-accent-color1" : ""}`}><a href="/generate/invoice/templates">Templates</a></li>
             <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color1" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </div>
     </ul>

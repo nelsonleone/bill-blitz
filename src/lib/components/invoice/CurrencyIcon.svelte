@@ -5,7 +5,7 @@
   export let styles : string = "";
 </script>
 
-<div class={`text-2xl ${styles}`}>
+<div class={`text-2xl m-0 p-0 inline ${styles}`}>
   {#if currency === CurrencyEnum.UnitedStates}
     $
   {:else if currency === CurrencyEnum.Euro}

@@ -24,9 +24,10 @@
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
     import parsePhoneNumber from 'libphonenumber-js'
-    import { AlertSeverity } from "../../../enums";
+    import { AlertSeverity, TemplateNames } from "../../../enums";
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
     import { createEventDispatcher } from "svelte";
+    import { templatesArray } from "..";
 
     export let templateInUse;
 
@@ -773,121 +774,128 @@
         <ErrorPara error={errors?.total?.message} />
     </div>
 
+    
+    {#if templateInUse !== TemplateNames.BlueMinimalist}
+        <Separator.Root
+            class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        /> 
 
-    <Separator.Root
-        class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
-    /> 
+        <div class="text-stone-700 ">
+            <div class="mt-10 flex items-center gap-3">
+                <Checkbox.Root
+                id="includeBankDetails"
+                aria-labelledby="includeBankDetails-label"
+                class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
+                bind:checked={includeBankDetails}
+                >
+                <Checkbox.Indicator
+                    let:isChecked
+                    let:isIndeterminate
+                    class="inline-flex items-center justify-center text-background"
+                >
+                    {#if isChecked}
+                        <Icon icon="mingcute:check-2-fill" />
+                    {:else if isIndeterminate}
+                        <Icon icon="fluent-emoji-flat:minus" />
+                    {/if}
+                </Checkbox.Indicator>
+                </Checkbox.Root>
+                <Label.Root
+                id="includeBankDetails-label"
+                for="includeBankDetails"
+                class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                Include Bank Details
+                </Label.Root>
+            </div>
 
-    <div class="text-stone-700 ">
-        <div class="mt-10 flex items-center gap-3">
-            <Checkbox.Root
-              id="includeBankDetails"
-              aria-labelledby="includeBankDetails-label"
-              class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
-              bind:checked={includeBankDetails}
-            >
-              <Checkbox.Indicator
-                let:isChecked
-                let:isIndeterminate
-                class="inline-flex items-center justify-center text-background"
-              >
-                {#if isChecked}
-                    <Icon icon="mingcute:check-2-fill" />
-                {:else if isIndeterminate}
-                    <Icon icon="fluent-emoji-flat:minus" />
-                {/if}
-              </Checkbox.Indicator>
-            </Checkbox.Root>
-            <Label.Root
-              id="includeBankDetails-label"
-              for="includeBankDetails"
-              class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Include Bank Details
-            </Label.Root>
+            {#if includeBankDetails}
+                <InvoiceFormInput 
+                    name="accountDetails" 
+                    id="bank-details"
+                    inputType="textArea"
+                    placeholder="Example bank\n12345679\nExample name" 
+                    label="Bank Account Details:"
+                    labelStyles="block" 
+                    containerStyles="col-span-3 mb-[0] my-4"
+                    bind:value={accountDetails}
+                    inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                />
+                <p class="font-rubik text-sm text-primary-accent-color2">Break into new lines after each detail</p>
+            {/if}
         </div>
+    {/if}
 
-        {#if includeBankDetails}
-            <InvoiceFormInput 
-                name="accountDetails" 
-                id="bank-details"
-                inputType="textArea"
-                placeholder="Example bank\n12345679\nExample name" 
-                label="Bank Account Details:"
-                labelStyles="block" 
-                containerStyles="col-span-3 mb-[0] my-4"
-                bind:value={accountDetails}
-                inputStyles="md:w-80 bg-stone-100 border border-gray-500 rounded-md p-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-            />
-            <p class="font-rubik text-sm text-primary-accent-color2">Break into new lines after each detail</p>
-        {/if}
-    </div>
+    
+    
+    {#if templateInUse !== TemplateNames.BlueMinimalist && templateInUse !== TemplateNames.WhiteSimple}
+        <Separator.Root
+            class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        /> 
+
+        <div>
+            <div class="mt-10 relative flex justify-center mx-auto max-w-80">
+                <InvoiceFormInput 
+                    name="footerText" 
+                    id="footer-text"
+                    inputType="textArea"
+                    placeholder="" 
+                    label="Help Information"
+                    bind:value={formInputData.footerText}
+                    labelStyles="AT_only"
+                    readOnly={!editFooterText} 
+                    containerStyles="mt-4 mb-[0]"
+                    inputStyles="w-[100%] bg-stone-100 border min-h-[5em] h-[5em] border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
+                />
+                
+                <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 -right-1 bg-[white] text-stone-700">
+                    <IconButton styles="bg-transparent text-stone-700" on:click={() => editFooterText = true}>
+                        <Icon icon="flowbite:edit-solid" class="text-3xl" />
+                    </IconButton>
+                </CustomTooltip>
+            </div>
+            <CustomButton 
+                on:click={() => {
+                    formInputData.footerText = setFooterText(issuerEmail)
+                    editFooterText = false;
+                }} 
+                styles="bg-stone-600 shadow-sm self-end flex gap-2 items-center mt-4 py-2 mx-auto text-center focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
+                Reset
+            </CustomButton>
+        </div>
+    {/if}
+
 
     <Separator.Root
         class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
     /> 
 
     <div>
-        <div class="mt-10 relative flex justify-center mx-auto max-w-80">
-            <InvoiceFormInput 
-                name="footerText" 
-                id="footer-text"
-                inputType="textArea"
-                placeholder="" 
-                label="Help Information"
-                bind:value={formInputData.footerText}
-                labelStyles="AT_only"
-                readOnly={!editFooterText} 
-                containerStyles="mt-4 mb-[0]"
-                inputStyles="w-[100%] bg-stone-100 border h-14 border-gray-500 read-only:opacity-40 rounded-md p-4 focus:outline focus:outline-2 focus:outline-emerald-700 focus:outline-offset-0 focus:border-none"
-            />
-            
-            <CustomTooltip tooltipMssg="Edit" styles="absolute -top-2 -right-1 bg-[white] text-stone-700">
-                <IconButton styles="bg-transparent text-stone-700" on:click={() => editFooterText = true}>
-                    <Icon icon="flowbite:edit-solid" class="text-3xl" />
-                </IconButton>
-            </CustomTooltip>
-        </div>
-        <CustomButton 
-            on:click={() => {
-                formInputData.footerText = setFooterText(issuerEmail)
-                editFooterText = false;
-            }} 
-            styles="bg-stone-600 shadow-sm self-end flex gap-2 items-center mt-4 py-2 mx-auto text-center focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
-            Reset
-        </CustomButton>
-    </div>
-
-    <Separator.Root
-        class="my-8 shrink-0 bg-stone-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
-    /> 
-
-    <div>
         <div class="mt-10 flex items-center gap-3">
             <Checkbox.Root
-              id="includeSignature"
-              aria-labelledby="terms-label"
-              class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
-              bind:checked={includeSignature}
+            id="includeSignature"
+            aria-labelledby="terms-label"
+            class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
+            bind:checked={includeSignature}
             >
-              <Checkbox.Indicator
+            <Checkbox.Indicator
                 let:isChecked
                 let:isIndeterminate
                 class="inline-flex items-center justify-center text-background"
-              >
+            >
                 {#if isChecked}
                     <Icon icon="mingcute:check-2-fill" />
                 {:else if isIndeterminate}
                     <Icon icon="fluent-emoji-flat:minus" />
                 {/if}
-              </Checkbox.Indicator>
+            </Checkbox.Indicator>
             </Checkbox.Root>
             <Label.Root
-              id="terms-label"
-              for="terms"
-              class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            id="terms-label"
+            for="terms"
+            class="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Include Signature
+            Include Signature
             </Label.Root>
         </div>
         <SignaturePad {openSignaturePad} on:setSignature={(e) => signature = e.detail} {handleShowOpenSignaturePad} />

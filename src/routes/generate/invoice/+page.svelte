@@ -14,8 +14,20 @@
   $:count = invoices?.length;
 
   let toShowInModal : ISavedInvoice | null = null;
-  
+
   let searchValue = "";
+
+  $: filteredInvoices = invoices?.filter(invoice => {
+    if(searchValue.trim().length > 2 ){
+      const invoiceNumberMatch = invoice.invoice_data.invoiceData.invoiceNumber.toLowerCase().includes(searchValue.toLowerCase())
+      const clientNameMatch = invoice.invoice_data.billTo.name.toLowerCase().includes(searchValue.toLowerCase())
+      return invoiceNumberMatch || clientNameMatch;
+    }
+    else{
+      return invoices;
+    }
+  }) || invoices;
+
   let activeTab : "allInvoices" | "Downloaded" | "Draft"  = "allInvoices";
 </script>
 
@@ -63,8 +75,8 @@
               </tr>
             </thead>
             <tbody>
-              {#if invoices && invoices.length > 0}
-                {#each invoices as item (item.id)}
+              {#if filteredInvoices && filteredInvoices.length > 0}
+                {#each filteredInvoices as item (item.id)}
                   <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
                     <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
                     <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
@@ -72,14 +84,22 @@
                   </tr>
                 {/each}
               {:else}
+                {#if searchValue.trim().length > 2}
                 <tr>
-                  <td colspan="3" class="font-rubik text-sm my-8 text-center">
-                    You do not have an invoice
-                    <a href="/generate/invoice/new?template=BlackWhiteMinimalist" class="inline text-primary-accent-color2">
-                      Add your first Invoice
-                    </a>
+                  <td colspan="3" class="font-rubik text-sm text-center w-full">
+                    No Invoice Matches Your Search
                   </td>
                 </tr>
+                {:else}
+                  <tr>
+                    <td colspan="3" class="font-rubik text-sm my-8 text-center">
+                      You do not have an invoice
+                      <a href="/generate/invoice/new?template=BlackWhiteMinimalist" class="inline text-primary-accent-color2">
+                        Add your first Invoice
+                      </a>
+                    </td>
+                  </tr>
+                {/if}
               {/if}
             </tbody>
           </table>
@@ -90,6 +110,9 @@
 
     <InvoiceDetailsModal invoiceDetails={toShowInModal ? [toShowInModal] : null} />
 
+    <a href="/generate/invoice/new?template=BlackWhiteMinimalist" class="block my-8 text-center w-fit mx-auto bg-green-200 p-3 shadow-lg rounded border border-stone-300 text-primary-accent-color2">
+      Add Invoice
+    </a>
 
     <Pagination.Root {count} perPage={15} let:pages let:range>
         <div class="my-14 flex flex-col items-center justify-center mx-4 sm:mx-auto">

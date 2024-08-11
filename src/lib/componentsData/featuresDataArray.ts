@@ -29,7 +29,7 @@ export const featuresDataArray2 = [
         text: "Create invoices with ease using our online invoice generator or our collection of downloadable, printable, and fully customizable invoice templates. Impress your clients with a professional look and feel.",
         img: "/images/hero-image1.jpg",
         imgAlt: "a girl in her office",
-        ctaLink: "/templates",
+        ctaLink: "/generate/invoice/templates",
         ctaText: "Veiw Templates"
     },
     {
