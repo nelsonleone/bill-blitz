@@ -7,8 +7,6 @@
 
   export let invoiceData : IBasicInvoiceData;
 
-  console.log(invoiceData)
-
 </script>
 
 

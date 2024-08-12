@@ -1,6 +1,5 @@
 <script lang="ts">
     import Signature from "$lib/components/inputs/Signature.svelte";
-    import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
     import { formatCurrency } from "$lib/helperFns/formatAmount";
     import type { IBasicInvoiceData } from "../../../types/types";
 
@@ -42,10 +41,10 @@
                 <table class="min-w-full divide-y divide-gray-200 border-2 border-[#475C7B]">
                     <thead class="bg-[#475C7B] text-base-color1">
                         <tr>
-                            <th class="px-6 py-3 text-center text-lg font-semibold uppercase border-t border-b">DESCRIPTION</th>
-                            <th class="px-6 py-3 text-center text-lg font-semibold uppercase border-t border-b">QTY</th>
-                            <th class="px-6 py-3 text-center text-lg font-semibold uppercase border-t border-b">PRICE</th>
-                            <th class="px-6 py-3 text-center text-lg font-semibold uppercase border-t border-b">AMOUNT</th>
+                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">DESCRIPTION</th>
+                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">QTY</th>
+                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">PRICE</th>
+                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">AMOUNT</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">

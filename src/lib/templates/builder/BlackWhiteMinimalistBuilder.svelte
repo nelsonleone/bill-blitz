@@ -13,8 +13,12 @@
 <main id="builder" class="py-8 px-20 font-open-sans bg-[#fff] max-w-[250mm] min-w-[250mm] min-h-screen font-normal relative z-10 text-[#3D3B3A]">
     <div>
         <div class="flex mt-8 mb-24 justify-center items-center flex-col">
-            <img src={invoiceData.logo} alt="Company Logo" class="w-40 mb-4">
-            <h1 class="text-4xl font-bold">{invoiceData.logoText}</h1>
+            {#if invoiceData.logo}
+                <img src={invoiceData.logo} alt="Company Logo" class="w-40 mb-4">
+            {/if}
+            {#if invoiceData.logoText}
+               <h1 class="text-4xl font-bold">{invoiceData.logoText}</h1>
+            {/if}
         </div>
 
         <div class="flex justify-between items-start pb-1/2">

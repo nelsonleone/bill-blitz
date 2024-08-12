@@ -100,6 +100,10 @@
 
     onMount(() => {
         captureSectionAsImage()
+
+        return () => {
+            newInvoiceDataStore.set(null)
+        }
     })
 
     let Template : typeof BlueMinimalist | null;
