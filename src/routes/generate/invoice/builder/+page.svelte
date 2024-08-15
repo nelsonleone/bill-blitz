@@ -5,7 +5,7 @@
     import WhiteSimpleBuilder from "$lib/templates/builder/WhiteSimpleBuilder.svelte";
     import { onMount } from "svelte";
     import { AlertSeverity, TemplateNames } from "../../../../enums";
-    import { alertStore, newInvoiceDataStore } from "../../../../store";
+    import { alertStore, editInvoiceDataStore, newInvoiceDataStore } from "../../../../store";
     import html2canvas from 'html2canvas';
     import BlackWhiteMinimalistBuilder from "$lib/templates/builder/BlackWhiteMinimalistBuilder.svelte";
     import DownloadBillModal from "$lib/components/prompts/DownloadBillModal.svelte";
@@ -30,6 +30,10 @@
     let downloadUrl : string; 
     let downloading = false;
     let downloaded = false;
+    
+    $: editMode = !!$editInvoiceDataStore;
+
+    $: editInvoiceData = $editInvoiceDataStore?.invoice_data!;
 
     async function captureSectionAsImage() {
         const section = document.getElementById("builder")
@@ -103,6 +107,7 @@
 
         return () => {
             newInvoiceDataStore.set(null)
+            editInvoiceDataStore.set(null)
         }
     })
 
@@ -129,11 +134,11 @@
 
     <div class="flex justify-center">
         {#if $newInvoiceDataStore?.templateInUse ===  TemplateNames.WhiteSimple}
-            <WhiteSimpleBuilder invoiceData={$newInvoiceDataStore} />
+            <WhiteSimpleBuilder invoiceData={!editMode ? $newInvoiceDataStore : editInvoiceData} />
         {:else if  $newInvoiceDataStore?.templateInUse ===  TemplateNames.BlueMinimalist}
-            <BlueMinimalistBuilder invoiceData={$newInvoiceDataStore} />
+            <BlueMinimalistBuilder invoiceData={!editMode ? $newInvoiceDataStore : editInvoiceData} />
         {:else if $newInvoiceDataStore?.templateInUse ===  TemplateNames.BlackWhiteMinimalist}
-            <BlackWhiteMinimalistBuilder invoiceData={$newInvoiceDataStore} />
+            <BlackWhiteMinimalistBuilder invoiceData={!editMode ? $newInvoiceDataStore : editInvoiceData} />
         {/if}
     </div>
 </div>

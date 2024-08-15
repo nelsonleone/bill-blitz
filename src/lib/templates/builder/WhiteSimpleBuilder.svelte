@@ -1,7 +1,6 @@
 <script lang="ts">
   import Signature from "$lib/components/inputs/Signature.svelte";
-    import CurrencyIcon from "$lib/components/invoice/CurrencyIcon.svelte";
-    import { formatCurrency } from "$lib/helperFns/formatAmount";
+  import { formatCurrency } from "$lib/helperFns/formatAmount";
   import type { IBasicInvoiceData } from "../../../types/types";
   import stripesBgImg from "../../statics-assets/grey-lines.png"
 

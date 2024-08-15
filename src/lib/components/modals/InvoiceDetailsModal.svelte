@@ -2,22 +2,64 @@
     import { Dialog } from "bits-ui";
     import Icon from "@iconify/svelte";
     import { fade, fly } from "svelte/transition";
-    import type { IBasicInvoiceData } from "../../../types/types";
+    import type { IBasicInvoiceData, ISavedInvoice } from "../../../types/types";
     import { getTemplate } from "$lib/helperFns/getTemplate";
     import { formatDateTime } from "$lib/helperFns/formatDate";
     import BlackWhiteMinimalist from "$lib/templates/templateAsComponents/BlackWhiteMinimalist.svelte";
+    import { alertStore } from "../../../store";
+    import { AlertSeverity } from "../../../enums";
+    import LoadingEllipse from "../../statics-assets/loading-ellipse3.svg"
 
-    export let invoiceDetails: { invoice_data: IBasicInvoiceData, id: string, created_at: string }[] | null = [];
+    export let invoiceDetails: ISavedInvoice[] | null = []
+    export let handleDeleteInvoice : (id:string) => Promise<void>;
 
     $: showModal = invoiceDetails ? true : false;
 
     let Template: typeof BlackWhiteMinimalist | null = null;
+    let deleting = false;
 
     if (invoiceDetails && invoiceDetails[0].invoice_data.templateInUse) {
         Template = getTemplate(invoiceDetails[0].invoice_data.templateInUse)
         console.log(invoiceDetails[0].created_at)
     }
 
+
+    const handleDownloadSavedInvoice = () => {
+        if(invoiceDetails && invoiceDetails[0]){
+            const a = document.createElement('a')
+            a.href = invoiceDetails[0].pngImg;
+            a.download = 'invoice.png';
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+
+            alertStore.set({
+                mssg: "Invoice downloaded",
+                severity: AlertSeverity.SUCCESS
+            })
+        }else{
+            alertStore.set({
+                severity: AlertSeverity.ERROR,
+                mssg: "An Error occurred"
+            })
+        }
+    }
+
+    const deleteInvoice = async(id:string) => {
+        try{
+            deleting = true;
+            await handleDeleteInvoice(id)
+        }
+        catch(err:any){
+            alertStore.set({
+                severity: AlertSeverity.ERROR,
+                mssg: err.message || "An Error occurred"
+            })
+        }
+        finally{
+            deleting = false;
+        }
+    } 
 
 </script>
 
@@ -38,8 +80,13 @@
                         <p>Client Billed To: <span class="text-stone-700">{invoiceDetails[0].invoice_data.billTo.name}</span></p>
 
                         <div class="flex justify-around my-7">
-                            <button class="text-primary-accent-color2 underline outline-none focus:outline focus:outline-2 focus:outline-primary-accent-color2">Download</button>
-                            <button class="text-red-500 underline outline-none focus:outline focus:outline-2 focus:outline-red-500">Delete Invoice</button>
+                            <button on:click={handleDownloadSavedInvoice} class="text-primary-accent-color2 underline outline-none focus:outline focus:outline-2 focus:outline-primary-accent-color2">
+                                Download
+                            </button>
+                            <button on:click={() => deleteInvoice(invoiceDetails[0].id)} class="text-red-500 underline max-w-48 p-0 flex items-center gap-2 outline-none focus:outline focus:outline-2 focus:outline-red-500">
+                                <span>Delete Invoice</span>
+                                <img src={LoadingEllipse} width={35} height={35} loading="eager" aria-label="deleting"  alt="" class={`drop-shadow-xl ${deleting ? "block" : "hidden"}`} />
+                            </button>
                         </div>
                     </div>
                 </div>

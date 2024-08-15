@@ -5,10 +5,13 @@
     import CustomButton from "$lib/components/buttons/CustomButton.svelte";
     import { goto } from "$app/navigation";
     import LoadingEllipse from "../../statics-assets/loading-ellipse2.svg"
+    import { editInvoiceDataStore } from "../../../store";
 
     export let billType : "receipt" | "invoice"; 
     export let downloadImage : (isDraft:boolean) => void;
     export let downloading : boolean = false;
+
+    $: editMode = $editInvoiceDataStore ? true : false;
 </script>
      
   
@@ -32,7 +35,7 @@
           </Dialog.Title>
 
           <Dialog.Description class="AT_only">
-              Downlaod your generated invoice 
+            {!editMode ? "Download your generated invoice" : "Download Editted Invoice" }
           </Dialog.Description>
 
           <div class="flex flex-col md:flex-row justify-center items-center gap-9 pb-11 pt-7">
@@ -48,14 +51,17 @@
               >
                 Download
               </CustomButton>
-              <CustomButton
-                on:click={() => downloadImage(true)}
-                href="/auth/sign_in"
-                disabled={downloading}
-                styles="p-[0] m-0 block underline text-center hover:text-emerald-500 mt-5 focus:outline-none focus:outline-offset-0"
-              >
-                Save In Draft
-              </CustomButton>
+
+              {#if !editMode}
+                <CustomButton
+                  on:click={() => downloadImage(true)}
+                  href="/auth/sign_in"
+                  disabled={downloading}
+                  styles="p-[0] m-0 block underline text-center hover:text-emerald-500 mt-5 focus:outline-none focus:outline-offset-0"
+                >
+                  Save In Draft
+                </CustomButton>
+              {/if}
             </div>
           </div>
 

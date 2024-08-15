@@ -3,9 +3,10 @@
   import { Tabs } from "bits-ui";
   import { Pagination } from "bits-ui";
   import  Icon from "@iconify/svelte";
-  import { goto } from "$app/navigation";
   import type { ISavedInvoice } from "../../../types/types";
   import InvoiceDetailsModal from "$lib/components/modals/InvoiceDetailsModal.svelte";
+  import { alertStore } from "../../../store";
+  import { AlertSeverity } from "../../../enums";
 
   export let data : { user_invoices: ISavedInvoice[] }
 
@@ -17,18 +18,55 @@
 
   let searchValue = "";
 
+  // Function to update the arrays based on the active tab
+  $: downloadedInvoices = invoices.filter(invoice => !invoice.is_draft)
+  $: draftInvoices = invoices.filter(invoice => invoice.is_draft)
+    
+
   $: filteredInvoices = invoices?.filter(invoice => {
     if(searchValue.trim().length > 2 ){
       const invoiceNumberMatch = invoice.invoice_data.invoiceData.invoiceNumber.toLowerCase().includes(searchValue.toLowerCase())
       const clientNameMatch = invoice.invoice_data.billTo.name.toLowerCase().includes(searchValue.toLowerCase())
       return invoiceNumberMatch || clientNameMatch;
+    }else{ 
+      []
     }
-    else{
-      return invoices;
-    }
-  }) || invoices;
+  }) || []
 
   let activeTab : "allInvoices" | "Downloaded" | "Draft"  = "allInvoices";
+
+  async function handleDeleteInvoice(id: string) {
+    try {
+      const response = await fetch("?/deleteInvoice", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ invoiceId: id }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete invoice.')
+      }
+
+      const data = await response.json()
+
+      alertStore.set({
+        severity: AlertSeverity.SUCCESS,
+        mssg: "Invoice Deleted Successfully"
+      });
+
+      toShowInModal = null;
+      invoices = data.user_invoices;
+
+    } catch (error: any | unknown) {
+      alertStore.set({
+        severity: AlertSeverity.ERROR,
+        mssg: error.message || "An Error occurred"
+      })
+    }
+  }
 </script>
 
 <main class="page text-primary-very-dark-blue bg-gray-100 lg:py-20 md:px-8 xl:px-16">
@@ -75,7 +113,7 @@
               </tr>
             </thead>
             <tbody>
-              {#if filteredInvoices && filteredInvoices.length > 0}
+              {#if filteredInvoices.length > 0}
                 {#each filteredInvoices as item (item.id)}
                   <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
                     <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
@@ -85,11 +123,35 @@
                 {/each}
               {:else}
                 {#if searchValue.trim().length > 2}
-                <tr>
-                  <td colspan="3" class="font-rubik text-sm text-center w-full">
-                    No Invoice Matches Your Search
-                  </td>
-                </tr>
+                  <tr>
+                    <td colspan="3" class="font-rubik text-sm text-center w-full">
+                      No Invoice Matches Your Search
+                    </td>
+                  </tr>
+                {:else if activeTab === "allInvoices" && searchValue.trim().length < 2}
+                  {#each invoices as item (item.id)}
+                    <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
+                      <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
+                      <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
+                      <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                    </tr>
+                  {/each}
+                {:else if activeTab === "Draft" && searchValue.trim().length < 2}
+                  {#each draftInvoices as item (item.id)}
+                    <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
+                      <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
+                      <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
+                      <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                    </tr>
+                  {/each}
+                {:else if activeTab === "Downloaded" && searchValue.trim().length < 2}
+                  {#each downloadedInvoices as item (item.id)}
+                    <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
+                      <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
+                      <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
+                      <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                    </tr>
+                  {/each}
                 {:else}
                   <tr>
                     <td colspan="3" class="font-rubik text-sm my-8 text-center">
@@ -101,14 +163,14 @@
                   </tr>
                 {/if}
               {/if}
-            </tbody>
+            </tbody>            
           </table>
         </div>
     </div>
 
 
 
-    <InvoiceDetailsModal invoiceDetails={toShowInModal ? [toShowInModal] : null} />
+    <InvoiceDetailsModal handleDeleteInvoice={handleDeleteInvoice} invoiceDetails={toShowInModal ? [toShowInModal] : null} />
 
     <a href="/generate/invoice/new?template=BlackWhiteMinimalist" class="block my-8 text-center w-fit mx-auto bg-green-200 p-3 shadow-lg rounded border border-stone-300 text-primary-accent-color2">
       Add Invoice

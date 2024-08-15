@@ -16,7 +16,7 @@
     import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
     import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
     import InvoiceItemsTable from "$lib/components/invoice/InvoiceItemsTable.svelte";
-    import { alertStore, newInvoiceDataStore } from "../../../store";
+    import { alertStore, newInvoiceDataStore, editInvoiceDataStore } from "../../../store";
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
     import { demoData, setEmptyValidationErrors, validateInvoiceFormData } from "$lib/helperFns/handleInvoiceFormDataCheck";
@@ -27,52 +27,34 @@
     import { AlertSeverity, TemplateNames } from "../../../enums";
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
     import { createEventDispatcher } from "svelte";
-    import { templatesArray } from "..";
+    import { CurrencyEnum } from "../../../enums"; 
+    import { getCurrencyByValue } from "$lib/componentsData/currenciesArray";
 
     export let templateInUse;
+    export let editMode;
 
-    let invoiceItemsArr : InvoiceItems[] = [
-      {
-        description: 'Product A',
-        quantity: 2,
-        price: 10.99,
-        amount: 21.98,
-        saved: true
-      },
-      {
-        description: 'Service B',
-        quantity: 1,
-        price: 50.00,
-        amount: 50.00,
-        saved: true
-      },
-      {
-        description: 'Discount C',
-        quantity: 1,
-        price: 5.00,
-        amount: 5.00,
-        saved: true
-      }
-    ]
-    let issuerEmail : string;
-    let signature : { path: string; width: number; height: number }[] = []
-    let issuerName : string;
-    let logo: string;
-    let issuerAddress : string;
-    let customerEmail: string; 
-    let customerName: string; 
-    let customerAddress: string; 
-    let issuerPhoneNumber : string;
-    let customerPhoneNumber : string;
-    let currency : ICurrency;
-    let logoText : string;
-    let tax : number;
-    let subTotal : number;
-    let total : number;
-    let discount : number;
-    let accountDetails : string;
-    let date : Date | undefined;  
     
+    let invoiceItemsArr: InvoiceItems[] = [];
+
+    let issuerEmail: string = editMode ? ($editInvoiceDataStore?.invoice_data?.issuer.contactInfo?.emailAddress || "") : '';
+    let signature: { path: string; width: number; height: number }[] = [];
+    let issuerName: string = editMode ? ($editInvoiceDataStore?.invoice_data?.issuer.name || "") : '';
+    let logo: string = editMode ? ($editInvoiceDataStore?.invoice_data?.logo || "") : '';
+    let issuerAddress: string = editMode ? ($editInvoiceDataStore?.invoice_data?.issuer.contactInfo?.address || "") : '';
+    let customerEmail: string = editMode ? ($editInvoiceDataStore?.invoice_data?.billTo.contactInfo?.emailAddress || "") : '';
+    let customerName: string = editMode ? ($editInvoiceDataStore?.invoice_data?.billTo.name || "") : '';
+    let customerAddress: string = editMode ? ($editInvoiceDataStore?.invoice_data?.billTo.contactInfo?.address || "") : '';
+    let issuerPhoneNumber: string = editMode ? ($editInvoiceDataStore?.invoice_data?.issuer.contactInfo?.phoneNumber || "") : '';
+    let customerPhoneNumber: string = editMode ? ($editInvoiceDataStore?.invoice_data?.billTo.contactInfo?.phoneNumber || "") : '';
+    let currency: ICurrency = editMode ? (getCurrencyByValue($editInvoiceDataStore?.invoice_data?.currency!)) : getCurrencyByValue(CurrencyEnum.UnitedStates)
+    let logoText: string = editMode ? ($editInvoiceDataStore?.invoice_data?.logoText || '') : '';
+    let tax: number = editMode ? ($editInvoiceDataStore?.invoice_data?.tax || 0) : 0;
+    let subTotal: number = editMode ? ($editInvoiceDataStore?.invoice_data?.subTotal || 0) : 0;
+    let total: number = editMode ? ($editInvoiceDataStore?.invoice_data?.total || 0) : 0;
+    let discount: number = editMode ? ($editInvoiceDataStore?.invoice_data?.discount || 0) : 0;
+    let accountDetails: string = editMode ? ($editInvoiceDataStore?.invoice_data?.accountDetails || '') : '';
+    let date: Date | undefined = editMode ? new Date($editInvoiceDataStore?.invoice_data?.invoiceData.date || "") : new Date()
+        
 
     $: {
         if(useAutoTotalCalc){
@@ -337,7 +319,13 @@
             })
 
             if(res.ok){
-                newInvoiceDataStore.set(formInputData)
+                !editMode ? newInvoiceDataStore.set(formInputData) : editInvoiceDataStore.set({
+                    created_at: $editInvoiceDataStore?.created_at!,
+                    id: $editInvoiceDataStore?.id!,
+                    pngImg: $editInvoiceDataStore?.pngImg!,
+                    is_draft: $editInvoiceDataStore?.is_draft!,
+                    invoice_data: formInputData
+                })
                 goto("/generate/invoice/builder")
             }
         }

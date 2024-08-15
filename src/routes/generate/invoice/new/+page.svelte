@@ -8,13 +8,14 @@
     import { TemplateNames } from "../../../../enums";
     import WhiteSimple from "$lib/templates/templateAsComponents/WhiteSimple.svelte";
     import InterwindLoader from "$lib/statics-assets/interwind-loader.svg";
+    import { editInvoiceDataStore } from "../../../../store";
 
-    let searchParam = $page.url.searchParams.get("template")
+    let searchParamTemplate = $page.url.searchParams.get("template")
     let submitting = false;
     let Template : typeof BlueMinimalist | typeof WhiteSimple | typeof BlackWhiteMinimalist | null;
 
-    if(searchParam && (searchParam.match(TemplateNames.BlackWhiteMinimalist) || searchParam.match(TemplateNames.BlueMinimalist) || searchParam.match(TemplateNames.WhiteSimple))){
-        Template = getTemplate(searchParam as TemplateNames)
+    if(searchParamTemplate && (searchParamTemplate.match(TemplateNames.BlackWhiteMinimalist) || searchParamTemplate.match(TemplateNames.BlueMinimalist) || searchParamTemplate.match(TemplateNames.WhiteSimple))){
+        Template = getTemplate(searchParamTemplate as TemplateNames)
     }else{
         goto("/generate/invoice/templates")
     }
@@ -61,10 +62,11 @@
         </ul>
     </aside>
 
-    {#if searchParam && (searchParam.match(TemplateNames.BlackWhiteMinimalist) || searchParam.match(TemplateNames.BlueMinimalist) || searchParam.match(TemplateNames.WhiteSimple))}
+    {#if searchParamTemplate && (searchParamTemplate.match(TemplateNames.BlackWhiteMinimalist) || searchParamTemplate.match(TemplateNames.BlueMinimalist) || searchParamTemplate.match(TemplateNames.WhiteSimple))}
         <InvoiceForm 
-            templateInUse={searchParam}
+            templateInUse={searchParamTemplate}
             on:setSubmitting={(e) => submitting = e.detail}
+            editMode={$editInvoiceDataStore ? true : false}
         />
     {/if}
 </main>
