@@ -49,7 +49,7 @@ export const actions = {
       });
     }
 
-    const { invoiceId } = await request.json();
+    const { invoiceId } = await request.json()
 
     if (!invoiceId) {
       return error(400, {
@@ -64,31 +64,25 @@ export const actions = {
         .select('id')
         .eq('id', invoiceId)
         .eq('user_id', user_id)
-        .single();
+      .single()
 
       if (getError || !existingInvoice) {
-        throw new Error('Invoice not found or you do not have permission to delete this invoice.');
+        throw new Error('Invoice not found or you do not have permission to delete this invoice.')
       }
 
       const { error: deleteError } = await supabase
         .from('user_invoices')
         .delete()
         .eq('id', invoiceId)
-        .eq('user_id', user_id);
+        .eq('user_id', user_id)
 
       if (deleteError) {
-        throw new Error(deleteError.message);
+        throw new Error(deleteError.message)
       }
-
-      const sortedInvoices = await fetchAndSortInvoices(supabase, user_id);
 
       return {
         status: 200,
-        body: {
-          success: true,
-          message: "Invoice deleted successfully",
-          user_invoices: sortedInvoices
-        }
+        success: true,     
       }
     } 
     catch (err: any | unknown) {

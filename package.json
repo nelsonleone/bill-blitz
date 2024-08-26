@@ -26,6 +26,7 @@
 	"dependencies": {
 		"@auth/sveltekit": "^1.1.0",
 		"@iconify/svelte": "^4.0.2",
+		"@internationalized/date": "^3.5.5",
 		"@supabase/ssr": "^0.3.0",
 		"@supabase/supabase-js": "^2.43.4",
 		"@vime/core": "^5.4.1",

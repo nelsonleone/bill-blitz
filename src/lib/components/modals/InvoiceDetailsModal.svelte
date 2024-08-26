@@ -6,9 +6,11 @@
     import { getTemplate } from "$lib/helperFns/getTemplate";
     import { formatDateTime } from "$lib/helperFns/formatDate";
     import BlackWhiteMinimalist from "$lib/templates/templateAsComponents/BlackWhiteMinimalist.svelte";
-    import { alertStore } from "../../../store";
+    import { alertStore, editInvoiceDataStore } from "../../../store";
     import { AlertSeverity } from "../../../enums";
     import LoadingEllipse from "../../statics-assets/loading-ellipse3.svg"
+    import IconButton from "../buttons/IconButton.svelte";
+    import { goto } from "$app/navigation";
 
     export let invoiceDetails: ISavedInvoice[] | null = []
     export let handleDeleteInvoice : (id:string) => Promise<void>;
@@ -61,6 +63,12 @@
         }
     } 
 
+
+    const handleEditInvoice = (invoiceDetails:ISavedInvoice) => {
+        editInvoiceDataStore.set(invoiceDetails)
+        goto("/generate/invoice/new")
+    }
+
 </script>
 
 
@@ -91,9 +99,16 @@
                     </div>
                 </div>
 
-                <Dialog.Close on:click={() => showModal = false} class="absolute right-5 lg:right-0 lg:top-0 text-primary-accent-color2 text-3xl -top-5 rounded-md active:scale-98 focus:outline-none focus:outline-offset-0">
-                    <Icon icon="fa:close" />
-                </Dialog.Close>
+                <div class="absolute top-0 flex justify-between w-full left-0 items-center">
+                    <IconButton on:click={() => handleEditInvoice(invoiceDetails[0])} styles="p-0 bg-transparent text-4xl flex items-center gap-1 text-orange-600">
+                        <Icon icon="flowbite:edit-solid" />
+                        <span class="text-sm">Edit</span>
+                    </IconButton>
+                    <Dialog.Close on:click={() => showModal = false} class="text-primary-accent-color2 mx-3 -translate-y-10 text-3xl -top-5 rounded-md active:scale-98 focus:outline-none focus:outline-offset-0">
+                        <Icon icon="fa:close" />
+                    </Dialog.Close>
+                </div>
+
                 {:else}
                 <p>No Invoice With Specified Details Was Found</p>
             {/if}

@@ -39,26 +39,21 @@
     try {
       const response = await fetch("?/deleteInvoice", {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ invoiceId: id }),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json()
         throw new Error(errorData.message || 'Failed to delete invoice.')
       }
-
-      const data = await response.json()
 
       alertStore.set({
         severity: AlertSeverity.SUCCESS,
         mssg: "Invoice Deleted Successfully"
-      });
+      })
 
       toShowInModal = null;
-      invoices = data.user_invoices;
+      window.location.reload()
 
     } catch (error: any | unknown) {
       alertStore.set({
@@ -73,33 +68,33 @@
     <h1 class="mt-16 relative pb-2 font-semibold text-4xl after:w-16 after:bottom-0 after:rounded-lg after:bg-primary-accent-color2 after:h-1 after:absolute after:left-0">Invoices</h1>
 
     <div class="mt-10 rounded-md p-4 bg-stone-300 flex flex-wrap gap-[5%] shadow-md md:max-w-[22em]">
-        <label for="searchInput" class="text-sm basis-full text-primary-very-dark-blue mb-2">Search By Client's name or Invoice Number</label>
-        <input
-          type="text"
-          bind:value={searchValue}
-          placeholder="Search"
-          id="searchInput"
-          class="w-[60%] bg-gray-100 rounded-md px-4 border-stone-700 focus:outline focus:outline-2 focus:outline-gray-500"
-        />
-        <CustomButton styles="bg-gray-600 w-[35%] py-3">Search</CustomButton>
+      <label for="searchInput" class="text-sm basis-full text-primary-very-dark-blue mb-2">Search By Client's name or Invoice Number</label>
+      <input
+        type="text"
+        bind:value={searchValue}
+        placeholder="Search"
+        id="searchInput"
+        class="w-[60%] bg-gray-100 rounded-md px-4 border-stone-700 focus:outline focus:outline-2 focus:outline-gray-500"
+      />
+      <CustomButton styles="bg-gray-600 w-[35%] py-3">Search</CustomButton>
     </div>
 
     <div>
         <Tabs.Root value={activeTab || "invoice"} class="mx-auto mt-8 md:w-96 bg-stone-400 rounded-md text-primary-very-dark-blue">
-            <Tabs.List class="grid grid-cols-3 justify-items-center gap-0">
-              <Tabs.Trigger on:click={() => activeTab = "allInvoices"} class={`${activeTab === "allInvoices" ? "bg-base-color1" : "bg-transparent"} min-w-full rounded-tl-md rounded-bl-md border border-stone-400 py-3 text-center`} value="allInvoices">
-                    All Invoices
-              </Tabs.Trigger>
-           <Tabs.Trigger on:click={() => activeTab = "Downloaded"} class={`${activeTab === "Downloaded" ? "bg-base-color1" : "bg-transparent"} min-w-full border-r border-r-stone-300 py-3 text-center`} value="Downloaded" >
-                    Downloaded
-              </Tabs.Trigger>
-              <Tabs.Trigger on:click={() => activeTab = "Draft"} class={`${activeTab === "Draft" ? "bg-base-color1" : "bg-transparent"} min-w-full rounded-tr-md rounded-br-md py-3 text-center`} value="Draft">
-                    Draft
-              </Tabs.Trigger>
-    
-              <Tabs.Content value="receipt" class="mt-4 place-self-center col-span-2 w-36">
-              </Tabs.Content>
-            </Tabs.List>
+          <Tabs.List class="grid grid-cols-3 justify-items-center gap-0">
+            <Tabs.Trigger on:click={() => activeTab = "allInvoices"} class={`${activeTab === "allInvoices" ? "bg-base-color1" : "bg-transparent"} min-w-full rounded-tl-md rounded-bl-md border border-stone-400 py-3 text-center`} value="allInvoices">
+                  All Invoices
+            </Tabs.Trigger>
+          <Tabs.Trigger on:click={() => activeTab = "Downloaded"} class={`${activeTab === "Downloaded" ? "bg-base-color1" : "bg-transparent"} min-w-full border-r border-r-stone-300 py-3 text-center`} value="Downloaded" >
+                  Downloaded
+            </Tabs.Trigger>
+            <Tabs.Trigger on:click={() => activeTab = "Draft"} class={`${activeTab === "Draft" ? "bg-base-color1" : "bg-transparent"} min-w-full rounded-tr-md rounded-br-md py-3 text-center`} value="Draft">
+                  Draft
+            </Tabs.Trigger>
+  
+            <Tabs.Content value="receipt" class="mt-4 place-self-center col-span-2 w-36">
+            </Tabs.Content>
+          </Tabs.List>
         </Tabs.Root>
 
 
@@ -129,33 +124,60 @@
                     </td>
                   </tr>
                 {:else if activeTab === "allInvoices" && searchValue.trim().length < 2}
-                  {#each invoices as item (item.id)}
-                    <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
-                      <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
-                      <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
-                      <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                  {#if invoices.length > 0}
+                    {#each invoices as item (item.id)}
+                      <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
+                        <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
+                        <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
+                        <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                      </tr>
+                    {/each}
+                  {:else}
+                    <tr>
+                      <td colspan="3" class="font-rubik text-sm my-8 text-center">
+                        You do not have any invoices.
+                        <a href="/generate/invoice/new?template=BlackWhiteMinimalist" class="inline text-primary-accent-color2">
+                          Add your first Invoice
+                        </a>
+                      </td>
                     </tr>
-                  {/each}
+                  {/if}
                 {:else if activeTab === "Draft" && searchValue.trim().length < 2}
-                  {#each draftInvoices as item (item.id)}
-                    <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
-                      <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
-                      <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
-                      <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                  {#if draftInvoices.length > 0}
+                    {#each draftInvoices as item (item.id)}
+                      <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
+                        <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
+                        <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
+                        <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                      </tr>
+                    {/each}
+                  {:else}
+                    <tr>
+                      <td colspan="3" class="font-rubik text-sm my-8 text-center">
+                        You do not have any draft invoices.
+                      </td>
                     </tr>
-                  {/each}
+                  {/if}
                 {:else if activeTab === "Downloaded" && searchValue.trim().length < 2}
-                  {#each downloadedInvoices as item (item.id)}
-                    <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
-                      <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
-                      <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
-                      <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                  {#if downloadedInvoices.length > 0}
+                    {#each downloadedInvoices as item (item.id)}
+                      <tr on:click={() => toShowInModal = item} class="border-b border-b-slate-200 cursor-pointer hover:bg-stone-100">
+                        <td class="py-2 text-ellipsis">{item.invoice_data?.invoiceData?.invoiceNumber}</td>
+                        <td class="py-2 text-ellipsis">{item.invoice_data?.billTo?.name}</td>
+                        <td class="py-2 text-ellipsis">{item?.invoice_data?.total}</td>
+                      </tr>
+                    {/each}
+                  {:else}
+                    <tr>
+                      <td colspan="3" class="font-rubik text-sm my-8 text-center">
+                        You do not have any downloaded invoices.
+                      </td>
                     </tr>
-                  {/each}
+                  {/if}
                 {:else}
                   <tr>
                     <td colspan="3" class="font-rubik text-sm my-8 text-center">
-                      You do not have an invoice
+                      You do not have any invoices.
                       <a href="/generate/invoice/new?template=BlackWhiteMinimalist" class="inline text-primary-accent-color2">
                         Add your first Invoice
                       </a>
@@ -163,7 +185,7 @@
                   </tr>
                 {/if}
               {/if}
-            </tbody>            
+            </tbody>                        
           </table>
         </div>
     </div>

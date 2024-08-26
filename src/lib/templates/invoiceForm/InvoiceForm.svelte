@@ -29,6 +29,7 @@
     import { createEventDispatcher } from "svelte";
     import { CurrencyEnum } from "../../../enums"; 
     import { getCurrencyByValue } from "$lib/componentsData/currenciesArray";
+    import { CalendarDate, type DateValue } from "@internationalized/date";
 
     export let templateInUse;
     export let editMode;
@@ -48,12 +49,21 @@
     let customerPhoneNumber: string = editMode ? ($editInvoiceDataStore?.invoice_data?.billTo.contactInfo?.phoneNumber || "") : '';
     let currency: ICurrency = editMode ? (getCurrencyByValue($editInvoiceDataStore?.invoice_data?.currency!)) : getCurrencyByValue(CurrencyEnum.UnitedStates)
     let logoText: string = editMode ? ($editInvoiceDataStore?.invoice_data?.logoText || '') : '';
-    let tax: number = editMode ? ($editInvoiceDataStore?.invoice_data?.tax || 0) : 0;
-    let subTotal: number = editMode ? ($editInvoiceDataStore?.invoice_data?.subTotal || 0) : 0;
-    let total: number = editMode ? ($editInvoiceDataStore?.invoice_data?.total || 0) : 0;
-    let discount: number = editMode ? ($editInvoiceDataStore?.invoice_data?.discount || 0) : 0;
+    let tax: number | undefined = editMode ? ($editInvoiceDataStore?.invoice_data?.tax || 0) : undefined;
+    let subTotal: number | undefined = editMode ? ($editInvoiceDataStore?.invoice_data?.subTotal || 0) : undefined;
+    let total: number | undefined = editMode ? ($editInvoiceDataStore?.invoice_data?.total || 0) : undefined;
+    let discount: number | undefined = editMode ? ($editInvoiceDataStore?.invoice_data?.discount || 0) : undefined;
     let accountDetails: string = editMode ? ($editInvoiceDataStore?.invoice_data?.accountDetails || '') : '';
-    let date: Date | undefined = editMode ? new Date($editInvoiceDataStore?.invoice_data?.invoiceData.date || "") : new Date()
+
+
+    const dateObject = editMode ? new Date($editInvoiceDataStore?.invoice_data.invoiceData.date!) : new Date()
+    const year = dateObject.getUTCFullYear()
+    const month = dateObject.getUTCMonth() + 1;
+    const day = dateObject.getUTCDate()
+
+    const defaultDateValue = new CalendarDate(year, month, day)
+
+    let date: DateValue | undefined = defaultDateValue;
         
 
     $: {

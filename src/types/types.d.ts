@@ -1,6 +1,7 @@
 import type { SvelteComponent } from "svelte";
 import type { CurrencyEnum, TemplateNames } from "../enums";
 import type Signature from "$lib/components/inputs/Signature.svelte";
+import type { DateValue } from "@internationalized/date";
 
 
 type NestedKeys<T, D extends number = 5> = [D] extends [0]
@@ -84,7 +85,7 @@ interface IBasicInvoiceData {
   invoiceData:{
     invoiceNumber: string,
     // still yet to find proper type for Bits-Ui DateInput DateValue
-    date: Date | undefined, 
+    date: any, 
     items: InvoiceItems[]
   },
 

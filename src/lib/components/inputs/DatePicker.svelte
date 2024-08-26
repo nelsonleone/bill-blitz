@@ -11,7 +11,7 @@
 
   // Function to handle date selection
   function handleDateChange(val:any) {
-    dispatch('setDate', val ? new Date(val?.toString()) : undefined);
+    dispatch('setDate', val ? new Date(val?.toString()) : undefined)
     isOpen = false;
   }
 </script>
