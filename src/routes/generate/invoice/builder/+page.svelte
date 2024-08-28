@@ -36,15 +36,14 @@
     let downloadUrl : string; 
     let downloading = false;
     let downloaded = false;
+    let edittedWithoutErrs : null | boolean = null;
 
     async function captureSectionAsImage() {
         const section = document.getElementById("builder")
 
-        console.log(section)
-
         if(section){
             const canvas = await html2canvas(section, {
-                scale: 2,
+                scale: 6.5,
                 allowTaint : true,
                 useCORS: true,
                 scrollX: 0,
@@ -61,37 +60,57 @@
 
     }
 
-    async function downloadImage(isDraft:boolean = false) {
+    async function downloadImage(isDraft:boolean = false, shouldDownload: boolean = true) {
         try{
             downloading = true;
             
             if(!downloaded){
-                const result = await fetch("?/saveAndDownloadInvoice",{
-                    method: "POST",
-                    body: JSON.stringify({ isDraft, invoiceData: $newInvoiceDataStore, pngImg: downloadUrl })
-                })
+
+                let result;
+
+                if(editMode){
+                    result = await fetch("?/editInvoice",{
+                        method: "POST",
+                        body: JSON.stringify({ isDraft, invoiceData, invoiceId: $editInvoiceDataStore?.id, pngImg: downloadUrl })
+                    })
+                }else{
+                    result = await fetch("?/saveAndDownloadInvoice",{
+                        method: "POST",
+                        body: JSON.stringify({ isDraft, invoiceData, pngImg: downloadUrl })
+                    })
+                }
 
                 if(!result.ok){
                     const { message } = await result.json()
-
+                    edittedWithoutErrs = false;
                     throw new Error(message)
                 }
+
+                edittedWithoutErrs = true;
             }
-            
-            const a = document.createElement('a')
-            a.href = downloadUrl;
-            a.download = 'invoice.png';
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
+
+            if (shouldDownload){
+                const a = document.createElement('a')
+                a.href = downloadUrl;
+                a.download = 'invoice.png';
+                document.body.appendChild(a)
+                a.click()
+                document.body.removeChild(a)
 
 
-            downloaded = true;
+                downloaded = true;
 
-            alertStore.set({
-                mssg: "Invoice downloaded",
-                severity: AlertSeverity.SUCCESS
-            })
+                alertStore.set({
+                    mssg: "Invoice downloaded",
+                    severity: AlertSeverity.SUCCESS
+                })
+            }
+            else if(!shouldDownload && editMode){
+                alertStore.set({
+                    mssg: "Invoice Editted",
+                    severity: AlertSeverity.SUCCESS
+                })
+            }
         }
 
         catch(err:any|unknown){
@@ -131,7 +150,7 @@
             <svelte:component this={Template} noDetails />
         </BuilderIndicator>
         {:else if !building && showDownloadDialog}
-        <DownloadBillModal billType="invoice" {downloadImage} {downloading}>
+        <DownloadBillModal billType="invoice" {downloadImage} {edittedWithoutErrs} {downloaded} {downloading}>
             <svelte:component this={Template} noDetails />
         </DownloadBillModal>
     {/if}

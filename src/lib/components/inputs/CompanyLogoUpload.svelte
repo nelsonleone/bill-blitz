@@ -19,6 +19,8 @@
   
     export let uploadedLogo;
     const dispatch = createEventDispatcher()
+
+    let count = 0;
   
     // Convert base64 string to File object
     const fileFromString = (base64String) => {
@@ -32,10 +34,10 @@
       return new File([byteNumbers], 'uploadedLogo.png', { type: 'image/png' })
     }
   
-    $: files = uploadedLogo ? [fileFromString(uploadedLogo)] : [];
+    $: files = uploadedLogo && typeof uploadedLogo === "string" ? [fileFromString(uploadedLogo)] : [];
   
     const handleFileLoad = (fileItems) => {
-      if (fileItems.length > 0) {
+      if (fileItems && fileItems?.length > 0) {
         const uploadedFile = fileItems[0].file;
         const reader = new FileReader()
         reader.onloadend = () => {
@@ -51,13 +53,15 @@
   
     const handleRemoveFile = () => {
       uploadedLogo = null;
-      files = []
       dispatch('setUploadedLogo', null)
+      files = []
+      count+=1
     }
   </script>
 
 <div class="relative md:w-80">
-    <FilePond
+    {#key count}
+      <FilePond
         files={files}
         onupdatefiles={handleFileLoad}
         allowMultiple={false}
@@ -74,6 +78,7 @@
         allowReplace
         name="uploadedLogo"
         labelIdle='<span style="display:block; font-size: .9rem; color: black">Upload An Image</span> <span class="filepond--label-action" style="display:block">Choose File</span>'
-    />
+      />
+    {/key}
 </div>
   

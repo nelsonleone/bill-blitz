@@ -30,7 +30,8 @@ export const actions = {
                         user_id,
                         invoice_data: invoiceData,
                         pngImg: isDraft ? null : pngImg,
-                        is_draft: isDraft
+                        is_draft: isDraft,
+                        updated_at: new Date().toISOString()
                     }
                 ]
             )
@@ -84,15 +85,16 @@ export const actions = {
             }
 
             // Update the existing invoice
-            const { error: postGresError } = await supabase
-                .from('user_invoices')
-                .update({
-                    invoice_data: invoiceData,
-                    pngImg: isDraft ? null : pngImg,
-                    is_draft: isDraft
-                })
-                .eq('id', invoiceId)
-                .eq('user_id', user_id)
+            const { data, error: postGresError } = await supabase
+            .from('user_invoices')
+            .update({
+                invoice_data: invoiceData,
+                pngImg: isDraft ? null : pngImg,
+                is_draft: isDraft
+            })
+            .eq('id', invoiceId)
+            .eq('user_id', user_id)
+            .select()
 
             if (postGresError) {
                 throw new Error(postGresError.message)

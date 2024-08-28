@@ -43,9 +43,6 @@
                 {/if}
             </li>
             <li class="w-full">
-                <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600" on:click={() => goto("/generate/invoice/templates")}>Change Template</button>
-            </li>
-            <li class="w-full">
                 <span class="w-full block text-center text-base-color1 p-2 md:p-3 hover:bg-stone-600">EDIT MODE</span>
             </li>
             <li class="w-full">

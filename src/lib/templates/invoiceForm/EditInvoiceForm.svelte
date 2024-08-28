@@ -19,7 +19,7 @@
     import { alertStore, editInvoiceDataStore } from "../../../store";
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
-    import { demoData, setEmptyValidationErrors, validateInvoiceFormData } from "$lib/helperFns/handleInvoiceFormDataCheck";
+    import { setEmptyValidationErrors, validateInvoiceFormData } from "$lib/helperFns/handleInvoiceFormDataCheck";
     import { goto } from "$app/navigation";
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
@@ -51,12 +51,7 @@
     let discount: number = ($editInvoiceDataStore?.invoice_data?.discount || 0)
     let accountDetails: string = ($editInvoiceDataStore?.invoice_data?.accountDetails || '')
 
-    const dateObject = new Date($editInvoiceDataStore?.invoice_data.invoiceData.date!)
-    const year = dateObject.getUTCFullYear()
-    const month = dateObject.getUTCMonth() + 1;
-    const day = dateObject.getUTCDate()
-
-    const defaultDateValue = new CalendarDate(year, month, day)
+    const defaultDateValue = new CalendarDate($editInvoiceDataStore?.invoice_data.invoiceData.date.year,$editInvoiceDataStore?.invoice_data.invoiceData.date.month, $editInvoiceDataStore?.invoice_data.invoiceData.date.day)
 
     let date: DateValue | undefined = defaultDateValue;
     
@@ -123,7 +118,6 @@
     let invoiceNumber : string = $editInvoiceDataStore?.invoice_data.invoiceData.invoiceNumber || "";
     let includeSignature = $editInvoiceDataStore?.invoice_data.signature && $editInvoiceDataStore?.invoice_data.signature?.length > 0 ? true : false;
     let formInputData : IBasicInvoiceData;
-        
         
     const dispatch = createEventDispatcher()
         

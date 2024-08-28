@@ -8,10 +8,12 @@
     import { editInvoiceDataStore } from "../../../store";
 
     export let billType : "receipt" | "invoice"; 
-    export let downloadImage : (isDraft:boolean) => void;
+    export let downloadImage : (isDraft: boolean, shouldDownload?: boolean) => void;
     export let downloading : boolean = false;
+    export let downloaded : boolean;
+    export let edittedWithoutErrs : boolean | null;
 
-    $: editMode = $editInvoiceDataStore ? true : false;
+    let editMode = $editInvoiceDataStore ? true : false;
 </script>
      
   
@@ -52,14 +54,21 @@
                 Download
               </CustomButton>
 
-              {#if !editMode}
+              {#if !editMode && !downloaded}
                 <CustomButton
                   on:click={() => downloadImage(true)}
-                  href="/auth/sign_in"
                   disabled={downloading}
                   styles="p-[0] m-0 block underline text-center hover:text-emerald-500 mt-5 focus:outline-none focus:outline-offset-0"
                 >
                   Save In Draft
+                </CustomButton>
+                {:else if editMode && !edittedWithoutErrs}
+                <CustomButton
+                  on:click={() => downloadImage(true,false)}
+                  disabled={downloading}
+                  styles="p-[0] m-0 block underline text-center hover:text-emerald-500 mt-5 focus:outline-none focus:outline-offset-0"
+                >
+                  Save Edits
                 </CustomButton>
               {/if}
             </div>
