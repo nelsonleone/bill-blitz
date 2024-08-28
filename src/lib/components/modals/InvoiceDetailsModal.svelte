@@ -66,7 +66,7 @@
 
     const handleEditInvoice = (invoiceDetails:ISavedInvoice) => {
         editInvoiceDataStore.set(invoiceDetails)
-        goto("/generate/invoice/new")
+        goto("/generate/invoice/edit")
     }
 
 </script>

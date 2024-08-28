@@ -16,7 +16,7 @@
     import CustomTooltip from "$lib/components/prompts/CustomTooltip.svelte";
     import { setFooterText } from "$lib/helperFns/setInvoiceFooterText";
     import InvoiceItemsTable from "$lib/components/invoice/InvoiceItemsTable.svelte";
-    import { alertStore, newInvoiceDataStore } from "../../../store";
+    import { alertStore, editInvoiceDataStore } from "../../../store";
     import Signature from "$lib/components/inputs/Signature.svelte";
     import SignaturePad from "$lib/components/inputs/SignaturePad.svelte";
     import { demoData, setEmptyValidationErrors, validateInvoiceFormData } from "$lib/helperFns/handleInvoiceFormDataCheck";
@@ -27,29 +27,38 @@
     import { AlertSeverity, TemplateNames } from "../../../enums";
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
     import { createEventDispatcher } from "svelte";
-
+    import { getCurrencyByValue } from "$lib/componentsData/currenciesArray";
+    import { CalendarDate, type DateValue } from "@internationalized/date";
+    
     export let templateInUse;
     
-    let invoiceItemsArr: InvoiceItems[] = []
+    let invoiceItemsArr: InvoiceItems[] = $editInvoiceDataStore?.invoice_data.invoiceData.items || [];
+    let issuerEmail: string = ($editInvoiceDataStore?.invoice_data?.issuer.contactInfo?.emailAddress || "")
+    let signature: { path: string; width: number; height: number }[] = $editInvoiceDataStore?.invoice_data.signature || [];
+    let issuerName: string = ($editInvoiceDataStore?.invoice_data?.issuer.name || "")
+    let logo: string = ($editInvoiceDataStore?.invoice_data?.logo || "")
+    let issuerAddress: string = ($editInvoiceDataStore?.invoice_data?.issuer.contactInfo?.address || "")
+    let customerEmail: string = ($editInvoiceDataStore?.invoice_data?.billTo.contactInfo?.emailAddress || "")
+    let customerName: string = ($editInvoiceDataStore?.invoice_data?.billTo.name || "")
+    let customerAddress: string = ($editInvoiceDataStore?.invoice_data?.billTo.contactInfo?.address || "")
+    let issuerPhoneNumber: string = ($editInvoiceDataStore?.invoice_data?.issuer.contactInfo?.phoneNumber || "")
+    let customerPhoneNumber: string = ($editInvoiceDataStore?.invoice_data?.billTo.contactInfo?.phoneNumber || "")
+    let currency: ICurrency = (getCurrencyByValue($editInvoiceDataStore?.invoice_data?.currency!))
+    let logoText: string = ($editInvoiceDataStore?.invoice_data?.logoText || '')
+    let tax: number = ($editInvoiceDataStore?.invoice_data?.tax || 0)
+    let subTotal: number = ($editInvoiceDataStore?.invoice_data?.subTotal || 0)
+    let total: number = ($editInvoiceDataStore?.invoice_data?.total || 0)
+    let discount: number = ($editInvoiceDataStore?.invoice_data?.discount || 0)
+    let accountDetails: string = ($editInvoiceDataStore?.invoice_data?.accountDetails || '')
 
-    let issuerEmail : string;
-    let signature : { path: string; width: number; height: number }[] = []
-    let issuerName : string;
-    let logo: string;
-    let issuerAddress : string;
-    let customerEmail: string; 
-    let customerName: string; 
-    let customerAddress: string; 
-    let issuerPhoneNumber : string;
-    let customerPhoneNumber : string;
-    let currency : ICurrency;
-    let logoText : string;
-    let tax : number;
-    let subTotal : number;
-    let total : number;
-    let discount : number;
-    let accountDetails : string;
-    let date : Date | undefined;  
+    const dateObject = new Date($editInvoiceDataStore?.invoice_data.invoiceData.date!)
+    const year = dateObject.getUTCFullYear()
+    const month = dateObject.getUTCMonth() + 1;
+    const day = dateObject.getUTCDate()
+
+    const defaultDateValue = new CalendarDate(year, month, day)
+
+    let date: DateValue | undefined = defaultDateValue;
     
 
     $: {
@@ -105,21 +114,21 @@
     }
 
 
-    let includeBankDetails = false;
+    let includeBankDetails = $editInvoiceDataStore?.invoice_data.accountDetails ? true : false;
     let useAutoTotalCalc = false;
-    let includeTax = false;
-    let includesubTotal = false;
-    let includeDiscount = false;
-    let editFooterText = false;
-    let invoiceNumber : string;
-    let includeSignature = false;
+    let includeTax = $editInvoiceDataStore?.invoice_data.tax !== undefined && $editInvoiceDataStore?.invoice_data.tax !== null;
+    let includesubTotal = $editInvoiceDataStore?.invoice_data.tax !== undefined && $editInvoiceDataStore?.invoice_data.tax !== null;
+    let includeDiscount = $editInvoiceDataStore?.invoice_data.tax !== undefined && $editInvoiceDataStore?.invoice_data.tax !== null;
+    let editFooterText = $editInvoiceDataStore?.invoice_data.footerText ? true : false;
+    let invoiceNumber : string = $editInvoiceDataStore?.invoice_data.invoiceData.invoiceNumber || "";
+    let includeSignature = $editInvoiceDataStore?.invoice_data.signature && $editInvoiceDataStore?.invoice_data.signature?.length > 0 ? true : false;
     let formInputData : IBasicInvoiceData;
         
         
     const dispatch = createEventDispatcher()
         
         
-    $: openSignaturePad = includeSignature;
+    $: openSignaturePad = false;
 
     $: formInputData = {
         issuer: {
@@ -131,7 +140,7 @@
             }
         },
         invoiceData: {
-            invoiceNumber: invoiceNumber,
+            invoiceNumber,
             date: date || new Date(), // Default to today's date
             items: invoiceItemsArr
         },
@@ -315,7 +324,17 @@
             })
 
             if(res.ok){
-                newInvoiceDataStore.set(formInputData)
+                const pngImg = $editInvoiceDataStore?.pngImg!;
+                const created_at = $editInvoiceDataStore?.created_at!;
+                const id = $editInvoiceDataStore?.id!;
+
+                editInvoiceDataStore.set({ 
+                    pngImg, 
+                    created_at,
+                    id,
+                    is_draft: false,
+                    invoice_data: formInputData
+                })
                 goto("/generate/invoice/builder")
             }
         }
@@ -854,7 +873,14 @@
             id="includeSignature"
             aria-labelledby="terms-label"
             class="peer inline-flex size-[25px] items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
-            bind:checked={includeSignature}
+            checked={includeSignature}
+            onCheckedChange={() => {
+                includeSignature = !includeSignature;
+                console.log(openSignaturePad)
+                if(!openSignaturePad && includeSignature){
+                    openSignaturePad = true;
+                }
+            }}
             >
             <Checkbox.Indicator
                 let:isChecked

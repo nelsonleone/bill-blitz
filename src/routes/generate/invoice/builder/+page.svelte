@@ -14,14 +14,20 @@
 
 
 
+    let editMode = $editInvoiceDataStore ? true : false;
+
+    let invoiceData = editMode ? $editInvoiceDataStore?.invoice_data! : $newInvoiceDataStore!;
+
+    let selectedTemplate = invoiceData?.templateInUse;
+
+
     if (browser) {
-        const isNewInvoiceDataStoreEmpty = !$newInvoiceDataStore || 
-            (typeof $newInvoiceDataStore === "object" && Object.values($newInvoiceDataStore).length < 1) || 
-            !$newInvoiceDataStore.templateInUse;
+        const isStoreEmpty = invoiceData || 
+        (typeof $newInvoiceDataStore === "object" && Object.keys(invoiceData || {}).length === 0) || 
+        !selectedTemplate ? true : false;
+
         
-        if (isNewInvoiceDataStoreEmpty) {
-            window.history.back()
-        }
+        console.log(editMode,invoiceData)
     }
 
 
@@ -30,17 +36,15 @@
     let downloadUrl : string; 
     let downloading = false;
     let downloaded = false;
-    
-    $: editMode = !!$editInvoiceDataStore;
-
-    $: editInvoiceData = $editInvoiceDataStore?.invoice_data!;
 
     async function captureSectionAsImage() {
         const section = document.getElementById("builder")
 
+        console.log(section)
+
         if(section){
             const canvas = await html2canvas(section, {
-                scale: 1,
+                scale: 2,
                 allowTaint : true,
                 useCORS: true,
                 scrollX: 0,
@@ -111,11 +115,11 @@
         }
     })
 
+
     let Template : typeof BlueMinimalist | null;
 
-
-    if($newInvoiceDataStore?.templateInUse){
-        Template = getTemplate($newInvoiceDataStore.templateInUse)
+    if(selectedTemplate){
+        Template = getTemplate(selectedTemplate)
     }
 </script>
 
@@ -133,12 +137,12 @@
     {/if}
 
     <div class="flex justify-center">
-        {#if $newInvoiceDataStore?.templateInUse ===  TemplateNames.WhiteSimple}
-            <WhiteSimpleBuilder invoiceData={!editMode ? $newInvoiceDataStore : editInvoiceData} />
-        {:else if  $newInvoiceDataStore?.templateInUse ===  TemplateNames.BlueMinimalist}
-            <BlueMinimalistBuilder invoiceData={!editMode ? $newInvoiceDataStore : editInvoiceData} />
-        {:else if $newInvoiceDataStore?.templateInUse ===  TemplateNames.BlackWhiteMinimalist}
-            <BlackWhiteMinimalistBuilder invoiceData={!editMode ? $newInvoiceDataStore : editInvoiceData} />
+        {#if selectedTemplate === TemplateNames.WhiteSimple}
+            <WhiteSimpleBuilder invoiceData={invoiceData} />
+        {:else if selectedTemplate === TemplateNames.BlueMinimalist}
+            <BlueMinimalistBuilder invoiceData={invoiceData} />
+        {:else if selectedTemplate === TemplateNames.BlackWhiteMinimalist}
+            <BlackWhiteMinimalistBuilder invoiceData={invoiceData} />
         {/if}
     </div>
 </div>

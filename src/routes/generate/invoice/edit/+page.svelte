@@ -3,20 +3,19 @@
     import { page } from "$app/stores";
     import { getTemplate } from "$lib/helperFns/getTemplate";
     import BlackWhiteMinimalist from "$lib/templates/templateAsComponents/BlackWhiteMinimalist.svelte";
-    import InvoiceForm from "$lib/templates/invoiceForm/InvoiceForm.svelte";
+    import EditInvoiceForm from "$lib/templates/invoiceForm/EditInvoiceForm.svelte";
     import BlueMinimalist from "$lib/templates/templateAsComponents/BlueMinimalist.svelte";
-    import { TemplateNames } from "../../../../enums";
     import WhiteSimple from "$lib/templates/templateAsComponents/WhiteSimple.svelte";
     import InterwindLoader from "$lib/statics-assets/interwind-loader.svg";
+    import { editInvoiceDataStore } from "../../../../store";
 
-    let searchParamTemplate = $page.url.searchParams.get("template")
     let submitting = false;
     let Template : typeof BlueMinimalist | typeof WhiteSimple | typeof BlackWhiteMinimalist | null;
 
-    if(searchParamTemplate && (searchParamTemplate.match(TemplateNames.BlackWhiteMinimalist) || searchParamTemplate.match(TemplateNames.BlueMinimalist) || searchParamTemplate.match(TemplateNames.WhiteSimple))){
-        Template = getTemplate(searchParamTemplate as TemplateNames)
+    if($editInvoiceDataStore && $editInvoiceDataStore.invoice_data){
+        Template = getTemplate($editInvoiceDataStore.invoice_data.templateInUse)
     }else{
-        goto("/generate/invoice/templates")
+        goto("/generate/invoice")
     }
 
 </script>
@@ -25,10 +24,8 @@
 
 <svelte:head>
   <title>Bill-Blitz | Generate Invoice</title>
-  <meta name="description" content="Generate new invoice using cool templates" />
-  <meta property="og:title" content="Bill-Blitz | Generate Invoice" />
-  <meta name="twitter:title" content="Bill-Blitz | Generate Invoice" />
-  <meta name="twitter:description" content="Generate new invoice using cool templates" />
+  <meta name="description" content="Edit Your Saved Invoice" />
+  <meta property="og:title" content="Bill-Blitz | Edit Invoice" />
 </svelte:head>
 
 
@@ -49,7 +46,7 @@
                 <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600" on:click={() => goto("/generate/invoice/templates")}>Change Template</button>
             </li>
             <li class="w-full">
-                <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600">Save To Drafts</button>
+                <span class="w-full block text-center text-base-color1 p-2 md:p-3 hover:bg-stone-600">EDIT MODE</span>
             </li>
             <li class="w-full">
                 <button disabled={submitting} aria-controls="invoice-form" type="submit" form="invoice-form" class="bg-emerald-700 max-h-12 w-full flex justify-center items-center gap-3 text-base-color1 p-3 disabled:cursor-not-allowed hover:bg-stone-700 focus:bg-stone-700 {submitting ? "bg-stone-700" : ""}">
@@ -61,9 +58,9 @@
         </ul>
     </aside>
 
-    {#if searchParamTemplate && (searchParamTemplate.match(TemplateNames.BlackWhiteMinimalist) || searchParamTemplate.match(TemplateNames.BlueMinimalist) || searchParamTemplate.match(TemplateNames.WhiteSimple))}
-        <InvoiceForm 
-            templateInUse={searchParamTemplate}
+    {#if $editInvoiceDataStore && $editInvoiceDataStore.invoice_data}
+        <EditInvoiceForm 
+            templateInUse={$editInvoiceDataStore.invoice_data.templateInUse}
             on:setSubmitting={(e) => submitting = e.detail}
         />
     {/if}
