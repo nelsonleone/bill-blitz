@@ -11,6 +11,8 @@
 
     let searchParamTemplate = $page.url.searchParams.get("template")
     let submitting = false;
+    let savingInDrafts = false;
+    $: saveInDraft = savingInDrafts;
     let Template : typeof BlueMinimalist | typeof WhiteSimple | typeof BlackWhiteMinimalist | null;
 
     if(searchParamTemplate && (searchParamTemplate.match(TemplateNames.BlackWhiteMinimalist) || searchParamTemplate.match(TemplateNames.BlueMinimalist) || searchParamTemplate.match(TemplateNames.WhiteSimple))){
@@ -19,6 +21,7 @@
         goto("/generate/invoice/templates")
     }
 
+    
 </script>
 
 
@@ -46,10 +49,10 @@
                 {/if}
             </li>
             <li class="w-full">
-                <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600" on:click={() => goto("/generate/invoice/templates")}>Change Template</button>
+                <button class="w-full text-base-color1 p-2 disabled:cursor-not-allowed md:p-3 hover:bg-stone-600" on:click={() => goto("/generate/invoice/templates")}>Change Template</button>
             </li>
             <li class="w-full">
-                <button class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600">Save To Drafts</button>
+                <button disabled class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600">Save To Drafts</button>
             </li>
             <li class="w-full">
                 <button disabled={submitting} aria-controls="invoice-form" type="submit" form="invoice-form" class="bg-emerald-700 max-h-12 w-full flex justify-center items-center gap-3 text-base-color1 p-3 disabled:cursor-not-allowed hover:bg-stone-700 focus:bg-stone-700 {submitting ? "bg-stone-700" : ""}">
@@ -64,7 +67,10 @@
     {#if searchParamTemplate && (searchParamTemplate.match(TemplateNames.BlackWhiteMinimalist) || searchParamTemplate.match(TemplateNames.BlueMinimalist) || searchParamTemplate.match(TemplateNames.WhiteSimple))}
         <InvoiceForm 
             templateInUse={searchParamTemplate}
+            {savingInDrafts}
+            {saveInDraft}
             on:setSubmitting={(e) => submitting = e.detail}
+            on:savingInDrafts={(e) => savingInDrafts = e.detail}
         />
     {/if}
 </main>

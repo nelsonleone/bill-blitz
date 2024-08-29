@@ -5,11 +5,6 @@
 
     export let invoiceData : IBasicInvoiceData;
 
-    
-  const jsDate = new Date(invoiceData.invoiceData.date.year, invoiceData.invoiceData.date.month - 1, invoiceData.invoiceData.date.day);
-
-  const formattedDate = jsDate.toLocaleDateString()
-
 </script>
 
 
@@ -37,7 +32,7 @@
                 <p class="mb-2">{invoiceData.billTo.contactInfo?.address}</p>
             </div>
             <div class="text-right">
-                <p class="text-lg flex justify-between gap-4">DATE: <span>{formattedDate}</span></p>
+                <p class="text-lg flex justify-between gap-4">DATE: <span>{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
             </div>
         </div>
 

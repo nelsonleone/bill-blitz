@@ -2,7 +2,7 @@
     import { Dialog } from "bits-ui";
     import Icon from "@iconify/svelte";
     import { fade, fly } from "svelte/transition";
-    import type { IBasicInvoiceData, ISavedInvoice } from "../../../types/types";
+    import type { ISavedInvoice } from "../../../types/types";
     import { getTemplate } from "$lib/helperFns/getTemplate";
     import { formatDateTime } from "$lib/helperFns/formatDate";
     import BlackWhiteMinimalist from "$lib/templates/templateAsComponents/BlackWhiteMinimalist.svelte";
@@ -20,9 +20,15 @@
     let Template: typeof BlackWhiteMinimalist | null = null;
     let deleting = false;
 
+    $: createdDate = invoiceDetails ? new Date(invoiceDetails[0].created_at) : new Date()
+    $: updatedDate = invoiceDetails ? new Date(invoiceDetails[0].updated_at) : new Date()
+    const thresholdInMinutes = 1;
+    const thresholdInMilliseconds = thresholdInMinutes * 60 * 1000;
+
+    $: timeDifference = Math.abs(updatedDate.getTime() - createdDate.getTime())
+
     if (invoiceDetails && invoiceDetails[0].invoice_data.templateInUse) {
         Template = getTemplate(invoiceDetails[0].invoice_data.templateInUse)
-        console.log(invoiceDetails[0].created_at)
     }
 
 
@@ -84,6 +90,9 @@
                 <div>
                     <div>
                         <p>Invoice created on: <span class="text-stone-700">{formatDateTime(invoiceDetails[0].created_at && invoiceDetails[0].created_at)}</span></p>
+                        {#if timeDifference > thresholdInMilliseconds}
+                            <p>Last Updated On: <span class="text-stone-700">{formatDateTime(invoiceDetails[0].updated_at && invoiceDetails[0].updated_at)}</span></p>
+                        {/if}
                         <p>Invoice Number: <span class="text-stone-700">{invoiceDetails[0].invoice_data.invoiceData.invoiceNumber}</span></p>
                         <p>Client Billed To: <span class="text-stone-700">{invoiceDetails[0].invoice_data.billTo.name}</span></p>
 

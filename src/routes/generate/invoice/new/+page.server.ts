@@ -38,5 +38,51 @@ export const actions = {
                 message: err.message || "An error occurred"
             })
         }
+    },
+    saveToDrafts: async({ request, locals: { supabase } }:RequestEvent) => {
+
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        const user_id = (await supabase.auth.getUser()).data.user?.id;
+
+        if (sessionError || !session || !user_id) {
+            return error(401, {
+                message: "Unauthorized request, please login"
+            })
+        }
+
+        const { invoiceData } = await request.json()
+            if(typeof !invoiceData){
+                return error(400, {
+                message: "Incomplete or invalid properties in request body, check (invoiceData)"
+            })
+        }
+
+        const successMssg = "Saved to drafts"
+
+        try {
+            const { error: postGresError } = await supabase
+                .from('user_invoices')
+                .insert([
+                    {
+                        user_id,
+                        invoice_data: invoiceData,
+                        pngImg: null,
+                        is_draft: true
+                    }
+                ]
+            )
+
+            if(postGresError){
+                throw new Error(postGresError.message)
+            }
+
+            return { success: true, message: successMssg }
+
+        }
+        catch(err:any|unknown){
+            return error(401, {
+                message: err.message || "An error occurred while saving invoice, try again"
+            })
+        }
     }
 }

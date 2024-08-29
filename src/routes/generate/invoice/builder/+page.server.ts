@@ -30,8 +30,7 @@ export const actions = {
                         user_id,
                         invoice_data: invoiceData,
                         pngImg: isDraft ? null : pngImg,
-                        is_draft: isDraft,
-                        updated_at: new Date().toISOString()
+                        is_draft: isDraft
                     }
                 ]
             )

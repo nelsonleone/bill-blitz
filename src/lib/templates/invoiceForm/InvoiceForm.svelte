@@ -29,6 +29,8 @@
     import { createEventDispatcher } from "svelte";
 
     export let templateInUse;
+    export let saveInDraft;
+    export let savingInDrafts;
     
     let invoiceItemsArr: InvoiceItems[] = []
 
@@ -290,6 +292,69 @@
 
 
     // Submit Handler
+    const handleSaveInDrafts = async() => {
+        
+        const { isValid, validationErrors } = validateInvoiceFormData(formInputData)
+
+
+        if(!isValid && validationErrors){
+            errors = validationErrors;
+
+            alertStore.set({
+                severity: AlertSeverity.ERROR,
+                mssg: "Fix The Errors To Continue"
+            })
+
+            return;
+        }
+
+        try{
+            dispatch("setSubmitting",true)
+
+            let res;
+            
+            res = await fetch("?/setInvoiceData",{
+                method: "POST",
+                body: JSON.stringify(formInputData)
+            })
+
+            if (!res.ok) {
+                const { message } = await res.json()
+                throw new Error(message || "Failed to set invoice data")
+            }
+
+            res = await fetch("?/saveToDrafts",{
+                method: "POST",
+                body: JSON.stringify(formInputData)
+            })
+
+            if(res.ok){
+                newInvoiceDataStore.set(formInputData)
+                alertStore.set({
+                    severity: AlertSeverity.SUCCESS,
+                    mssg: "Invoice Saved In Drafts"
+                })
+
+                goto("/generate/invoice")
+            }
+        }
+        catch(err : any | unknown){
+            alertStore.set({
+                severity: AlertSeverity.ERROR,
+                mssg: err.message || "An error occurred, try again"
+            })
+        }
+        finally{
+            dispatch("savingInDrafts",false)
+        }
+    }
+
+    $: {
+        if(saveInDraft && !savingInDrafts){
+            handleSaveInDrafts()
+        }
+    }
+
 
     const handleSubmit = async(e: { currentTarget: EventTarget & HTMLFormElement}) => {
         const { isValid, validationErrors } = validateInvoiceFormData(formInputData)

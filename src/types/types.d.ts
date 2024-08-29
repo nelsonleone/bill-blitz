@@ -138,4 +138,4 @@ type InvoiceFormSubmitError = {
 }
 
 
-interface ISavedInvoice { invoice_data: IBasicInvoiceData, pngImg: string, id: string, created_at: string, is_draft: boolean }
+interface ISavedInvoice { invoice_data: IBasicInvoiceData, pngImg: string, id: string, updated_at: string, created_at: string, is_draft: boolean }

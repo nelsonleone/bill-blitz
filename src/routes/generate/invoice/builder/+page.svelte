@@ -43,7 +43,7 @@
 
         if(section){
             const canvas = await html2canvas(section, {
-                scale: 6.5,
+                scale: 2.5,
                 allowTaint : true,
                 useCORS: true,
                 scrollX: 0,

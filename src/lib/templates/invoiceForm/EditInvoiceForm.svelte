@@ -50,10 +50,7 @@
     let total: number = ($editInvoiceDataStore?.invoice_data?.total || 0)
     let discount: number = ($editInvoiceDataStore?.invoice_data?.discount || 0)
     let accountDetails: string = ($editInvoiceDataStore?.invoice_data?.accountDetails || '')
-
-    const defaultDateValue = new CalendarDate($editInvoiceDataStore?.invoice_data.invoiceData.date.year,$editInvoiceDataStore?.invoice_data.invoiceData.date.month, $editInvoiceDataStore?.invoice_data.invoiceData.date.day)
-
-    let date: DateValue | undefined = defaultDateValue;
+    let date: string;
     
 
     $: {
@@ -327,8 +324,10 @@
                     created_at,
                     id,
                     is_draft: false,
-                    invoice_data: formInputData
+                    invoice_data: formInputData,
+                    updated_at: ""
                 })
+
                 goto("/generate/invoice/builder")
             }
         }

@@ -7,11 +7,6 @@
 
     export let invoiceData : IBasicInvoiceData;
 
-    
-    const jsDate = new Date(invoiceData.invoiceData.date.year, invoiceData.invoiceData.date.month - 1, invoiceData.invoiceData.date.day);
-
-    const formattedDate = jsDate.toLocaleDateString()
-
 </script>
 
 
@@ -36,7 +31,7 @@
             </div>
             <div class="grid grid-rows-[2em] grid-cols-1">
                 <p class="text-base font-semibold mb-4">INVOICE NO: <span class="ms-4 text-base font-normal">{invoiceData.invoiceData.invoiceNumber}</span></p>
-                <p class="text-base font-semibold">DATE: <span class="ms-4 text-base font-normal">{formattedDate}</span></p>
+                <p class="text-base font-semibold">DATE: <span class="ms-4 text-base font-normal">{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
             </div>
         </div>
         <Table divClass="mt-20 relative text-[#3D3B3A]">
