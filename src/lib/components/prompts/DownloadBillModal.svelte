@@ -47,7 +47,7 @@
             </div>
             <div class="flex justify-center items-center flex-col lg:items-start">
               <CustomButton
-                on:click={() => downloadImage(false)}
+                on:click={() => downloadImage(false,true)}
                 disabled={downloading}
                 styles="p-[0] m-0 block underline text-center hover:text-primary-accent-color1 focus:outline-none focus:outline-offset-0"
               >
@@ -64,7 +64,7 @@
                 </CustomButton>
                 {:else if editMode && !edittedWithoutErrs}
                 <CustomButton
-                  on:click={() => downloadImage(true,false)}
+                  on:click={() => downloadImage(false,false)}
                   disabled={downloading}
                   styles="p-[0] m-0 block underline text-center hover:text-emerald-500 mt-5 focus:outline-none focus:outline-offset-0"
                 >

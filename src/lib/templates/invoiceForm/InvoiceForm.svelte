@@ -305,11 +305,13 @@
                 mssg: "Fix The Errors To Continue"
             })
 
+            dispatch("setHasErrors",true)
+
             return;
         }
 
         try{
-            dispatch("setSubmitting",true)
+            dispatch("setSavingInDrafts",true)
 
             let res;
             
@@ -319,17 +321,23 @@
             })
 
             if (!res.ok) {
-                const { message } = await res.json()
+                const { error: { message } } = await res.json()
                 throw new Error(message || "Failed to set invoice data")
             }
 
             res = await fetch("?/saveToDrafts",{
                 method: "POST",
-                body: JSON.stringify(formInputData)
+                body: JSON.stringify({
+                    invoiceData: formInputData
+                })
             })
 
+            if (!res.ok) {
+                const { error: { message } } = await res.json()
+                throw new Error(message)
+            }
+
             if(res.ok){
-                newInvoiceDataStore.set(formInputData)
                 alertStore.set({
                     severity: AlertSeverity.SUCCESS,
                     mssg: "Invoice Saved In Drafts"
@@ -345,7 +353,7 @@
             })
         }
         finally{
-            dispatch("savingInDrafts",false)
+            dispatch("setSavingInDrafts",false)
         }
     }
 

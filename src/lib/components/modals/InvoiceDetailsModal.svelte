@@ -97,7 +97,7 @@
                         <p>Client Billed To: <span class="text-stone-700">{invoiceDetails[0].invoice_data.billTo.name}</span></p>
 
                         <div class="flex justify-around my-7">
-                            <button on:click={handleDownloadSavedInvoice} class="text-primary-accent-color2 underline outline-none focus:outline focus:outline-2 focus:outline-primary-accent-color2">
+                            <button on:click={handleDownloadSavedInvoice} class="text-primary-accent-color2 underline outline-none focus:outline focus:outline-2 focus:outline-primary-accent-color2 {invoiceDetails[0].is_draft ? "hidden" : "block"}">
                                 Download
                             </button>
                             <button on:click={() => deleteInvoice(invoiceDetails[0].id)} class="text-red-500 underline max-w-48 p-0 flex items-center gap-2 outline-none focus:outline focus:outline-2 focus:outline-red-500">

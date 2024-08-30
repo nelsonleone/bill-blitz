@@ -88,7 +88,7 @@
             {/if}
             </div>
 
-            <div class="relative z-10 font-semibold bg-[#E3DCD4] flex justify-end h-10 p-2 pb-6 gap-16 items-center">
+            <div class="relative z-10 font-semibold bg-[#E3DCD4] flex justify-end my-4 min-h-10 h-10 p-2 pb-6 gap-16 items-center">
                 <p class="relative z-10 font-semibold text-lg">TOTAL</p>
                 <p class="relative z-10 font-semibold text-lg">
                     {formatCurrency(invoiceData.total || 0)}

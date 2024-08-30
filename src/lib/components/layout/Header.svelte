@@ -114,7 +114,6 @@
 
             <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice/templates" ? "text-primary-accent-color2" : ""}`}><a href="/generate/invoice/templates">Templates</a></li>
             <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color2" : ""}`}><a href="/about">About Us</a></li>
-            <li class={`font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color2" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </ul>
 
         <div class="flex items-center gap-3">
@@ -190,12 +189,10 @@
 
         <div class="flex flex-col gap-4 items-center">
             <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/about" ? "text-primary-accent-color1" : ""}`}><a href="/about">About Us</a></li>
-            <li><a href="/account/upgrade" class="block w-[5.5em] py-[.55em] rounded-3xl text-base-color1 text-center hover:shadow-lg hover:bg-transparent hover:text-base-color1 focus:text-base-color1 border border-base-color1 focus:drop-shadow-md focus:shadow-lg transition ease-linear duration-300 hover:drop-shadow-md">Upgrade</a></li>
         </div>
         
         <div class="flex flex-col gap-4 items-center">
             <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/generate/invoice/templates" ? "text-primary-accent-color1" : ""}`}><a href="/generate/invoice/templates">Templates</a></li>
-            <li class={`font-medium hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200 ${activeUrl === "/how-it-works" ? "text-primary-accent-color1" : ""}`}><a href="/how-it-works">How It Works</a></li>
         </div>
     </ul>
 </nav>

@@ -8,10 +8,12 @@
     import { TemplateNames } from "../../../../enums";
     import WhiteSimple from "$lib/templates/templateAsComponents/WhiteSimple.svelte";
     import InterwindLoader from "$lib/statics-assets/interwind-loader.svg";
+    import LoadingEllipse from "$lib/statics-assets/loading-ellipse.svg";
 
     let searchParamTemplate = $page.url.searchParams.get("template")
     let submitting = false;
     let savingInDrafts = false;
+    let hasErrors = false;
     $: saveInDraft = savingInDrafts;
     let Template : typeof BlueMinimalist | typeof WhiteSimple | typeof BlackWhiteMinimalist | null;
 
@@ -21,6 +23,12 @@
         goto("/generate/invoice/templates")
     }
 
+
+    $: {
+        if(hasErrors){
+            saveInDraft = false;
+        }
+    }
     
 </script>
 
@@ -52,13 +60,18 @@
                 <button class="w-full text-base-color1 p-2 disabled:cursor-not-allowed md:p-3 hover:bg-stone-600" on:click={() => goto("/generate/invoice/templates")}>Change Template</button>
             </li>
             <li class="w-full">
-                <button disabled class="w-full text-base-color1 p-2 md:p-3 hover:bg-stone-600">Save To Drafts</button>
+                <button disabled={savingInDrafts} on:click={() => {
+                    hasErrors = false;
+                    saveInDraft = true
+                }} class="w-full text-base-color1 p-2 md:p-3 relative hover:bg-stone-600">
+                    <span>Save To Drafts</span>
+                    <img src={LoadingEllipse} width={savingInDrafts ? 70 : 0} height={savingInDrafts ? 70 : 0} loading="eager" aria-label="loading"  alt="" class={` absolute top-0 bottom-0 left-0 right-0 m-auto drop-shadow-md shadow-sm ${savingInDrafts ? "block" : "hidden"}`} />
+                </button>
             </li>
             <li class="w-full">
                 <button disabled={submitting} aria-controls="invoice-form" type="submit" form="invoice-form" class="bg-emerald-700 max-h-12 w-full flex justify-center items-center gap-3 text-base-color1 p-3 disabled:cursor-not-allowed hover:bg-stone-700 focus:bg-stone-700 {submitting ? "bg-stone-700" : ""}">
                     <span>Save</span>
-                    <img src={InterwindLoader} alt="submitting" aria-hidden="true" width={submitting ? 70 : 0} class="{
-                        !submitting ? "invisible w-0" : "visible w-20"}" height={submitting ? 70 : 0} />
+                    <img src={InterwindLoader} alt="submitting" aria-hidden="true" width={submitting ? 70 : 0} class="{!submitting ? "invisible w-0" : "visible w-20"}" height={submitting ? 70 : 0} />
                </button>
             </li>
         </ul>
@@ -70,7 +83,8 @@
             {savingInDrafts}
             {saveInDraft}
             on:setSubmitting={(e) => submitting = e.detail}
-            on:savingInDrafts={(e) => savingInDrafts = e.detail}
+            on:setSavingInDrafts={(e) => savingInDrafts = e.detail}
+            on:setHasErrors={(e) => hasErrors = e.detail}
         />
     {/if}
 </main>

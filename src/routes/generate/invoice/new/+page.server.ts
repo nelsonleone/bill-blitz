@@ -28,6 +28,11 @@ export const actions = {
                     message: "Invoice has no chosen template"
                 })
             }
+            if(!data.invoiceData.date){
+                return error(401,{
+                    message: "Invoice has no chosen date"
+                })
+            }
 
             return { success: true }
         }
@@ -51,7 +56,7 @@ export const actions = {
         }
 
         const { invoiceData } = await request.json()
-            if(typeof !invoiceData){
+            if(!invoiceData){
                 return error(400, {
                 message: "Incomplete or invalid properties in request body, check (invoiceData)"
             })
