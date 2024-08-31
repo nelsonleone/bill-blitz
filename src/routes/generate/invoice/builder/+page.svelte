@@ -39,6 +39,10 @@
     let edittedWithoutErrs : null | boolean = null;
 
     async function captureSectionAsImage() {
+        if(browser) {
+            if(window.innerWidth < 1020)
+            document?.getElementById("viewport")?.setAttribute("content", "width=1200px")
+        }
         const section = document.getElementById("builder")
 
         if(section){           
@@ -57,6 +61,9 @@
             }, 3000)
         }
 
+        if(window.innerWidth < 1024) {
+            document?.getElementById("viewport")?.setAttribute("content", "width=device-width, initial-scale=1")
+        }
     }
 
     async function downloadImage(isDraft:boolean = false, shouldDownload: boolean = true) {
