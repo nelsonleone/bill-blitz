@@ -50,6 +50,7 @@
   <title>{pageTitle}</title>
   <meta name="description" content={pageDescription} />
   <meta property="og:title" content={pageTitle} />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta property="og:description" content={pageDescription} />
   <meta property="og:type" content="website" />
   <meta property="og:url" content={$page.url.href} />

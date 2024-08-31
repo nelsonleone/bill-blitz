@@ -41,17 +41,16 @@
     async function captureSectionAsImage() {
         const section = document.getElementById("builder")
 
-        if(section){
-            const canvas = await html2canvas(section, {
-                scale: 1,
-                allowTaint : true,
-                useCORS: true,
-                scrollX: 0,
-                scrollY: 0
-            })
-    
-           
-            setTimeout(() => {
+        if(section){           
+            setTimeout(async() => {
+                const canvas = await html2canvas(section, {
+                    scale: 1,
+                    allowTaint : true,
+                    useCORS: true,
+                    scrollX: 0,
+                    scrollY: 0
+                })
+
                 downloadUrl = canvas.toDataURL('image/png')
                 building = false;
                 showDownloadDialog = true;
