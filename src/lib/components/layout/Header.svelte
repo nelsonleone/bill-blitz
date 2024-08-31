@@ -14,6 +14,8 @@
     import { alertStore, showNav } from "../../../store";
     import { handleHideNavOnNavigation } from "$lib/helperFns/handleHideNavOnNavigation";
     import { AlertSeverity, Breapoints } from "../../../enums";
+    import { goto } from "$app/navigation";
+    import DeleteAccountPrompt from "../modals/DeleteAccountPrompt.svelte";
 
     export let beenAuthenticated;
     export let supabase : SupabaseClient;
@@ -21,15 +23,38 @@
 
     let windowInnerWidth = Breapoints.Desktop;
     let scrolledIn:boolean;
-
+    let showDeleteAccountPrompt = false;
+    let deletingAccount = false;
+    let showUserActionMenu = false;
+    let menuRef: HTMLElement | null = null;
+    
     $: activeUrl = $page.url.pathname;
-
+    
     $: {
         if(browser){
             handleHideNavOnNavigation($page.url.pathname)
         }
     }
 
+    const handleClickOutside = (event:MouseEvent) => {
+        if (menuRef && !menuRef.contains(event.target as Node)) {
+            showUserActionMenu = false;
+        }
+    }
+
+    const handleCloseUserActionMenuOnScroll = () => {
+        showUserActionMenu = false;
+    }
+    
+    onMount(() => {
+        document.addEventListener("click", handleClickOutside)
+        document.addEventListener("scroll", handleCloseUserActionMenuOnScroll)
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside)
+            document.removeEventListener("scroll", handleCloseUserActionMenuOnScroll)
+        }
+    })
 
     const handleScroll = () => {
         if(!browser)return;
@@ -79,6 +104,48 @@
         window.location.reload()
     }
 
+    const handleDeleteAccount = async () => {
+        const user_id = (await supabase.auth.getUser()).data.user?.id;
+
+        if (user_id) {
+            try {
+                deletingAccount = true;
+                // Delete the user's account
+                await supabase.rpc('delete_user')
+
+                const { error: invoiceError } = await supabase
+                    .from('user_invoices')
+                    .delete()
+                    .eq('user_id', user_id)
+
+                if (invoiceError) {
+                    throw new Error("Error deleting user invoices: " + invoiceError.message)
+                }
+
+                await supabase.auth.signOut()
+
+
+                alertStore.set({
+                    mssg: "Your account and all related invoices have been deleted",
+                    severity: AlertSeverity.SUCCESS
+                })
+
+                goto("/")
+
+            } catch (err:any) {
+                alertStore.set({
+                    mssg: err.message || "Error Deleting Account",
+                    severity: AlertSeverity.ERROR
+                })
+            }
+
+            finally{
+                deletingAccount = false;
+            }
+        }
+    }
+
+
 </script>
 
 
@@ -119,27 +186,48 @@
         <div class="flex items-center gap-3">
             <ul>
                 {#if beenAuthenticated}
-                    <div>
-                        <DropdownMenu.Root>
-                            <DropdownMenu.Trigger>
+                    <div bind:this={menuRef}>
+                        <DeleteAccountPrompt 
+                           {handleDeleteAccount}
+                           {deletingAccount}
+                           on:setShowDeleteAccountPrompt={(e) => showDeleteAccountPrompt = e.detail}
+                           {showDeleteAccountPrompt}
+                        />
+
+                        
+                        <div class="relative">
+                            <button on:click={() => showUserActionMenu = !showUserActionMenu}>
                                 <UserAvatar user={user} />
-                            </DropdownMenu.Trigger>
-                           
-                            <DropdownMenu.Content class="absolute z-50 bg-emerald-900 rounded-md text-base-color1 shadow-2xl px-3 pt-8 pb-4">
-                              <DropdownMenu.Item class="flex items-center gap-4 mb-4">
-                                  <Icon class="text-2xl" icon="mage:email" />
-                                  <span>{user?.user_metadata.display_name || user?.user_metadata.full_name}</span>
-                              </DropdownMenu.Item>
-                              <DropdownMenu.Item class="flex items-center gap-4">
-                                  <Icon class="text-2xl" icon="zondicons:user" />
-                                  <span>{user?.email}</span>
-                              </DropdownMenu.Item>
-                              <DropdownMenu.Item>
-                                  <CustomButton on:click={handleSignOut} styles="bg-primary-accent-color3 my-6 py-3 h-12 text-base-color1 w-52 mx-auto hover:opacity-80">Sign Out</CustomButton>
-                              </DropdownMenu.Item>
-                              <button class="font-medium text-center mx-auto block hover:underline focus:underline">Delete Account</button>
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Root>
+                            </button>
+                        
+                            {#if showUserActionMenu}
+                                <div class="absolute z-50 bg-emerald-900 rounded-md min-w-fit -translate-x-52 mx-auto text-base-color1 shadow-2xl px-3 pt-8 pb-4">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <Icon class="text-2xl" icon="mage:email" />
+                                        <span>{user?.user_metadata.display_name || user?.user_metadata.full_name}</span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <Icon class="text-2xl" icon="zondicons:user" />
+                                        <span>{user?.email}</span>
+                                    </div>
+                                    <div class="flex justify-center my-6">
+                                        <CustomButton on:click={handleSignOut} styles="bg-primary-accent-color3 py-3 h-12 text-base-color1 w-52 hover:opacity-80">
+                                            Sign Out
+                                        </CustomButton>
+                                    </div>
+                                    <button 
+                                        disabled={deletingAccount}
+                                        on:click={() => {
+                                            showDeleteAccountPrompt = true;
+                                            showUserActionMenu = false;
+                                        }} 
+                                        class="font-medium text-center mx-auto block hover:underline focus:underline"
+                                    >
+                                        Delete Account
+                                    </button>
+                                </div>
+                            {/if}
+                        </div>                        
                     </div>
                   {:else}
                   <li>
