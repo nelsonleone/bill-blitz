@@ -23,15 +23,15 @@
 
         <div class="flex justify-between items-start pb-1/2">
             <div class="mb-8">
-                <h2 class="text-base font-semibold mb-2">ISSUED TO :</h2>
-                <p class="text-base">{invoiceData.billTo.name}</p>
-                <p class="text-base">{invoiceData.billTo.contactInfo?.address}</p>
-                <p class="text-base">{invoiceData.billTo.contactInfo?.emailAddress}</p>
-                <p class="text-base">{invoiceData.billTo.contactInfo?.phoneNumber}</p>
+                <h2 class="text-lg font-semibold mb-2">ISSUED TO :</h2>
+                <p class="text-lg">{invoiceData.billTo.name}</p>
+                <p class="text-lg">{invoiceData.billTo.contactInfo?.address}</p>
+                <p class="text-lg">{invoiceData.billTo.contactInfo?.emailAddress}</p>
+                <p class="text-lg">{invoiceData.billTo.contactInfo?.phoneNumber}</p>
             </div>
             <div class="grid grid-rows-[2em] grid-cols-1">
-                <p class="text-base font-semibold mb-4">INVOICE NO: <span class="ms-4 text-base font-normal">{invoiceData.invoiceData.invoiceNumber}</span></p>
-                <p class="text-base font-semibold">DATE: <span class="ms-4 text-base font-normal">{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
+                <p class="text-lg font-semibold mb-4">INVOICE NO: <span class="ms-4 text-lg font-normal">{invoiceData.invoiceData.invoiceNumber}</span></p>
+                <p class="text-lg font-semibold">DATE: <span class="ms-4 text-lg font-normal">{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
             </div>
         </div>
         <Table divClass="mt-20 relative text-[#3D3B3A]">
@@ -99,13 +99,13 @@
         <div class="flex {invoiceData.accountDetails ? "justify-between" : "justify-end"} mt-20 mb-10">
             {#if invoiceData.accountDetails}
                 <div class="">
-                    <h2 class="text-base font-semibold mb-2">BANK DETAILS</h2>
+                    <h2 class="text-lg font-semibold mb-2">BANK DETAILS</h2>
                     <p class="text-lg">{@html invoiceData.accountDetails.replace(/\n/g, '<br/>')}</p>
                 </div>
             {/if}
         
             <div class="">
-                <p class="text-base font-semibold">THANK YOU</p>
+                <p class="text-lg font-semibold">THANK YOU</p>
                 {#if invoiceData.signature && invoiceData.signature?.length}
                     <div class="relative overflow-hidden">
                         {#each invoiceData.signature as layer}
