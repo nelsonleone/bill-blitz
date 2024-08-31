@@ -8,7 +8,7 @@
      
 
 ### *Description*
-    A versatile billing app that enables users to quickly create professional invoices using elegant templates and generate various types of receipts with ease.
+A versatile billing app that enables users to quickly create professional invoices using elegant templates and generate various types of receipts with ease.
      
 
 ### *Built With*
