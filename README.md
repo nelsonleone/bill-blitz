@@ -1,5 +1,4 @@
-# GIGL-C
-## GIG LOGISTICS CLONE
+# BILL-BLITZ
 
 ### *Screenshot*
 ![Bill-Blitz](https://github.com/user-attachments/assets/ffaaf996-bdd6-41dc-bc33-4fad0c6bad71)
