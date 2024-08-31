@@ -40,7 +40,7 @@
 
     async function captureSectionAsImage() {
         if(browser) {
-            if(window.innerWidth < 1020)
+            if(screen.width < 1020)
             document?.getElementById("viewport")?.setAttribute("content", "width=1200px")
         }
         const section = document.getElementById("builder")
@@ -61,7 +61,7 @@
             }, 3000)
         }
 
-        if(window.innerWidth < 1024) {
+        if(screen.width < 1024) {
             document?.getElementById("viewport")?.setAttribute("content", "width=device-width, initial-scale=1")
         }
     }
