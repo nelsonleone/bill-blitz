@@ -29,6 +29,7 @@
 		"@internationalized/date": "^3.5.5",
 		"@supabase/ssr": "^0.3.0",
 		"@supabase/supabase-js": "^2.43.4",
+		"@sveltejs/adapter-vercel": "^5.4.3",
 		"@vime/core": "^5.4.1",
 		"@vime/svelte": "^5.4.1",
 		"autoprefixer": "^10.4.19",
