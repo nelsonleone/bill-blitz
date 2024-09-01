@@ -35,6 +35,7 @@
 		"autoprefixer": "^10.4.19",
 		"bcrypt": "^5.1.1",
 		"bits-ui": "^0.21.9",
+		"cssnano": "^7.0.5",
 		"date-fns": "^3.6.0",
 		"filepond": "^4.31.1",
 		"filepond-plugin-file-validate-size": "^2.2.8",
