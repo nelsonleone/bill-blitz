@@ -28,7 +28,7 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
             return JSON.stringify(data.session)
           },
         },
-    })
+    }) 
 
     const {
         data: { session },
