@@ -25,9 +25,6 @@
         const isStoreEmpty = invoiceData || 
         (typeof $newInvoiceDataStore === "object" && Object.keys(invoiceData || {}).length === 0) || 
         !selectedTemplate ? true : false;
-
-        
-        console.log(editMode,invoiceData)
     }
 
 
@@ -57,11 +54,11 @@
                 downloadUrl = canvas.toDataURL('image/png')
                 building = false;
                 showDownloadDialog = true;
+        
+                if(screen.width < 1024) {
+                    document?.getElementById("viewport")?.setAttribute("content", "width=device-width, initial-scale=1")
+                }
             }, 3000)
-        }
-
-        if(screen.width < 1024) {
-            document?.getElementById("viewport")?.setAttribute("content", "width=device-width, initial-scale=1")
         }
     }
 
