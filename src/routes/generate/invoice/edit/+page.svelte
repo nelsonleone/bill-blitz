@@ -8,14 +8,18 @@
     import WhiteSimple from "$lib/templates/templateAsComponents/WhiteSimple.svelte";
     import InterwindLoader from "$lib/statics-assets/interwind-loader.svg";
     import { editInvoiceDataStore } from "../../../../store";
+    import { browser } from "$app/environment";
 
     let submitting = false;
     let Template : typeof BlueMinimalist | typeof WhiteSimple | typeof BlackWhiteMinimalist | null;
 
-    if($editInvoiceDataStore && $editInvoiceDataStore.invoice_data){
-        Template = getTemplate($editInvoiceDataStore.invoice_data.templateInUse)
-    }else{
-        goto("/generate/invoice")
+
+    if(browser){
+        if($editInvoiceDataStore && $editInvoiceDataStore.invoice_data){
+            Template = getTemplate($editInvoiceDataStore.invoice_data.templateInUse)
+        }else{
+            goto("/generate/invoice")
+        }
     }
 
 </script>

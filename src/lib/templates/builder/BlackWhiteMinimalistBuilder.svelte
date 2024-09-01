@@ -5,116 +5,346 @@
     import type { IBasicInvoiceData } from "../../../types/types";
     import { formatCurrency } from "$lib/helperFns/formatAmount";
 
-    export let invoiceData : IBasicInvoiceData;
-
+    export let invoiceData: IBasicInvoiceData;
 </script>
 
-
-<main id="builder" class="py-8 px-20 font-open-sans bg-[#fff] max-w-[250mm] min-w-[250mm] min-h-screen font-normal relative z-10 text-[#3D3B3A]">
+<main id="builder">
     <div>
-        <div class="flex mt-8 mb-24 justify-center items-center flex-col">
+        <div class="header">
             {#if invoiceData.logo}
-                <img src={invoiceData.logo} alt="Company Logo" class="w-40 mb-4">
+                <img src={invoiceData.logo} alt="Company Logo" class="logo">
             {/if}
             {#if invoiceData.logoText}
-               <h1 class="text-4xl font-bold">{invoiceData.logoText}</h1>
+               <h1 class="logo-text">{invoiceData.logoText}</h1>
             {/if}
         </div>
 
-        <div class="flex justify-between items-start pb-1/2">
-            <div class="mb-8">
-                <h2 class="text-lg font-semibold mb-2">ISSUED TO :</h2>
-                <p class="text-lg">{invoiceData.billTo.name}</p>
-                <p class="text-lg">{invoiceData.billTo.contactInfo?.address}</p>
-                <p class="text-lg">{invoiceData.billTo.contactInfo?.emailAddress}</p>
-                <p class="text-lg">{invoiceData.billTo.contactInfo?.phoneNumber}</p>
+        <div class="info">
+            <div class="recipient-info">
+                <h2>ISSUED TO :</h2>
+                <p>{invoiceData.billTo.name}</p>
+                <p>{invoiceData.billTo.contactInfo?.address}</p>
+                <p>{invoiceData.billTo.contactInfo?.emailAddress}</p>
+                <p>{invoiceData.billTo.contactInfo?.phoneNumber}</p>
             </div>
-            <div class="grid grid-rows-[2em] grid-cols-1">
-                <p class="text-lg font-semibold mb-4">INVOICE NO: <span class="ms-4 text-lg font-normal">{invoiceData.invoiceData.invoiceNumber}</span></p>
-                <p class="text-lg font-semibold">DATE: <span class="ms-4 text-lg font-normal">{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
+            <div class="invoice-details">
+                <p>INVOICE NO: <span>{invoiceData.invoiceData.invoiceNumber}</span></p>
+                <p>DATE: <span>{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
             </div>
         </div>
-        <Table divClass="mt-20 relative text-[#3D3B3A]">
-            <TableHead class="h-10 p-2 text-[#3D3B3A] font-semibold">
-                <TableHeadCell class="text-left py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">DESCRIPTION</TableHeadCell>
-                <TableHeadCell class="text-center py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">UNIT PRICE</TableHeadCell>
-                <TableHeadCell class="text-center py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">QTY</TableHeadCell>
-                <TableHeadCell class="text-right py-2 px-8 text-sm h-8 pb-5 bg-[#E3DCD4]">AMOUNT</TableHeadCell>
-            </TableHead>
-                
-            <TableBody tableBodyClass="divide-y">
-                {#if invoiceData.invoiceData.items?.length > 0}
-                    {#each invoiceData.invoiceData.items as item, i (i)}
-                     <TableBodyRow class="border-none bg-transparent lowercase text-[#3D3B3A]">
-                        <TableBodyCell class="py-2 px-8 text-lg">{item.description}</TableBodyCell>
-                        <TableBodyCell class="py-2 px-8 text-lg text-center">{item.price}</TableBodyCell>
-                        <TableBodyCell class="py-2 px-8 text-lg text-center">{item.quantity}</TableBodyCell>
-                        <TableBodyCell class="py-2 px-8 text-lg text-left flex justify-end items-center">
-                            <CurrencyIcon styles="text-lg" currency={invoiceData.currency} />
-                           <span> {item.amount}</span>
-                        </TableBodyCell>
-                     </TableBodyRow>
-                    {/each}
-                {/if}
-            </TableBody>
-        </Table>  
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr class="table-head">
+                        <th class="table-head-cell description">DESCRIPTION</th>
+                        <th class="table-head-cell unit-price">UNIT PRICE</th>
+                        <th class="table-head-cell qty">QTY</th>
+                        <th class="table-head-cell amount">AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    {#if invoiceData.invoiceData.items?.length > 0}
+                        {#each invoiceData.invoiceData.items as item, i (i)}
+                        <tr class="table-body-row">
+                            <td class="table-body-cell description">{item.description}</td>
+                            <td class="table-body-cell unit-price">{formatCurrency(item.price || 0)}</td>
+                            <td class="table-body-cell qty">{item.quantity}</td>
+                            <td class="table-body-cell amount">
+                                <span>{formatCurrency(item.amount || 0)}</span>
+                            </td>
+                        </tr>
+                        {/each}
+                    {/if}
+                </tbody>
+            </table>
+        </div> 
     
-        <div class="my-6">
+        <div class="summary">
             {#if invoiceData.subTotal}
-                <div class="flex justify-between items-center px-6">
-                    <p class="font-semibold">SUBTOTAL</p>
-                    <p class="font-semibold text-lg">
+                <div class="subtotal">
+                    <p>SUBTOTAL</p>
+                    <p class="subtotal-amount">
                         {formatCurrency(invoiceData.subTotal)}
                     </p>
                 </div>
             {/if}
 
-            <div class="flex flex-col items-end">
+            <div class="additional-details">
                 {#if invoiceData.tax}
-                <div class="flex gap-20 text-lg items-center text-right mt-10 mb-3 px-3">
+                <div class="tax">
                     <p>Tax</p>
-                    <span>
-                        {invoiceData.tax}%
-                    </span>
+                    <span>{invoiceData.tax}%</span>
                 </div>
-            {/if}
-            {#if invoiceData.discount}
-                <div class="flex gap-20 text-lg items-center text-right mb-3 px-3">
+                {/if}
+                {#if invoiceData.discount}
+                <div class="discount">
                     <p>Discount</p>
-                    <p class="relative z-10 font-semibold text-lg">
+                    <p class="discount-amount">
                         {formatCurrency(invoiceData.discount)}
                     </p>
                 </div>
-            {/if}
+                {/if}
             </div>
 
-            <div class="relative z-10 font-semibold bg-[#E3DCD4] flex justify-end my-4 min-h-10 h-10 p-2 pb-6 gap-16 items-center">
-                <p class="relative z-10 font-semibold text-lg">TOTAL</p>
-                <p class="relative z-10 font-semibold text-lg">
+            <div class="total">
+                <p>TOTAL</p>
+                <p class="total-amount">
                     {formatCurrency(invoiceData.total || 0)}
                 </p>
             </div>
         </div>
 
-        <div class="flex {invoiceData.accountDetails ? "justify-between" : "justify-end"} mt-20 mb-10">
+        <div class="footer">
             {#if invoiceData.accountDetails}
-                <div class="">
-                    <h2 class="text-lg font-semibold mb-2">BANK DETAILS</h2>
-                    <p class="text-lg">{@html invoiceData.accountDetails.replace(/\n/g, '<br/>')}</p>
+                <div class="bank-details">
+                    <h2>BANK DETAILS</h2>
+                    <p>{@html invoiceData.accountDetails.replace(/\n/g, '<br/>')}</p>
                 </div>
             {/if}
         
-            <div class="">
-                <p class="text-lg font-semibold">THANK YOU</p>
+            <div class="thank-you">
+                <p>THANK YOU</p>
                 {#if invoiceData.signature && invoiceData.signature?.length}
-                    <div class="relative overflow-hidden">
+                    <div class="signature">
                         {#each invoiceData.signature as layer}
                             <Signature {layer} />
                         {/each}
                     </div>
                 {/if}
-                <p class="text-lg pt-4 border-t font-medium uppercase font-playwrite">{invoiceData.issuer.name}</p>
+                <p class="issuer-name">{invoiceData.issuer.name}</p>
             </div>
         </div>
     </div>
 </main>
+
+<style>
+    #builder {
+        font-family: 'Open Sans', sans-serif;
+        padding: 2rem 5rem;
+        background-color: #fff;
+        max-width: 250mm;
+        min-width: 250mm;
+        min-height: 100vh;
+        color: #3D3B3A;
+    }
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 2rem;
+        margin-bottom: 6rem;
+    }
+
+    .logo {
+        width: 10rem;
+        margin-bottom: 1rem;
+    }
+
+    .logo-text {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-bottom: 1.5em;
+    }
+
+    .recipient-info {
+        margin-bottom: 2rem;
+    }
+
+    .recipient-info h2 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .recipient-info p {
+        font-size: 1.125rem;
+    }
+
+    .invoice-details {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 2em;
+    }
+
+    .invoice-details p {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .invoice-details span {
+        margin-left: 1rem;
+        font-size: 1.125rem;
+        font-weight: normal;
+    }
+
+    .table-container {
+        margin-top: 5rem;
+        color: #3D3B3A;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    thead {
+        background-color: #E3DCD4;
+    }
+
+    .table-head {
+        height: 2.5rem;
+        padding: 0.5rem;
+        color: #3D3B3A;
+        font-weight: 600;
+    }
+
+    .table-head-cell {
+        padding: 0.5rem 2rem;
+        font-size: 0.875rem;
+        white-space: nowrap;
+    }
+
+    .table-head-cell.description {
+        text-align: left;
+        width: 40%;
+    }
+
+    .table-head-cell.unit-price,
+    .table-head-cell.qty {
+        text-align: center;
+        width: 15%;
+    }
+
+    .table-head-cell.amount {
+        text-align: right;
+        width: 30%;
+    }
+
+    .table-body {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-body-row {
+        background-color: transparent;
+        color: #3D3B3A;
+    }
+
+    .table-body-cell {
+        padding: 0.5rem 2rem;
+        font-size: 1.125rem;
+    }
+
+    .table-body-cell.description {
+        text-align: left;
+    }
+
+    .table-body-cell.unit-price,
+    .table-body-cell.qty {
+        text-align: center;
+    }
+
+    .table-body-cell.amount {
+        text-align: right;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .summary {
+        margin: 1.5rem 0;
+    }
+
+    .subtotal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1.5rem;
+    }
+
+    .subtotal-amount {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    .additional-details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .tax,
+    .discount {
+        display: flex;
+        gap: 5rem;
+        font-size: 1.125rem;
+        align-items: center;
+        text-align: right;
+        margin: 1rem 0;
+        padding: 0 0.75rem;
+    }
+
+    .discount-amount {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    .total {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        background-color: #E3DCD4;
+        padding: 0.5rem;
+        margin: 1rem 0;
+        min-height: 2.5rem;
+        height: 2.5rem;
+        gap: 4rem;
+    }
+
+    .total-amount {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    .footer {
+        display: flex;
+        justify-content: space-between;
+        margin: 2rem 0;
+    }
+
+    .bank-details {
+        font-size: 1.125rem;
+    }
+
+    .thank-you {
+        text-align: right;
+    }
+
+    .thank-you p {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    .signature {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .issuer-name {
+        font-family: "Great Vibes", cursive;
+        padding-top: 1rem;
+        border-top: 1px solid #000;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+</style>
