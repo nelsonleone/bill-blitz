@@ -219,7 +219,7 @@
 
   .bill-to-name {
     font-weight: 500;
-    font-size: 1.125rem;
+    font-size: 1.2rem;
   }
 
   .table-container {
@@ -237,6 +237,7 @@
   th {
     font-weight: bold;
     padding-inline: 24px;
+    font-size: 1.1rem;
     padding-top: .5em;
     padding-bottom: 1.5em;
     text-align: center;
@@ -247,6 +248,7 @@
   }
 
   td {
+    font-size: 1.1rem;
     padding: 12px 24px;
     text-align: center;
     white-space: nowrap;

@@ -47,7 +47,7 @@
                 const canvas = await html2canvas(section, {
                     allowTaint : true,
                     scrollX: 0,
-                    scale: 1.5,
+                    scale: 2,
                     scrollY: 0
                 })
 
