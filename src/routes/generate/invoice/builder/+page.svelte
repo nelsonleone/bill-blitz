@@ -48,7 +48,6 @@
         if(section){           
             setTimeout(async() => {
                 const canvas = await html2canvas(section, {
-                    scale: 2,
                     allowTaint : true,
                     useCORS: true,
                     scrollX: 0,
