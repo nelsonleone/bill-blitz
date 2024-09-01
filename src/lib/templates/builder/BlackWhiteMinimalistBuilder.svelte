@@ -121,7 +121,7 @@
 <style>
     #builder {
         font-family: 'Open Sans', sans-serif;
-        padding: 2rem 5rem;
+        padding: 2rem 6rem;
         background-color: #fff;
         max-width: 250mm;
         min-width: 250mm;
@@ -210,6 +210,7 @@
 
     .table-head-cell {
         padding: 0.5rem 2rem;
+        padding-bottom: 1.5em;
         font-size: 0.875rem;
         white-space: nowrap;
     }
@@ -269,12 +270,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 1.5rem;
+        padding-inline: .5em 1.5em;
+        font-weight: bold;
     }
 
     .subtotal-amount {
         font-size: 1.125rem;
-        font-weight: 600;
     }
 
     .additional-details {
@@ -305,6 +306,7 @@
         align-items: center;
         background-color: #E3DCD4;
         padding: 0.5rem;
+        padding-bottom: 1.5em;
         margin: 1rem 0;
         min-height: 2.5rem;
         height: 2.5rem;
@@ -319,7 +321,8 @@
     .footer {
         display: flex;
         justify-content: space-between;
-        margin: 2rem 0;
+        margin-top: 7em;
+        margin-bottom: 3em;
     }
 
     .bank-details {
@@ -341,7 +344,9 @@
     }
 
     .issuer-name {
-        font-family: "Great Vibes", cursive;
+        font-family: "Sofia", cursive;
+        font-weight: 400;
+        font-style: normal;
         padding-top: 1rem;
         border-top: 1px solid #000;
         font-weight: 500;

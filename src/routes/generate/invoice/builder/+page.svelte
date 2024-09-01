@@ -22,12 +22,8 @@
 
 
     if (browser) {
-        const isStoreEmpty = invoiceData || 
-        (typeof $newInvoiceDataStore === "object" && Object.keys(invoiceData || {}).length === 0) || 
-        !selectedTemplate ? true : false;
-
-        if (isStoreEmpty) {
-           console.log("heheh")
+        if(!invoiceData || typeof invoiceData !== "object" || !selectedTemplate){
+            window.history.back()
         }
     }
 
@@ -51,6 +47,7 @@
                 const canvas = await html2canvas(section, {
                     allowTaint : true,
                     scrollX: 0,
+                    scale: 1.5,
                     scrollY: 0
                 })
 

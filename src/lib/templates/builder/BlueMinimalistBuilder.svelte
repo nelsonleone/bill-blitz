@@ -1,95 +1,281 @@
+
+
 <script lang="ts">
     import Signature from "$lib/components/inputs/Signature.svelte";
     import { formatCurrency } from "$lib/helperFns/formatAmount";
     import type { IBasicInvoiceData } from "../../../types/types";
-
-    export let invoiceData : IBasicInvoiceData;
-
-</script>
-
-
-<main id="builder" class="font-open-sans font-normal w-full max-w-[250mm] min-w-[250mm] min-h-screen relative z-10 text-[#475C7B] bg-[#E7EEF8] py-8">
-    <div class="w-full">
-        <div class="mt-10 flex justify-end flex-col text-right items-end px-16">
+  
+    export let invoiceData: IBasicInvoiceData;
+  </script>
+  
+  <main id="builder">
+    <div>
+        <div class="header">
             {#if invoiceData.logo}
-              <img src={invoiceData.logo} alt="logo" width={140} height={140} loading="eager" />
+                <img src={invoiceData.logo} alt="logo" width={140} height={140} loading="eager" />
             {/if}
             {#if invoiceData.logoText}
-              <h2 class="font-medium text-2xl">{invoiceData.logoText}</h2>
+                <h2>{invoiceData.logoText}</h2>
             {/if}
         </div>
-
-        <div class="p-8 px-16">
-            <h1 class="text-[5em] font-bold w-full basis-full relative">INVOICE</h1>
-            <div class="bg-[#475C7B] w-full h-[5px] mt-2"></div>            
+  
+        <div class="invoice-title">
+            <h1>INVOICE</h1>
+            <div class="title-underline"></div>
         </div>
-        <div class="flex justify-between my-8 px-16">
+  
+        <div class="invoice-info">
             <div>
-                <p class="text-lg">ACCUSTOMED TO:</p>
-                <h2 class="font-semibold uppercase text-3xl mb-5">{invoiceData.billTo.name}</h2>
-                <p class="mb-2">{invoiceData.billTo.contactInfo?.phoneNumber}</p>
-                <p class="mb-2">{invoiceData.billTo.contactInfo?.emailAddress}</p>
-                <p class="mb-2">{invoiceData.billTo.contactInfo?.address}</p>
+                <p>ACCUSTOMED TO:</p>
+                <h2>{invoiceData.billTo.name}</h2>
+                <p>{invoiceData.billTo.contactInfo?.phoneNumber}</p>
+                <p>{invoiceData.billTo.contactInfo?.emailAddress}</p>
+                <p>{invoiceData.billTo.contactInfo?.address}</p>
             </div>
-            <div class="text-right">
-                <p class="text-lg flex justify-between gap-4">DATE: <span>{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
+            <div class="date">
+                <p>DATE: <span>{invoiceData.invoiceData.date?.toLocaleDateString()}</span></p>
             </div>
         </div>
-
+  
         <div class="relative">
-            <div class="px-16">
-                <table class="min-w-full divide-y divide-gray-200 border-2 border-[#475C7B]">
-                    <thead class="bg-[#475C7B] text-base-color1">
+            <div class="table-container">
+                <table>
+                    <thead>
                         <tr>
-                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">DESCRIPTION</th>
-                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">QTY</th>
-                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">PRICE</th>
-                            <th class="px-6 pt-3 pb-6 text-center text-lg font-semibold uppercase border-t border-b">AMOUNT</th>
+                            <th class="description">DESCRIPTION</th>
+                            <th>QTY</th>
+                            <th>PRICE</th>
+                            <th>AMOUNT</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody>
                         {#if invoiceData.invoiceData.items.length}
-                        {#each invoiceData.invoiceData.items as item, i (i)}              
-                            <tr class="">
-                                <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.description}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.quantity}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.price}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center border-2 border-[#475C7B]">{item.amount}</td>
-                            </tr>
+                            {#each invoiceData.invoiceData.items as item, i (i)}
+                                <tr>
+                                    <td class="description">{item.description}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>{item.price}</td>
+                                    <td>{item.amount}</td>
+                                </tr>
                             {/each}
                         {/if}
                     </tbody>
-                </table>    
+                </table>
             </div>
-            <div class="mt-10 px-16 pb-40 flex justify-between">
-                <div class="flex justify-between">
-                    <div>
-                        {#if invoiceData.tax}
-                            <p class="flex uppercase font-bold text-xl gap-4">Tax %: <span>{invoiceData.tax}</span></p>
-                        {/if}
-                        {#if invoiceData.discount}
-                            <p class="flex uppercase font-bold items-center text-xl gap-4">DISCOUNT: <span class="flex items-center">{formatCurrency(invoiceData.discount)}</span></p>
-                        {/if}
-                        {#if invoiceData.subTotal}
-                            <p class="flex uppercase font-bold items-center text-xl gap-4">SUB TOTAL: <span class="flex items-center">{formatCurrency(invoiceData.subTotal)}</span></p>
-                        {/if}
-                        <p class="flex uppercase font-bold items-center text-xl gap-4">TOTAL: <span class="flex items-center">{formatCurrency(invoiceData.total || 0)}</span></p>
-                    </div>
+    
+            <div class="totals">
+                <div>
+                    {#if invoiceData.tax}
+                        <p>Tax %: <span>{invoiceData.tax}</span></p>
+                    {/if}
+                    {#if invoiceData.discount}
+                        <p>DISCOUNT: <span>{formatCurrency(invoiceData.discount)}</span></p>
+                    {/if}
+                    {#if invoiceData.subTotal}
+                        <p>SUB TOTAL: <span>{formatCurrency(invoiceData.subTotal)}</span></p>
+                    {/if}
+                    <p>TOTAL: <span>{formatCurrency(invoiceData.total || 0)}</span></p>
                 </div>
                 {#if invoiceData.signature?.length}
-                <div class="flex translate-y-16 justify-end">
-                    <div class="text-center relative">
-                        <div class="before:w-full before:left-0 before:h-1 before:rounded-md before:bg-[#475C7B] before:absolute before:block before:bottom-10">
+                    <div class="signature-container">
+                        <div class="signature">
                             {#each invoiceData.signature as layer}
                                 <Signature {layer} fill="#475C7B" />
                             {/each}
                         </div>
-                        <p class="text-lg w-48 mx-auto font-medium uppercase">{invoiceData.issuer.name}</p>
+                        <p>{invoiceData.issuer.name}</p>
                     </div>
-                </div>
                 {/if}
             </div>
-            <div class="absolute bottom-0 left-0 opacity-90 w-full h-[33em] -z-10 bg-[#CADCF7] transform translate-y-20 -skew-y-[20deg] origin-bottom-right"></div>
+            <div class="bg-shape"></div>
         </div>
     </div>
-</main>
+  </main>
+  
+  <style>
+    /* General layout */
+    #builder {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: normal;
+        width: 100%;
+        max-width: 250mm;
+        min-width: 250mm;
+        min-height: 100vh;
+        position: relative;
+        z-index: 10;
+        color: #475C7B;
+        background-color: #E7EEF8;
+        padding: 2rem 0;
+    }
+  
+    .relative {
+        position: relative;
+    }
+  
+    .header {
+        margin-top: 2.5rem;
+        display: flex;
+        justify-content: flex-end;
+        align-items: end;
+        flex-direction: column;
+        text-align: right;
+        padding-right: 4rem;
+    }
+  
+    .header h2 {
+        font-weight: 500;
+        font-size: 1.5rem;
+    }
+  
+    .invoice-title {
+        padding: 2rem 4rem;
+    }
+  
+    .invoice-title h1 {
+        font-size: 5em;
+        font-weight: bold;
+        margin: 0;
+    }
+  
+    .title-underline {
+        background-color: #475C7B;
+        height: 5px;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+  
+    .invoice-info {
+        display: flex;
+        justify-content: space-between;
+        margin: 2rem 4rem;
+    }
+  
+    .invoice-info h2 {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 2rem;
+        margin-bottom: 1.25rem;
+    }
+  
+    .invoice-info p:first-child{
+        font-size: 1.1rem;
+    }
+  
+    .date {
+        text-align: right;
+    }
+  
+    .date p {
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+  
+    /* Table styling */
+    .table-container {
+        padding: 0 4rem;
+    }
+  
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 2px solid #475C7B;
+    }
+  
+    th {
+        padding-inline: 1.5rem;
+        padding-top: 0.75em;
+        padding-bottom: 1.5em;
+        text-align: center;
+        font-size: 1.125rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-top: 1px solid #475C7B;
+        border-bottom: 1px solid #475C7B;
+        background-color: #475C7B;
+        color: #E7EEF8;
+    }
+  
+    td {
+        padding: 1rem;
+        text-align: center;
+        border: 2px solid #475C7B;
+        white-space: nowrap;
+    }
+  
+    .description {
+        text-align: left;
+    }
+  
+    /* Totals section */
+    .totals {
+        margin-top: 2.5rem;
+        padding: 0 4rem 10rem;
+        display: flex;
+        justify-content: space-between;
+    }
+  
+    .totals p {
+        font-size: 1.25rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+  
+    .signature-container {
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+        margin-top: 4rem;
+        transform: translateY(4rem);
+    }
+  
+    .signature {
+        position: relative;
+        text-align: center;
+        width: 12rem;
+        margin: 0 auto;
+    }
+  
+    .signature::before {
+        content: '';
+        width: 100%;
+        height: 1px;
+        background-color: #475C7B;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        border-radius: 0.25rem;
+    }
+  
+    .signature p {
+        font-size: 1.125rem;
+        text-transform: uppercase;
+        margin-top: 1rem;
+    }
+  
+    .signature-container p {
+        text-align: center;
+        width: 12rem;
+        margin-top: 1rem;
+        font-size: 1.125rem;
+        font-weight: 500;
+    }
+  
+    /* Background shape */
+    .bg-shape {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 33em;
+        background-color: #CADCF7;
+        transform: translateY(5rem) skewY(-20deg);
+        transform-origin: bottom right;
+        opacity: 0.9;
+        z-index: -10;
+    }
+</style>  
