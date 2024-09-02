@@ -12,7 +12,7 @@
   <div class="header">
     <div>
       {#if invoiceData.logo}
-        <img src={invoiceData.logo} alt="logo" class="logo" />
+        <img src={invoiceData.logo} alt="logo" width={120} height={120} class="logo" />
       {/if}
       {#if invoiceData.logoText}
         <h2 class="logo-text">{invoiceData.logoText}</h2>
@@ -94,13 +94,12 @@
   <div class="details-container">
 
       <div>
-          {#if invoiceData.accountDetails}
-              <div class="bank-details">
-              <h3>Bank Details:</h3>
-              <p>9382 West Lafayette Lane <br />
-                  Fuquay Varina, NC 27526</p>
-              </div>
-          {/if}
+        {#if invoiceData.accountDetails}
+        <div class="bank-details">
+            <h3>Bank Details:</h3>
+            <p>{@html invoiceData.accountDetails.replace(/\n/g, '<br/>')}</p>
+          </div>
+        {/if}
       </div>
 
       {#if invoiceData.signature?.length}
@@ -154,8 +153,8 @@
   }
 
   .logo {
-    width: 110px;
-    height: 110px;
+    width: 8em;
+    height: 8em;
   }
 
   .logo-text {
@@ -171,7 +170,7 @@
   }
 
   .contact-info-item {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     white-space: nowrap;
   }
 
@@ -195,6 +194,7 @@
   .invoice-number,
   .invoice-date {
     font-weight: bold;
+    font-size: 1.2rem;
   }
 
 
@@ -219,7 +219,7 @@
 
   .bill-to-name {
     font-weight: 500;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 
   .table-container {
@@ -237,7 +237,7 @@
   th {
     font-weight: bold;
     padding-inline: 24px;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     padding-top: .5em;
     padding-bottom: 1.5em;
     text-align: center;
@@ -269,7 +269,7 @@
 
   .tax,
   .discount {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 500;
     margin-top: 8px;
     display: flex;
@@ -308,11 +308,15 @@
 
   .bank-details {
     margin: 20px 0;
-    max-width: 45%;
+    max-width: 22em;
   }
 
   .bank-details h3 {
-      font-size: 1.2rem;
+    font-size: 1.3rem;
+  }
+
+  .bank-details p {
+    font-size: 1.2rem;
   }
 
   .signature-container div {
@@ -342,5 +346,9 @@
     padding: 32px 0;
     margin-top: 40px;
     margin-bottom: 24px;
+  }
+
+  .footer p{
+    font-size: 1.25rem;
   }
 </style>

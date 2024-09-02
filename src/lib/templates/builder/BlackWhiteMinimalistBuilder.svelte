@@ -159,13 +159,13 @@
     }
 
     .recipient-info h2 {
-        font-size: 1.125rem;
+        font-size: 1.2rem;
         font-weight: 600;
         margin-bottom: 0.5rem;
     }
 
     .recipient-info p {
-        font-size: 1.125rem;
+        font-size: 1.3rem;
     }
 
     .invoice-details {
@@ -175,14 +175,14 @@
     }
 
     .invoice-details p {
-        font-size: 1.125rem;
+        font-size: 1.3rem;
         font-weight: 600;
         margin-bottom: 1rem;
     }
 
     .invoice-details span {
         margin-left: 1rem;
-        font-size: 1.125rem;
+        font-size: 1.2rem;
         font-weight: normal;
     }
 
@@ -211,7 +211,7 @@
     .table-head-cell {
         padding: 0.5rem 2rem;
         padding-bottom: 1.5em;
-        font-size: 0.875rem;
+        font-size: 1rem;
         white-space: nowrap;
     }
 
@@ -243,7 +243,7 @@
 
     .table-body-cell {
         padding: 0.5rem 2rem;
-        font-size: 1.125rem;
+        font-size: 1.2rem;
     }
 
     .table-body-cell.description {
@@ -270,12 +270,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-inline: .5em 1.5em;
+        padding-inline: .5em 1em;
         font-weight: bold;
     }
 
     .subtotal-amount {
-        font-size: 1.125rem;
+        font-size: 1.2rem;
     }
 
     .additional-details {
@@ -288,15 +288,15 @@
     .discount {
         display: flex;
         gap: 5rem;
-        font-size: 1.125rem;
+        font-size: 1.2rem;
         align-items: center;
         text-align: right;
-        margin: 1rem 0;
+        margin: .5em 0;
         padding: 0 0.75rem;
     }
 
     .discount-amount {
-        font-size: 1.125rem;
+        font-size: 1.3rem;
         font-weight: 600;
     }
 
@@ -308,13 +308,13 @@
         padding: 0.5rem;
         padding-bottom: 1.5em;
         margin: 1rem 0;
-        min-height: 2.5rem;
-        height: 2.5rem;
+        min-height: 2.3rem;
+        height: 2.3rem;
         gap: 4rem;
     }
 
     .total-amount {
-        font-size: 1.125rem;
+        font-size: 1.3rem;
         font-weight: 600;
     }
 
@@ -326,7 +326,7 @@
     }
 
     .bank-details {
-        font-size: 1.125rem;
+        font-size: 1.2rem;
     }
 
     .thank-you {
@@ -334,7 +334,7 @@
     }
 
     .thank-you p {
-        font-size: 1.125rem;
+        font-size: 1.2rem;
         font-weight: 600;
     }
 
