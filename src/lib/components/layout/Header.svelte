@@ -158,7 +158,7 @@
         <ul class="hidden lg:flex h-44 lg:h-auto w-[47%] justify-end gap-12 text-primary-dark-blue">
             <li>
                 <DropdownMenu.Root>
-                    <DropdownMenu.Trigger class="font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 text-primary-dark-blue transition ease-linear duration-200">
+                    <DropdownMenu.Trigger class="text-primary-dark-blue font-medium drop-shadow-none hover:text-green-300 lg:hover:text-primary-accent-color2 transition ease-linear duration-200">
                         Generate
                     </DropdownMenu.Trigger>
                    
