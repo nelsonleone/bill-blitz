@@ -6,6 +6,7 @@
     import { goto } from "$app/navigation";
     import LoadingEllipse from "../../statics-assets/loading-ellipse2.svg"
     import { editInvoiceDataStore } from "../../../store";
+    import { browser } from "$app/environment";
 
     export let billType : "receipt" | "invoice"; 
     export let downloadImage : (isDraft: boolean, shouldDownload?: boolean) => void;
@@ -14,6 +15,12 @@
     export let edittedWithoutErrs : boolean | null;
 
     let editMode = $editInvoiceDataStore ? true : false;
+
+    const handleNavigateBack = () => {
+      if(browser){
+        window.location.href = "/generate/invoice"
+      }
+    }
 </script>
      
   
@@ -75,7 +82,7 @@
           </div>
 
           <Dialog.Close
-            on:click={() => goto("/generate/invoice")}
+            on:click={handleNavigateBack}
             class="absolute right-5 top-5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
             >
             <div>
