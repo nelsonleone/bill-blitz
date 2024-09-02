@@ -16,7 +16,7 @@
 
         <div class="flex justify-center items-center gap-4 mt-8 md:w-80 md:mx-auto">
             <CustomButton styles="bg-white p-2 rounded-3xl text-custom-dark-green transition duration-200 ease-in-out font-medium hover:bg-green-400 hover:text-base-color1" href="/generate">Create Bill</CustomButton>
-            <CustomButton styles="border border-base-color1 bg-transparent p-2 rounded-3xl transition duration-200 ease-in-out font-medium hover:border hover:border-green-400" href="/how-it-works">Learn More</CustomButton>
+            <CustomButton styles="border border-base-color1 bg-transparent p-2 rounded-3xl transition duration-200 ease-in-out font-medium hover:border hover:border-green-400" href="/about">Learn More</CustomButton>
         </div>
     </section>
 
