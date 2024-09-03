@@ -970,7 +970,7 @@
           behavior: "smooth",
         })
     }} type="reset" class="bg-transparent w-full p-0 text-stone-800 font-medium mb-16 hover:underline focus:underline transition flex items-center ease-in-out duration-200">
-        <span>To Top</span>
+        <span>To Top (Save)</span>
         <Icon icon="ep:top" aria-label="arrow up" />
     </button>
 
