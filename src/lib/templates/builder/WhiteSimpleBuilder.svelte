@@ -320,7 +320,8 @@
   }
 
   .signature-container div {
-    min-width: 10em;
+    min-width: 8em;
+    border-bottom: 1px solid #000;
   }
 
   .signature-container {
@@ -335,7 +336,6 @@
     font-weight: 500;
     font-size: 1.2rem;
     text-transform: uppercase;
-    border-top: 1px solid #000;
   }
 
   .footer {

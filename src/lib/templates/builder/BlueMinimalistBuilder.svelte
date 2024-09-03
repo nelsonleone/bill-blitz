@@ -135,6 +135,7 @@
         font-size: 5em;
         font-weight: bold;
         margin: 0;
+        margin-bottom: .5em;
     }
   
     .title-underline {
