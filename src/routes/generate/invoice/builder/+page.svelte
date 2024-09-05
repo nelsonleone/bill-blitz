@@ -146,7 +146,7 @@
 
 <div class="page p-0 md:p-0 px-0 py-0 lg:px-0 lg:py-0 overflow-hidden">
 
-    <div class="z-20 fixed top-0 bottom-0 left-0 right-0 m-auto h-full w-full bg-gray-100"></div>
+    <div class="z-20 fixed top-0 overflow-hidden bottom-0 left-0 right-0 m-auto h-full w-full bg-gray-100"></div>
     {#if building && Template}
         <BuilderIndicator />
         {:else if !building && showDownloadDialog}
