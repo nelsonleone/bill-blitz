@@ -3,12 +3,12 @@ export function generateInvoiceNumber(date: Date = new Date()): string {
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
 
-    const numArr = []
+    const str = ""
 
-    while (numArr.length < 3){
-        numArr.push(Math.floor(Math.random() * 9))
+    while (str.length < 3){
+        str.concat((Math.floor(Math.random() * 9)).toString())
     }
 
-    return `IN${year}${month}${day}-${numArr}`;
+    return `IN${year}${month}${day}-${str.trim()}`;
 }
   
