@@ -109,8 +109,8 @@
     let includeBankDetails = $editInvoiceDataStore?.invoice_data.accountDetails ? true : false;
     let useAutoTotalCalc = false;
     let includeTax = $editInvoiceDataStore?.invoice_data.tax !== undefined && $editInvoiceDataStore?.invoice_data.tax !== null;
-    let includesubTotal = $editInvoiceDataStore?.invoice_data.tax !== undefined && $editInvoiceDataStore?.invoice_data.tax !== null;
-    let includeDiscount = $editInvoiceDataStore?.invoice_data.tax !== undefined && $editInvoiceDataStore?.invoice_data.tax !== null;
+    let includesubTotal = $editInvoiceDataStore?.invoice_data.subTotal !== undefined && $editInvoiceDataStore?.invoice_data.subTotal !== null;
+    let includeDiscount = $editInvoiceDataStore?.invoice_data.discount !== undefined && $editInvoiceDataStore?.invoice_data.discount !== null;
     let editFooterText = $editInvoiceDataStore?.invoice_data.footerText ? true : false;
     let invoiceNumber : string = $editInvoiceDataStore?.invoice_data.invoiceData.invoiceNumber || "";
     let includeSignature = $editInvoiceDataStore?.invoice_data.signature && $editInvoiceDataStore?.invoice_data.signature?.length > 0 ? true : false;
@@ -916,7 +916,7 @@
           behavior: "smooth",
         })
     }} type="reset" class="bg-transparent w-full p-0 text-stone-800 font-medium mb-16 hover:underline focus:underline transition flex items-center ease-in-out duration-200">
-        <span>To Top</span>
+        <span>To Top (Save)</span>
         <Icon icon="ep:top" aria-label="arrow up" />
     </button>
 
