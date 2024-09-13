@@ -65,7 +65,7 @@
                 <div class="subtotal">
                     <p>SUBTOTAL</p>
                     <p class="subtotal-amount">
-                        {formatCurrency(invoiceData.subTotal)}
+                        {formatCurrency(invoiceData.subTotal,invoiceData.currency)}
                     </p>
                 </div>
             {/if}
@@ -81,7 +81,7 @@
                 <div class="discount">
                     <p>Discount</p>
                     <p class="discount-amount">
-                        {formatCurrency(invoiceData.discount)}
+                        {formatCurrency(invoiceData.discount,invoiceData.currency)}
                     </p>
                 </div>
                 {/if}
@@ -90,7 +90,7 @@
             <div class="total">
                 <p>TOTAL</p>
                 <p class="total-amount">
-                    {formatCurrency(invoiceData.total || 0)}
+                    {formatCurrency(invoiceData.total || 0,invoiceData.currency)}
                 </p>
             </div>
         </div>

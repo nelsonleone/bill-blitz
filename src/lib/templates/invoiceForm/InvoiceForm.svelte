@@ -24,7 +24,7 @@
     import { scale } from "svelte/transition";
     import { elasticIn } from "svelte/easing";
     import parsePhoneNumber from 'libphonenumber-js'
-    import { AlertSeverity, TemplateNames } from "../../../enums";
+    import { AlertSeverity, CurrencyEnum, TemplateNames } from "../../../enums";
     import ErrorPara from "$lib/components/prompts/ErrorPara.svelte";
     import { createEventDispatcher } from "svelte";
 
@@ -44,14 +44,17 @@
     let customerAddress: string; 
     let issuerPhoneNumber : string;
     let customerPhoneNumber : string;
-    let currency : ICurrency;
+    let currency :     {
+        value: CurrencyEnum.UnitedStates,
+        label: "US Dollar"
+    }
     let logoText : string;
     let tax : number;
     let subTotal : number;
     let total : number;
     let discount : number;
     let accountDetails : string;
-    let date : Date | undefined;  
+    let date : Date | undefined; 
     
 
     $: {
@@ -229,7 +232,7 @@
         }
         else if(invoiceItemsArr.length === 0 || (lastItem && lastItem.saved)){
             // Add a new item slot to the array
-            invoiceItemsArr = [...invoiceItemsArr, { amount: undefined, description: "", price: undefined, quantity: 1, saved: false }];
+            invoiceItemsArr = [...invoiceItemsArr, { amount: undefined, description: "", price: undefined, quantity: 1, saved: false }]
         }
     }
     
@@ -403,11 +406,13 @@
         }
     }
 
+    
+
 </script>
 
 <form in:scale={{ duration: 1000, delay: 2000, easing: elasticIn }} method="post" action="?/setInvoiceData" id="invoice-form" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 mt-16">
     <div class="mb-4">
-        <CurrenciesSelect bind:currency={currency} />
+        <CurrenciesSelect {currency} on:setCurrency={(e) => currency = e.detail} />
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
         <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-overpass w-fit h-fit">INVOICE</h2>
@@ -800,7 +805,19 @@
               disabled={!invoiceItemsArr.length}
               aria-labelledby="useAutoTotalCalc-label"
               class="peer inline-flex size-[25px] disabled:hover:cursor-not-allowed items-center justify-center rounded-md border border-stone-500 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40"
-              bind:checked={useAutoTotalCalc}
+              checked={useAutoTotalCalc}
+              onCheckedChange={(val) => {
+                const lastItem = invoiceItemsArr[invoiceItemsArr.length - 1]
+                if(lastItem && !lastItem.saved){
+                    const newInvoiceItemsArr = invoiceItemsArr.filter(val => {
+                        return val.saved
+                    })
+                    invoiceItemsArr = newInvoiceItemsArr
+                }
+                if(val !== "indeterminate"){
+                    useAutoTotalCalc = val;
+                }
+              }}
             >
               <Checkbox.Indicator
                 let:isChecked

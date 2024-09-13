@@ -80,14 +80,14 @@
         <h3 class="tax">Tax: <span>{invoiceData.tax}%</span></h3>
       {/if}
       {#if invoiceData.discount}
-        <h3 class="discount">Discount: <span>{formatCurrency(invoiceData.discount)}</span></h3>
+        <h3 class="discount">Discount: <span>{formatCurrency(invoiceData.discount,invoiceData.currency)}</span></h3>
       {/if}
     </div>
     <div class="total">
       {#if invoiceData.subTotal}
-        <h3 class="sub-total">Sub-Total: <span>{formatCurrency(invoiceData.subTotal)}</span></h3>
+        <h3 class="sub-total">Sub-Total: <span>{formatCurrency(invoiceData.subTotal,invoiceData.currency)}</span></h3>
       {/if}
-      <h2 class="total-amount">Total <span>{formatCurrency(invoiceData.total || 0)}</span></h2>
+      <h2 class="total-amount">Total <span>{formatCurrency(invoiceData.total || 0,invoiceData.currency)}</span></h2>
     </div>
   </div>
 

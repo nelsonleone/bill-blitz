@@ -69,12 +69,12 @@
                         <p>Tax %: <span>{invoiceData.tax}</span></p>
                     {/if}
                     {#if invoiceData.discount}
-                        <p>DISCOUNT: <span>{formatCurrency(invoiceData.discount)}</span></p>
+                        <p>DISCOUNT: <span>{formatCurrency(invoiceData.discount,invoiceData.currency)}</span></p>
                     {/if}
                     {#if invoiceData.subTotal}
-                        <p>SUB TOTAL: <span>{formatCurrency(invoiceData.subTotal)}</span></p>
+                        <p>SUB TOTAL: <span>{formatCurrency(invoiceData.subTotal,invoiceData.currency)}</span></p>
                     {/if}
-                    <p>TOTAL: <span>{formatCurrency(invoiceData.total || 0)}</span></p>
+                    <p>TOTAL: <span>{formatCurrency(invoiceData.total || 0,invoiceData.currency)}</span></p>
                 </div>
                 {#if invoiceData.signature?.length}
                     <div class="signature-container">

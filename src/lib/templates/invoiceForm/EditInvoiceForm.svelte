@@ -54,6 +54,7 @@
     
 
     $: {
+        console.log(currency)
         if(useAutoTotalCalc){
             total =  calculateInvoiceTotal(invoiceItemsArr,discount,tax).total;
             subTotal =  calculateInvoiceTotal(invoiceItemsArr,discount,tax).subTotal;
@@ -346,7 +347,7 @@
 
 <form in:scale={{ duration: 1000, delay: 2000, easing: elasticIn }} method="post" action="?/setInvoiceData" id="invoice-form" on:submit|preventDefault={handleSubmit} class="bg-base-color1 w-full shadow-md py-12 px-4 md:px-12 mt-16">
     <div class="mb-4">
-        <CurrenciesSelect bind:currency={currency} />
+        <CurrenciesSelect {currency} on:setCurrency={(e) => currency = e.detail} />
     </div>
     <div class="relative flex flex-col justify-end md:items-end">
         <h2 class="hidden md:block -rotate-90 text-7xl tracking-wide text-primary-accent-color2 absolute left-0 top-96 md:top-0 z-0 bottom-0 my-auto opacity-40 font-overpass w-fit h-fit">INVOICE</h2>

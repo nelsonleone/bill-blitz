@@ -1,21 +1,24 @@
 <script lang="ts">
-    import { Select } from "bits-ui";
-    import { scale } from "svelte/transition";
-    import Icon from "@iconify/svelte";
-    import { CurrencyEnum } from "../../../enums";
-    import { currencies } from "$lib/componentsData/currenciesArray";
+  import { Select } from "bits-ui";
+  import { scale } from "svelte/transition";
+  import Icon from "@iconify/svelte";
+  import { CurrencyEnum } from "../../../enums";
+  import { currencies } from "$lib/componentsData/currenciesArray";
+  import { createEventDispatcher } from "svelte";
 
-    export let currency :  {
-        value: CurrencyEnum,
-        label: string
-      } =         
-      {
-        value: CurrencyEnum.UnitedStates,
-        label: "US Dollar"
-    }
+  export let currency :  {
+      value: CurrencyEnum,
+      label: string
+    } =         
+    {
+      value: CurrencyEnum.UnitedStates,
+      label: "US Dollar"
+  }
+
+  const dispatch = createEventDispatcher()
 </script>
    
-<Select.Root items={currencies} preventScroll={false} selected={currency}>
+<Select.Root items={currencies} preventScroll={false} selected={currency} onSelectedChange={(val) => dispatch("setCurrency", { value: val?.value, label: val?.label})}>
     <Select.Trigger
       class="inline-flex h-14 w-56 justify-between shadow-sm text-stone-800 items-center rounded-lg border-2 border-stone-500 bg-transparent px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50"
       aria-label="Select a currency"
