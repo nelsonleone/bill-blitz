@@ -17,4 +17,5 @@ export const handleSignInWith0Auth = async(url:URL, supabase: SupabaseClient<any
 
         return res;
     }
+    else return null;
 }

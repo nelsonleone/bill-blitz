@@ -35,6 +35,8 @@ export const actions = {
             }
         )
 
+        console.log(res)
+
         if(res.error?.status){
             const { message } = res.error;
 
