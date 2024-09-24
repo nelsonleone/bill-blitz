@@ -6,6 +6,7 @@
     import { alertStore } from "../../../store";
     import LoadingBtn from "$lib/components/buttons/LoadingBtn.svelte";
     import OtherSignInOptions from "$lib/components/buttons/OtherSignInOptions.svelte";
+    import { browser } from "$app/environment";
 
     export let form;
 
@@ -57,6 +58,10 @@
                 mssg: "Successfully signed in",
                 severity: AlertSeverity.SUCCESS
             })
+
+            if(browser){
+                window.location.href = "/"
+            }
         }
         catch(err){
             alertStore.set({
