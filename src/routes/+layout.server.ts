@@ -1,8 +1,6 @@
 import { redirect } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
 
-export const csr = true;
-
 export const load: LayoutServerLoad = async ({ url ,locals: { session, supabase } }) => {
 
   if (session && session.expires_at) {
