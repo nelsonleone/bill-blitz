@@ -31,14 +31,14 @@
 
         <ul>
             <li class="font-medium text-gray-400 text-xl mb-3">Resources</li>
-            <li class="footer-li"><a href="/templates?tab=invoice">Invoice Templates</a></li>
-            <li class="footer-li"><a href="/templates?tab=receipts">Receipt Templates</a></li>
+            <li class="footer-li"><a href="/generate/invoice/templates">Invoice Templates</a></li>
+            <li class="footer-li"><a href="/generate/receipt/templates">Receipt Templates</a></li>
         </ul>
 
         <ul>
             <li class="font-medium text-gray-400 text-xl mb-3">Company</li>
             <li class="footer-li"><a href="/about">About</a></li>
-            <li class="footer-li"><a href="/contact">Contact</a></li>
+            <li class="footer-li"><a href="mailto:onelsonuchechukwu@gmail.com">Contact</a></li>
         </ul>
 
         <ul>
