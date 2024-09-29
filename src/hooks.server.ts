@@ -59,7 +59,9 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
 
   if (!event.locals.session && event.url.pathname.startsWith('/generate')) {
-    return redirect(303, '/auth/sign_in')
+    if (event.url.pathname !== "/generate/invoice/templates" && event.url.pathname !== "/generate"){
+      return redirect(303, '/auth/sign_in')
+    }
   }
 
   if (event.locals.session) {
