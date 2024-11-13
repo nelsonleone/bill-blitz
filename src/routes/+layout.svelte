@@ -10,7 +10,8 @@
   import { beforeNavigate, goto } from '$app/navigation';
   import BuyMeACoffeeModal from '$lib/components/layout/BuyMeACoffeeModal.svelte';
   import 'nprogress/nprogress.css'
-
+  import NProgress from 'nprogress'
+  
   export let data;
   $: ({ beenAuthenticated, supabase, user } = data)
 
