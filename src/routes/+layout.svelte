@@ -2,13 +2,14 @@
   import Header from '$lib/components/layout/Header.svelte';
   import Alert from '$lib/components/prompts/Alert.svelte';
   import '../app.css';
-  import { page } from '$app/stores';
+  import { navigating, page } from '$app/stores';
   import Footer from '$lib/components/layout/Footer.svelte';
   import CustomImagePreviewModal from '$lib/components/modals/CustomImagePreviewModal.svelte';
   import { hasUnsavedChanges } from '../store';
   import DiscardChangesModal from '$lib/components/modals/DiscardChangesModal.svelte';
   import { beforeNavigate, goto } from '$app/navigation';
   import BuyMeACoffeeModal from '$lib/components/layout/BuyMeACoffeeModal.svelte';
+  import 'nprogress/nprogress.css'
 
   export let data;
   $: ({ beenAuthenticated, supabase, user } = data)
@@ -38,6 +39,20 @@
   // Function to handle the "Cancel" button click
   function cancelNavigation() {
     showDiscardModal = false;
+  }
+  
+
+  NProgress.configure({
+    minimum: 0.16,
+  })
+
+  $: {
+    if ($navigating) {
+      NProgress.start()
+    }
+    if (!$navigating) {
+      NProgress.done()
+    }
   }
 
   beforeNavigate((navigation) => {
