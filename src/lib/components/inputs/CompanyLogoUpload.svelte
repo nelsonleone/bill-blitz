@@ -77,8 +77,9 @@
         required={false}
         allowReplace
         name="uploadedLogo"
-        labelIdle='<span style="display:block; font-size: .9rem; color: black">Upload An Image</span> <span class="filepond--label-action" style="display:block">Choose File</span>'
+        labelIdle='<span style="display:block; font-size: .9rem; color: black">Upload An Image (200kb max)</span> <span class="filepond--label-action" style="display:block">Choose File</span>'
       />
     {/key}
+    <p>
 </div>
   
