@@ -45,6 +45,7 @@
 
   NProgress.configure({
     minimum: 0.16,
+    template: `<div class="bar" style={{height: "4px", background: "#0349fc"}} role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>`
   })
 
   $: {
