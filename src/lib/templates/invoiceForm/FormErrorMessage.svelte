@@ -1,5 +1,5 @@
 <script>
-    export let error = '';
+    export let errorMessage = '';
 </script>
 
 {#if errorMessage}
