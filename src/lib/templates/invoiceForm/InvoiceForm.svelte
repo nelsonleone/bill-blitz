@@ -177,6 +177,7 @@
     const handleAddItem = () => {
         // Check if there are any items in the array
         const lastItem = invoiceItemsArr[invoiceItemsArr.length - 1]
+        console.log(invoiceItemsArr)
         if (invoiceItemsArr.length > 0) {
 
             // Validate the last item's properties
@@ -613,9 +614,11 @@
 
        <ErrorPara error={errors?.items?.message} />
 
-       <span class="text-sm text-stone-700">(Click to save added item)</span>
+        {#if invoiceItemsArr.some(v => !v.saved)}
+            <span class="text-sm text-stone-700">(Click to save added item)</span>
+        {/if}
        <CustomButton on:click={handleAddItem} styles="bg-stone-600 lg:mt-8 shadow-sm flex gap-2 items-center py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
-         <span>Add</span>
+         <span>{invoiceItemsArr.some(v => !v.saved) ? "Save Item" : "Add"}</span>
          <Icon icon="fluent:copy-add-24-filled" class="text-2xl" aria-label="add" />
        </CustomButton>
     </div>
