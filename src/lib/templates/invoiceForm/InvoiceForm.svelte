@@ -615,9 +615,9 @@
        <ErrorPara error={errors?.items?.message} />
 
         {#if invoiceItemsArr.some(v => !v.saved)}
-            <span class="text-sm text-stone-700">(Click to save added item)</span>
+            <span class="text-sm text-stone-700 block w-fit mx-auto">(Click to save added item)</span>
         {/if}
-       <CustomButton on:click={handleAddItem} styles="bg-stone-600 lg:mt-8 shadow-sm flex gap-2 items-center py-3 focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
+       <CustomButton on:click={handleAddItem} styles="bg-stone-600 lg:mt-8 shadow-sm flex gap-2 items-center py-3 {invoiceItemsArr.some(v => !v.saved) && "mx-auto"} focus:outline focus:outline-2 focus:outline-emerald-700 focus:bg-transparent focus:text-stone-700 hover:shadow-md transition duration-200 ease-in-out">
          <span>{invoiceItemsArr.some(v => !v.saved) ? "Save Item" : "Add"}</span>
          <Icon icon="fluent:copy-add-24-filled" class="text-2xl" aria-label="add" />
        </CustomButton>
